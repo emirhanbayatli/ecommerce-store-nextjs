@@ -1,0 +1,24 @@
+import { ItemCardProps } from "../types";
+
+export default function ItemCard({
+  title,
+  imgSrc,
+  imgAlt,
+  price,
+  rating,
+}: ItemCardProps) {
+  return (
+    <div className="max-w-2xs rounded shadow-lg bg-white m-4">
+      <img src={imgSrc} alt={imgAlt} />
+      <div className="px-6 py-4">
+        <h3 className="text-gray-700 font-bold text-xl mb-2 text-center">
+          {title}
+        </h3>
+        <p className="text-gray-700 font-bold text-xl mb-2 text-center">
+          {price}
+        </p>
+        <p className="text-gray-700 text-xl text-center">{rating}</p>
+      </div>
+    </div>
+  );
+}
