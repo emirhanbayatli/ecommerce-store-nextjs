@@ -1,4 +1,4 @@
-import { ItemCardProps } from "../types";
+import { ItemCardProps } from "../../types/types";
 
 export default function ItemCard({
   title,

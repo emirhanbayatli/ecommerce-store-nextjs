@@ -1,4 +1,4 @@
-import { ItemDescProps } from "../types";
+import { ItemDescProps } from "../../types/types";
 import { Button } from "../components/Button";
 import { useProductIndexContext } from "../ProductIndexContextProvider";
 import { useCartDispatchContext } from "../CartContextProvider";

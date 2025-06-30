@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useState, createContext, ReactNode } from "react";
-import { CartItem } from "./types";
+import { CartItem } from "../types/types";
 
 export const CartContext = createContext<CartItem[]>([]);
 export const CartDispatchContext = createContext<(productId: number) => void>(

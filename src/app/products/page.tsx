@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Product } from "../types";
+import { Product } from "../../types/types";
 import ItemCard from "../components/ItemCard";
 import { useProductsContext } from "../ProductsContextProvider";
 import { useProductIndexDispatchContext } from "../ProductIndexContextProvider";
