@@ -1,12 +1,11 @@
 "use client";
 
 import { useCartContext } from "../CartContextProvider";
+import { Button } from "../components/Button";
 import { useProductsContext } from "../ProductsContextProvider";
-
 export default function Cart() {
   const cart = useCartContext();
   const products = useProductsContext();
-
   const cartProducts = cart
     .map((item) => {
       const product = products.find((p) => p.id === item.id);
@@ -45,6 +44,7 @@ export default function Cart() {
                     <span className="text-center">{product.title}</span>
                     <span>{product.price} $</span>
                     <span> {product.quantity}</span>
+                    <Button label="-" onClick={() => removeProductToCart} />
                   </li>
                 ))}
               </ul>
@@ -53,6 +53,12 @@ export default function Cart() {
           <div className="flex justify-end p-4">
             <span className="font-bold text-lg">
               Total: {total.toFixed(2)} $
+              <Button
+                label="Clear Cart"
+                type="button"
+                className="m-2"
+                onClick={() => clearToCart}
+              />
             </span>
           </div>
         </div>

@@ -1,11 +1,53 @@
 import { NewProductFormState } from "@/app/admin/products/new/page";
-import { Category } from "../../../types/types";
+import {
+  Category,
+  Tags,
+  Product,
+  AvailabilityStatus,
+  ReturnPolicy,
+} from "../../../types/types";
 import { z } from "zod";
 
 const productSchema = z.object({
-  title: z.string().min(3).max(100),
-  description: z.string().min(50).max(500),
-  category: z.nativeEnum(Category),
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters long")
+    .max(100, "Title must not exceed 100 characters"),
+  description: z
+    .string()
+    .min(50, "Description must be at least 50 characters long")
+    .max(500, "Description must not exceed 500 characters"),
+  category: z.nativeEnum(Category, {
+    errorMap: () => ({ message: "Please select a valid category" }),
+  }),
+  price: z.number().min(0, "Price must be zero or a positive number"),
+  discountPercentage: z
+    .number()
+    .min(0, "Discount must be at least 0%")
+    .max(100, "Discount cannot exceed 100%"),
+  stock: z.number().min(0, "Stock must be zero or a positive number"),
+  tags: z.nativeEnum(Tags, {
+    errorMap: () => ({ message: "Please select a valid tag" }),
+  }),
+  brand: z.string().min(2, "Brand must be at least 2 characters"),
+  sku: z.string().min(1, "SKU is required"),
+  weight: z.number().min(0, "Weight must be zero or a positive number"),
+  dimensions: z.object({
+    width: z.number().min(0, "Width must be zero or positive"),
+    height: z.number().min(0, "Height must be zero or positive"),
+    depth: z.number().min(0, "Depth must be zero or positive"),
+  }),
+  warrantyInformation: z.string().min(1, "Warranty information is required"),
+  shippingInformation: z.string().min(1, "Shipping information is required"),
+  availabilityStatus: z.nativeEnum(AvailabilityStatus, {
+    errorMap: () => ({ message: "Please choose an availability status" }),
+  }),
+  minimumOrderQuantity: z.number().min(1, "Minimum order must be at least 1"),
+  returnPolicy: z.nativeEnum(ReturnPolicy, {
+    errorMap: () => ({ message: "Please select a return policy" }),
+  }),
+  images: z.string().min(1, "At least one image URL is required"),
+  thumbnail: z.string().min(1, "Thumbnail is required"),
 });
 
 export async function addNewProductAction(
@@ -25,7 +67,7 @@ export async function addNewProductAction(
     return {
       success: false,
       message: "Please correct the form input",
-      inputs: { ...rawData },
+      // inputs: { ...rawData },
       errors: result.error.flatten().fieldErrors,
     };
   } else {

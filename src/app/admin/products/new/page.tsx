@@ -46,7 +46,7 @@ export default function Admin() {
         className="grid grid-cols-2 gap-6 bg-white p-8 rounded-xl shadow-md"
       >
         <div className="flex flex-col col-span-2">
-          <label htmlFor="title" className="font-bold mb-1 ">
+          <label htmlFor="title" className="font-bold mb-1">
             Title
           </label>
           <input
@@ -56,8 +56,11 @@ export default function Admin() {
             className="bg-stone-200 text-stone-900 p-2 rounded"
             defaultValue={state?.inputs?.title ?? ""}
           />
-          {state?.errors?.title ? <p>{state?.errors?.title}</p> : <></>}
+          {state?.errors?.title && (
+            <p className="text-red-600 text-sm">{state.errors.title}</p>
+          )}
         </div>
+
         <div className="flex flex-col col-span-2">
           <label htmlFor="description" className="font-bold mb-1">
             Description
@@ -68,7 +71,11 @@ export default function Admin() {
             name="description"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
+          {state?.errors?.description && (
+            <p className="text-red-600 text-sm">{state.errors.description}</p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="category" className="font-bold mb-1">
             Category
@@ -77,7 +84,6 @@ export default function Admin() {
             id="category"
             name="category"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            required
           >
             <option value="">Select Category</option>
             {allCategories.map((category) => (
@@ -86,7 +92,11 @@ export default function Admin() {
               </option>
             ))}
           </select>
+          {state?.errors?.category && (
+            <p className="text-red-600 text-sm">{state.errors.category}</p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="price" className="font-bold mb-1">
             Price
@@ -97,8 +107,12 @@ export default function Admin() {
             name="price"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
+          {state?.errors?.price && (
+            <p className="text-red-600 text-sm">{state.errors.price}</p>
+          )}
         </div>
-        <div className="flex flex-col ">
+
+        <div className="flex flex-col">
           <label htmlFor="discountPercentage" className="font-bold mb-1">
             Discount Percentage
           </label>
@@ -108,9 +122,15 @@ export default function Admin() {
             name="discountPercentage"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
+          {state?.errors?.discountPercentage && (
+            <p className="text-red-600 text-sm">
+              {state.errors.discountPercentage}
+            </p>
+          )}
         </div>
+
         <div className="flex flex-col">
-          <label htmlFor="stock " className="font-bold mb-1">
+          <label htmlFor="stock" className="font-bold mb-1">
             Stock
           </label>
           <input
@@ -119,7 +139,11 @@ export default function Admin() {
             name="stock"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
+          {state?.errors?.stock && (
+            <p className="text-red-600 text-sm">{state.errors.stock}</p>
+          )}
         </div>
+
         <div className="flex flex-col col-span-2">
           <label htmlFor="tags" className="font-bold mb-1">
             Tags
@@ -137,8 +161,12 @@ export default function Admin() {
               </label>
             ))}
           </div>
+          {state?.errors?.tags && (
+            <p className="text-red-600 text-sm">{state.errors.tags}</p>
+          )}
         </div>
-        <div className="flex flex-col ">
+
+        <div className="flex flex-col">
           <label htmlFor="brand" className="font-bold mb-1">
             Brand
           </label>
@@ -147,9 +175,12 @@ export default function Admin() {
             id="brand"
             name="brand"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            required
           />
+          {state?.errors?.brand && (
+            <p className="text-red-600 text-sm">{state.errors.brand}</p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="sku" className="font-bold mb-1">
             SKU
@@ -159,10 +190,13 @@ export default function Admin() {
             id="sku"
             name="sku"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            required
           />
+          {state?.errors?.sku && (
+            <p className="text-red-600 text-sm">{state.errors.sku}</p>
+          )}
         </div>
-        <div className="flex flex-col ">
+
+        <div className="flex flex-col">
           <label htmlFor="weight" className="font-bold mb-1">
             Weight
           </label>
@@ -171,9 +205,12 @@ export default function Admin() {
             id="weight"
             name="weight"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            required
           />
+          {state?.errors?.weight && (
+            <p className="text-red-600 text-sm">{state.errors.weight}</p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="dimensions" className="font-bold mb-1">
             Dimensions
@@ -184,27 +221,30 @@ export default function Admin() {
               id="width"
               name="dimensions_width"
               placeholder="Width"
-              className="  dark:bg-stone-200 dark:text-stone-900 max-w-30 p-2 rounded"
-              required
+              className="dark:bg-stone-200 dark:text-stone-900 max-w-30 p-2 rounded"
             />
+
             <input
               type="number"
               id="height"
               name="dimensions_height"
               placeholder="Height"
               className="dark:bg-stone-200 dark:text-stone-900 max-w-30 p-2 rounded"
-              required
             />
+
             <input
               type="number"
               id="depth"
               name="dimensions_depth"
               placeholder="Depth"
               className="dark:bg-stone-200 dark:text-stone-900 max-w-30 p-2 rounded"
-              required
             />
-          </div>
+          </div>{" "}
+          {state?.errors?.dimensions && (
+            <p className="text-red-600 text-sm">{state.errors.dimensions}</p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="warrantyInformation" className="font-bold mb-1">
             Warranty Information
@@ -214,9 +254,14 @@ export default function Admin() {
             id="warrantyInformation"
             name="warrantyInformation"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            required
           />
+          {state?.errors?.warrantyInformation && (
+            <p className="text-red-600 text-sm">
+              {state.errors.warrantyInformation}
+            </p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="shippingInformation" className="font-bold mb-1">
             Shipping Information
@@ -226,9 +271,14 @@ export default function Admin() {
             id="shippingInformation"
             name="shippingInformation"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            required
           />
+          {state?.errors?.shippingInformation && (
+            <p className="text-red-600 text-sm">
+              {state.errors.shippingInformation}
+            </p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="availabilityStatus" className="font-bold mb-1">
             Availability Status
@@ -243,13 +293,19 @@ export default function Admin() {
                   type="radio"
                   name="availabilityStatus"
                   value={availabilityStatus}
-                  className="accent-stone-900 "
+                  className="accent-stone-900"
                 />
                 {availabilityStatus}
               </label>
             ))}
           </div>
+          {state?.errors?.availabilityStatus && (
+            <p className="text-red-600 text-sm">
+              {state.errors.availabilityStatus}
+            </p>
+          )}
         </div>
+
         <div className="flex flex-col">
           <label htmlFor="minimumOrderQuantity" className="font-bold mb-1">
             Minimum Order Quantity
@@ -259,9 +315,14 @@ export default function Admin() {
             id="minimumOrderQuantity"
             name="minimumOrderQuantity"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            required
           />
+          {state?.errors?.minimumOrderQuantity && (
+            <p className="text-red-600 text-sm">
+              {state.errors.minimumOrderQuantity}
+            </p>
+          )}
         </div>
+
         <div className="flex flex-col col-span-2">
           <label htmlFor="returnPolicy" className="font-bold mb-1">
             Return Policy
@@ -279,8 +340,12 @@ export default function Admin() {
               </label>
             ))}
           </div>
+          {state?.errors?.returnPolicy && (
+            <p className="text-red-600 text-sm">{state.errors.returnPolicy}</p>
+          )}
         </div>
-        <div className="flex flex-col col-span-2 ">
+
+        <div className="flex flex-col col-span-2">
           <label htmlFor="images" className="font-bold mb-1">
             Images
           </label>
@@ -290,9 +355,12 @@ export default function Admin() {
             name="images"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
             placeholder="Simply separate each link with a comma to add more than one."
-            required
           />
+          {state?.errors?.images && (
+            <p className="text-red-600 text-sm">{state.errors.images}</p>
+          )}
         </div>
+
         <div className="flex flex-col col-span-2">
           <label htmlFor="thumbnail" className="font-bold mb-1">
             Thumbnail
@@ -303,9 +371,12 @@ export default function Admin() {
             name="thumbnail"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
             placeholder="Simply separate each link with a comma to add more than one."
-            required
           />
+          {state?.errors?.thumbnail && (
+            <p className="text-red-600 text-sm">{state.errors.thumbnail}</p>
+          )}
         </div>
+
         <Button
           type="submit"
           className="my-8 col-span-2"

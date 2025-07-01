@@ -6,7 +6,7 @@ export function Button({
   label: string;
   className?: string;
   onClick?: () => void;
-  type: string;
+  type?: string;
 }) {
   return (
     <button
