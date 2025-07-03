@@ -1,11 +1,30 @@
 "use client";
-
 import { useCartContext } from "../CartContextProvider";
 import { Button } from "../components/Button";
-import { useProductsContext } from "../ProductsContextProvider";
+import { useEffect, useState } from "react";
+import { Product } from "@/types/types";
+import { useCartDispatchContext } from "../CartContextProvider";
 export default function Cart() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const cartDispatch = useCartDispatchContext();
+
+  if (!cartDispatch) {
+    throw new Error(
+      "CartDispatchContext is undefined. Make sure your component is wrapped in the CartContextProvider.",
+    );
+  }
+
+  const { clearCart } = cartDispatch;
+  const { removeProductToCart } = cartDispatch;
+  useEffect(() => {
+    fetch(`https://dummyjson.com/products`)
+      .then((res) => res.json())
+      .then((data) => setProducts(data.products || []))
+      .catch((error) => console.error("Error fetching product:", error));
+  }, []);
+
   const cart = useCartContext();
-  const products = useProductsContext();
+
   const cartProducts = cart
     .map((item) => {
       const product = products.find((p) => p.id === item.id);
@@ -15,9 +34,12 @@ export default function Cart() {
             quantity: item.quantity,
             totalPrice: product.price * item.quantity,
           }
-        : null;
+        : undefined;
     })
-    .filter(Boolean);
+    .filter(
+      (p): p is Product & { quantity: number; totalPrice: number } =>
+        p !== undefined,
+    );
 
   const total = cartProducts.reduce((sum, p) => sum + p.totalPrice, 0);
 
@@ -33,7 +55,7 @@ export default function Cart() {
                 {cartProducts.map((product) => (
                   <li
                     key={product.id}
-                    className="grid justify-items-center grid-cols-4 gap-4 place-items-center p-4"
+                    className="grid justify-items-center grid-cols-5 gap-4 place-items-center p-4"
                   >
                     <img
                       src={product.images[0]}
@@ -44,7 +66,10 @@ export default function Cart() {
                     <span className="text-center">{product.title}</span>
                     <span>{product.price} $</span>
                     <span> {product.quantity}</span>
-                    <Button label="-" onClick={() => removeProductToCart} />
+                    <Button
+                      label="-"
+                      onClick={() => removeProductToCart(product.id)}
+                    />
                   </li>
                 ))}
               </ul>
@@ -57,7 +82,7 @@ export default function Cart() {
                 label="Clear Cart"
                 type="button"
                 className="m-2"
-                onClick={() => clearToCart}
+                onClick={clearCart}
               />
             </span>
           </div>

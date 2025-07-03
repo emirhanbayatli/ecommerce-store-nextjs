@@ -1,22 +1,3 @@
-export interface ItemCardProps {
-  id: number;
-  title: string;
-  imgSrc: string;
-  imgAlt: string;
-  price: string;
-  rating: string;
-}
-
-export interface ItemDescProps {
-  id: number;
-  title: string;
-  imgSrc: string;
-  imgAlt: string;
-  price: string;
-  rating: string;
-  description: string;
-}
-
 export type CartItem = {
   id: number;
   quantity: number;

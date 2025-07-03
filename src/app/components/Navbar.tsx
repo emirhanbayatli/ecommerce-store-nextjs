@@ -8,8 +8,6 @@ export default function Navbar() {
 
   const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  console.log(totalCount + "totalCount");
-
   return (
     <nav className="bg-gray-100 shadow-md p-4 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -31,7 +29,7 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <Link href="/login" className="hover:text-gray-500">
+            <Link href="/" className="hover:text-gray-500">
               Login
             </Link>
           </li>

@@ -8,9 +8,15 @@ import {
 } from "react";
 import { CartItem } from "../types/types";
 
+type CartDispatch = {
+  addProductToCart: (productId: number) => void;
+  clearCart: () => void;
+  removeProductToCart: (productId: number) => void;
+};
+
 export const CartContext = createContext<CartItem[]>([]);
-export const CartDispatchContext = createContext<(productId: number) => void>(
-  () => {},
+export const CartDispatchContext = createContext<CartDispatch | undefined>(
+  undefined,
 );
 
 export const CartContextProvider = ({ children }: { children: ReactNode }) => {
@@ -22,6 +28,9 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
       setCart(JSON.parse(storedCart));
     }
   }, []);
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   function addProductToCart(productId: number) {
     setCart((prevCart) => {
@@ -37,22 +46,36 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
       } else {
         updatedCart = [...prevCart, { id: productId, quantity: 1 }];
       }
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+
       return updatedCart;
     });
   }
 
-  function clearToCart() {
+  function clearCart() {
     setCart([]);
-    localStorage.clear();
+    localStorage.removeItem("cart");
   }
   function removeProductToCart(productId: number) {
-    setCart([]);
+    setCart((prevCart) => {
+      return prevCart
+        .map((item) =>
+          item.id === productId
+            ? { ...item, quantity: item.quantity - 1 }
+            : item,
+        )
+        .filter((item) => item.quantity > 0);
+    });
   }
 
   return (
     <CartContext.Provider value={cart}>
-      <CartDispatchContext.Provider value={addProductToCart}>
+      <CartDispatchContext.Provider
+        value={{
+          addProductToCart,
+          removeProductToCart,
+          clearCart,
+        }}
+      >
         {children}
       </CartDispatchContext.Provider>
     </CartContext.Provider>

@@ -1,7 +1,15 @@
-import { ItemDescProps } from "../../types/types";
 import { Button } from "../components/Button";
-import { useProductIndexContext } from "../ProductIndexContextProvider";
 import { useCartDispatchContext } from "../CartContextProvider";
+
+export interface ItemDescProps {
+  id: number;
+  title: string;
+  imgSrc: string;
+  imgAlt: string;
+  price: string;
+  rating: string;
+  description: string;
+}
 
 export default function ItemDesc({
   id,
@@ -12,10 +20,15 @@ export default function ItemDesc({
   rating,
   description,
 }: ItemDescProps) {
-  const productID = useProductIndexContext();
-  const addProductToCart = useCartDispatchContext();
+  const cartDispatch = useCartDispatchContext();
 
-  console.log(productID, "productID");
+  if (!cartDispatch) {
+    throw new Error(
+      "CartDispatchContext is undefined. Make sure your component is wrapped in the CartContextProvider.",
+    );
+  }
+
+  const { addProductToCart } = cartDispatch;
 
   return (
     <>

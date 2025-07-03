@@ -85,7 +85,9 @@ export default function Admin() {
             name="category"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           >
-            <option value="">Select Category</option>
+            <option defaultValue="" disabled>
+              Select Category
+            </option>
             {allCategories.map((category) => (
               <option key={category} value={category}>
                 {category}

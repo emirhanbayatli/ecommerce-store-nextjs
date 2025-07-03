@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ProductsContextProvider } from "./ProductsContextProvider";
-import { ProductIndexContextProvider } from "./ProductIndexContextProvider";
 import { CartContextProvider } from "./CartContextProvider";
 import Navbar from "./components/Navbar";
 
@@ -36,11 +34,7 @@ export default function RootLayout({
             <Navbar />
           </header>
 
-          <ProductsContextProvider>
-            <ProductIndexContextProvider>
-              {children}
-            </ProductIndexContextProvider>
-          </ProductsContextProvider>
+          {children}
         </CartContextProvider>
         <footer>
           {/* footer part will be improved */}
