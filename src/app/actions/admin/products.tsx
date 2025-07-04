@@ -21,34 +21,73 @@ const productSchema = z.object({
   category: z.nativeEnum(Category, {
     errorMap: () => ({ message: "Please select a valid category" }),
   }),
-  price: z.number().min(0, "Price must be zero or a positive number"),
+  price: z
+    .number()
+    .min(0, "Price must be zero or a positive number")
+    .max(9999999999, "Price cannot exceed 9,999,999,999"),
   discountPercentage: z
     .number()
     .min(0, "Discount must be at least 0%")
     .max(100, "Discount cannot exceed 100%"),
-  stock: z.number().min(0, "Stock must be zero or a positive number"),
-  tags: z.nativeEnum(Tags, {
-    errorMap: () => ({ message: "Please select a valid tag" }),
+  stock: z
+    .number()
+    .min(0, "Stock must be zero or a positive number")
+    .max(9999999999, "Stock cannot exceed 9,999,999,999"),
+  tags: z.array(z.nativeEnum(Tags), {
+    errorMap: () => ({ message: "Please select valid tags" }),
   }),
-  brand: z.string().min(2, "Brand must be at least 2 characters"),
-  sku: z.string().min(1, "SKU is required"),
-  weight: z.number().min(0, "Weight must be zero or a positive number"),
+  brand: z
+    .string()
+    .min(2, "Brand must be at least 2 characters")
+    .max(50, "Brand must not exceed 50 characters"),
+  sku: z
+    .string()
+    .min(1, "SKU is required")
+    .max(100, "SKU must not exceed 100 characters"),
+  weight: z
+    .number()
+    .min(0, "Weight must be zero or a positive number")
+    .max(9999999999, "Weight cannot exceed 9,999,999,999 grams"),
   dimensions: z.object({
-    width: z.number().min(0, "Width must be zero or positive"),
-    height: z.number().min(0, "Height must be zero or positive"),
-    depth: z.number().min(0, "Depth must be zero or positive"),
+    width: z
+      .number()
+      .min(0, "Width must be zero or positive")
+      .max(999999, "Width cannot exceed 999999 cm"),
+    height: z
+      .number()
+      .min(0, "Height must be zero or positive")
+      .max(999999, "Height cannot exceed 999999 cm"),
+    depth: z
+      .number()
+      .min(0, "Depth must be zero or positive")
+      .max(999999, "Depth cannot exceed 999999 cm"),
   }),
-  warrantyInformation: z.string().min(1, "Warranty information is required"),
-  shippingInformation: z.string().min(1, "Shipping information is required"),
+  warrantyInformation: z
+    .string()
+    .min(1, "Warranty information is required")
+    .max(500, "Warranty information must not exceed 500 characters"),
+  shippingInformation: z
+    .string()
+    .min(1, "Shipping information is required")
+    .max(500, "Shipping information must not exceed 500 characters"),
   availabilityStatus: z.nativeEnum(AvailabilityStatus, {
     errorMap: () => ({ message: "Please choose an availability status" }),
   }),
-  minimumOrderQuantity: z.number().min(1, "Minimum order must be at least 1"),
+  minimumOrderQuantity: z
+    .number()
+    .min(1, "Minimum order must be at least 1")
+    .max(9999999999, "Minimum order cannot exceed 9,999,999,999"),
   returnPolicy: z.nativeEnum(ReturnPolicy, {
     errorMap: () => ({ message: "Please select a return policy" }),
   }),
-  images: z.string().min(1, "At least one image URL is required"),
-  thumbnail: z.string().min(1, "Thumbnail is required"),
+  images: z
+    .string()
+    .min(1, "At least one image URL is required")
+    .max(500, "Image URL must not exceed 1000 characters"),
+  thumbnail: z
+    .string()
+    .min(1, "Thumbnail URL is required")
+    .max(500, "Thumbnail URL must not exceed 1000 characters"),
 });
 
 export async function addNewProductAction(
@@ -58,8 +97,31 @@ export async function addNewProductAction(
   const rawData = {
     title: formData.get("title") as string,
     description: formData.get("description") as string,
-    category: formData.get("category") as string,
+    category: formData.get("category") as Category,
+    price: Number(formData.get("price")),
+    discountPercentage: Number(formData.get("discountPercentage")),
+    stock: Number(formData.get("stock")),
+    tags: (formData.getAll("tags") as string[]).map((tag) => tag as Tags),
+    brand: formData.get("brand") as string,
+    sku: formData.get("sku") as string,
+    weight: Number(formData.get("weight")),
+    dimensions: {
+      width: Number(formData.get("dimensions_width")),
+      height: Number(formData.get("dimensions_height")),
+      depth: Number(formData.get("dimensions_depth")),
+    },
+    warrantyInformation: formData.get("warrantyInformation") as string,
+    shippingInformation: formData.get("shippingInformation") as string,
+    availabilityStatus: formData.get(
+      "availabilityStatus",
+    ) as AvailabilityStatus,
+    minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
+    returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
+    images: formData.get("images") as string,
+    thumbnail: formData.get("thumbnail") as string,
   };
+
+  console.table(rawData);
 
   const result = productSchema.safeParse(rawData);
 
@@ -68,7 +130,7 @@ export async function addNewProductAction(
     return {
       success: false,
       message: "Please correct the form input",
-      inputs: { ...rawData },
+      //inputs: { ...rawData, category: rawData.category as Category },
       errors: result.error.flatten().fieldErrors,
     };
   }
@@ -83,6 +145,21 @@ export async function addNewProductAction(
       title: result.data.title,
       description: result.data.description,
       category: result.data.category,
+      price: result.data.price,
+      discountPercentage: result.data.discountPercentage,
+      stock: result.data.stock,
+      tags: result.data.tags,
+      brand: result.data.brand,
+      sku: result.data.sku,
+      weight: result.data.weight,
+      dimensions: result.data.dimensions,
+      warrantyInformation: result.data.warrantyInformation,
+      shippingInformation: result.data.shippingInformation,
+      availabilityStatus: result.data.availabilityStatus,
+      minimumOrderQuantity: result.data.minimumOrderQuantity,
+      returnPolicy: result.data.returnPolicy,
+      images: result.data.images,
+      thumbnail: result.data.thumbnail,
       meta: {
         createdAt: dateNow,
         updatedAt: dateNow,
@@ -99,7 +176,7 @@ export async function addNewProductAction(
     return {
       success: false,
       message: "Failed creating a new product in the database",
-      inputs: { ...rawData },
+      // inputs: { ...rawData, category: rawData.category as Category },
     };
   }
 }
