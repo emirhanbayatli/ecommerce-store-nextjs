@@ -8,7 +8,8 @@ import {
 } from "../../../types/types";
 import { z } from "zod";
 import { setDoc, doc } from "firebase/firestore";
-import { db, collections } from "../../../utils/firbase";
+import { db, collections } from "../../../utils/firebase";
+import { getDocs, collection } from "firebase/firestore";
 const productSchema = z.object({
   title: z
     .string()
@@ -179,4 +180,35 @@ export async function addNewProductAction(
       // inputs: { ...rawData, category: rawData.category as Category },
     };
   }
+}
+
+export async function getProducts() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+  const products = querySnapshot.docs.map((doc) => {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      title: data.title,
+      description: data.description,
+      category: data.category,
+      price: data.price,
+      discountPercentage: data.discountPercentage,
+      stock: data.stock,
+      tags: data.tags,
+      brand: data.brand,
+      sku: data.sku,
+      weight: data.weight,
+      dimensions: data.dimensions,
+      warrantyInformation: data.warrantyInformation,
+      shippingInformation: data.shippingInformation,
+      availabilityStatus: data.availabilityStatus,
+      minimumOrderQuantity: data.minimumOrderQuantity,
+      returnPolicy: data.returnPolicy,
+      images: data.images,
+      thumbnail: data.thumbnail,
+      quantity: data.quantity,
+    };
+  });
+  return products;
 }
