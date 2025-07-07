@@ -16,7 +16,7 @@ export interface Product {
   brand: string;
   sku: string;
   weight: number;
-  dimensions: Dimentions;
+  dimensions: Dimensions;
   warrantyInformation: string;
   shippingInformation: string;
   availabilityStatus: AvailabilityStatus;
@@ -24,7 +24,7 @@ export interface Product {
   returnPolicy: ReturnPolicy;
   minimumOrderQuantity: number;
   meta: Meta;
-  images: string[];
+  images: string;
   thumbnail: string;
 }
 
@@ -85,7 +85,7 @@ export enum ReturnPolicy {
 
 export const allReturnPolicies = Object.values(ReturnPolicy);
 
-export interface Dimentions {
+export interface Dimensions {
   width: number;
   height: number;
   depth: number;

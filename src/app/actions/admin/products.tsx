@@ -7,9 +7,15 @@ import {
   ReturnPolicy,
 } from "../../../types/types";
 import { z } from "zod";
-import { setDoc, doc } from "firebase/firestore";
+
 import { db, collections } from "../../../utils/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  setDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 const productSchema = z.object({
   title: z
     .string()
@@ -182,7 +188,7 @@ export async function addNewProductAction(
   }
 }
 
-export async function getProducts() {
+export async function getProducts(): Promise<Product[]> {
   const querySnapshot = await getDocs(collection(db, "products"));
   const products = querySnapshot.docs.map((doc) => {
     const data = doc.data();
@@ -207,8 +213,23 @@ export async function getProducts() {
       returnPolicy: data.returnPolicy,
       images: data.images,
       thumbnail: data.thumbnail,
-      quantity: data.quantity,
+      meta: {
+        createdAt: data.meta?.createdAt ?? 0,
+        updatedAt: data.meta?.updatedAt ?? 0,
+      },
     };
   });
   return products;
+}
+
+export async function updateProduct() {}
+
+export async function deleteProduct(id: string) {
+  const productRef = doc(db, "products", id);
+  try {
+    await deleteDoc(productRef);
+    console.log(`Product with ID ${id} was deleted successfully.`);
+  } catch (error) {
+    console.error("Failed to delete product:", id, error);
+  }
 }

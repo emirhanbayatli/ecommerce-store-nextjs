@@ -1,8 +1,19 @@
+"use client";
 import { getProducts } from "../../actions/admin/products";
 import { Button } from "../../components/Button";
 import Link from "next/link";
-export default async function AdminProducts() {
-  const products = await getProducts();
+import { deleteProduct } from "../../actions/admin/products";
+import { useEffect, useState } from "react";
+import { Product } from "../../../types/types";
+export default function AdminProducts() {
+  const [products, setProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    async function fetchProducts() {
+      const data = await getProducts();
+      setProducts(data);
+    }
+    fetchProducts();
+  }, []);
   return (
     <main>
       <h1 className="text-3xl text-center my-6">Admin Products</h1>
@@ -13,24 +24,27 @@ export default async function AdminProducts() {
             <div className="min-w-full">
               <div className="bg-white divide-y divide-gray-100">
                 <ul>
-                  {products.map((product) => (
+                  {products.map((product: Product) => (
                     <li
                       key={product.id}
-                      className="grid justify-items-center grid-cols-6 gap-5 place-items-center p-4"
+                      className="grid justify-items-center grid-cols-5 gap-5 place-items-center p-4"
                     >
                       <img
                         src={product.images}
                         alt={product.title}
                         width={100}
-                        className="rounded"
+                        className="rounded-full"
                       />
                       <span className="text-center">{product.title}</span>
                       <span>{product.price} $</span>
-                      <span> {product.quantity}</span>
+
                       <Link href={`/admin/products/${product.id}/edit`}>
                         <Button label="Edit" />
                       </Link>
-                      <Button label="Delete" />
+                      <Button
+                        label="Delete"
+                        onClick={() => deleteProduct(product.id.toString())}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -39,7 +53,7 @@ export default async function AdminProducts() {
           </div>
         ) : (
           <div className="text-center my-12">
-            <h2 className="text-2xl my-4">Your shopping cart is empty!</h2>
+            <h2 className="text-2xl my-4">Product list is empty!</h2>
           </div>
         )}
       </div>
