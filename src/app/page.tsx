@@ -13,7 +13,7 @@ export default async function Home() {
       <main className="px-24">
         <div className="relative w-full my-3">
           <img
-            src="/banner.png"
+            src="/banner.webp"
             alt="örnek"
             className="w-full h-100 object-fill"
           />
