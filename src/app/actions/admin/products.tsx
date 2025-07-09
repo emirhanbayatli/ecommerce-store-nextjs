@@ -1,4 +1,5 @@
 import { NewProductFormState } from "@/app/admin/products/new/page";
+import { EditProductFormState } from "../../admin/products/[productId]/edit/page";
 import {
   Category,
   Tags,
@@ -15,7 +16,9 @@ import {
   setDoc,
   doc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
+
 const productSchema = z.object({
   title: z
     .string()
@@ -137,7 +140,7 @@ export async function addNewProductAction(
     return {
       success: false,
       message: "Please correct the form input",
-      //inputs: { ...rawData, category: rawData.category as Category },
+      inputs: { ...rawData },
       errors: result.error.flatten().fieldErrors,
     };
   }
@@ -183,7 +186,7 @@ export async function addNewProductAction(
     return {
       success: false,
       message: "Failed creating a new product in the database",
-      // inputs: { ...rawData, category: rawData.category as Category },
+      inputs: { ...rawData },
     };
   }
 }
@@ -194,7 +197,7 @@ export async function getProducts(): Promise<Product[]> {
     const data = doc.data();
 
     return {
-      id: doc.id,
+      id: Number(doc.id),
       title: data.title,
       description: data.description,
       category: data.category,
@@ -219,10 +222,94 @@ export async function getProducts(): Promise<Product[]> {
       },
     };
   });
-  return products;
+  return products as Product[];
 }
 
-export async function updateProduct() {}
+export async function editProduct(
+  currentState: EditProductFormState | null,
+  formData: FormData,
+) {
+  const rawData = {
+    productId: formData.get("productId") as string,
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
+    category: formData.get("category") as Category,
+    price: Number(formData.get("price")),
+    discountPercentage: Number(formData.get("discountPercentage")),
+    stock: Number(formData.get("stock")),
+    tags: (formData.getAll("tags") as string[]).map((tag) => tag as Tags),
+    brand: formData.get("brand") as string,
+    sku: formData.get("sku") as string,
+    weight: Number(formData.get("weight")),
+    dimensions: {
+      width: Number(formData.get("dimensions_width")),
+      height: Number(formData.get("dimensions_height")),
+      depth: Number(formData.get("dimensions_depth")),
+    },
+    warrantyInformation: formData.get("warrantyInformation") as string,
+    shippingInformation: formData.get("shippingInformation") as string,
+    availabilityStatus: formData.get(
+      "availabilityStatus",
+    ) as AvailabilityStatus,
+    minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
+    returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
+    images: formData.get("images") as string,
+    thumbnail: formData.get("thumbnail") as string,
+  };
+
+  const result = productSchema.safeParse(rawData);
+
+  if (!result.success) {
+    console.log(result);
+    return {
+      success: false,
+      message: "Error updating a new product to Firebase",
+      inputs: { ...rawData },
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    const productId = formData.get("productId") as string;
+    const productRef = doc(db, "products", productId);
+    console.log(result);
+
+    await updateDoc(productRef, {
+      title: result.data.title,
+      description: result.data.description,
+      category: result.data.category,
+      price: result.data.price,
+      discountPercentage: result.data.discountPercentage,
+      stock: result.data.stock,
+      tags: result.data.tags,
+      brand: result.data.brand,
+      sku: result.data.sku,
+      weight: result.data.weight,
+      dimensions: result.data.dimensions,
+      warrantyInformation: result.data.warrantyInformation,
+      shippingInformation: result.data.shippingInformation,
+      availabilityStatus: result.data.availabilityStatus,
+      minimumOrderQuantity: result.data.minimumOrderQuantity,
+      returnPolicy: result.data.returnPolicy,
+      images: result.data.images,
+      thumbnail: result.data.thumbnail,
+      meta: {
+        updatedAt: new Date(),
+      },
+    });
+    return {
+      success: true,
+      message: "The product is updating successfully",
+    };
+  } catch (error) {
+    console.error("Error updating a new product to Firebase", error);
+  }
+  return {
+    success: false,
+    message: "Failed updating a product in the database",
+    inputs: { ...rawData },
+  };
+}
 
 export async function deleteProduct(id: string) {
   const productRef = doc(db, "products", id);

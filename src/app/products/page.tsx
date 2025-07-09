@@ -9,22 +9,20 @@ export default async function Products() {
     const data = await res.json();
 
     return (
-      <main>
-        <div className="flex flex-wrap justify-center gap-4 p-6">
-          {data.products.map((product: Product) => (
-            <Link key={product.id} href={`/products/${product.id}`}>
-              <ItemCard
-                key={product.id}
-                id={product.id}
-                imgSrc={product.images[0]}
-                imgAlt={product.title}
-                title={product.title}
-                price={product.price + " $"}
-                rating={`${product.rating} ${showStar(Number(product.rating))}`}
-              />
-            </Link>
-          ))}
-        </div>
+      <main className="grid grid-cols-4 gap-6 p-6">
+        {data.products.map((product: Product) => (
+          <Link key={product.id} href={`/products/${product.id}`}>
+            <ItemCard
+              key={product.id}
+              id={product.id}
+              imgSrc={product.images[0]}
+              imgAlt={product.title}
+              title={product.title}
+              price={product.price + " $"}
+              rating={`${product.rating} ${showStar(Number(product.rating))}`}
+            />
+          </Link>
+        ))}
       </main>
     );
   } catch (error) {

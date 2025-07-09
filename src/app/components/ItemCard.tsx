@@ -1,10 +1,10 @@
 interface ItemCardProps {
-  id: number;
+  id?: number;
   title: string;
   imgSrc: string;
   imgAlt: string;
-  price: string;
-  rating: string;
+  price?: string;
+  rating?: string;
 }
 
 export default function ItemCard({
@@ -15,9 +15,9 @@ export default function ItemCard({
   rating,
 }: ItemCardProps) {
   return (
-    <div className="max-w-2xs rounded shadow-lg bg-white m-4">
+    <div className="rounded shadow-lg bg-white m-4 hover:shadow-2xl transition">
       <img src={imgSrc} alt={imgAlt} />
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 ">
         <h3 className="text-gray-700 font-bold text-xl mb-2 text-center">
           {title}
         </h3>

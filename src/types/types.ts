@@ -10,9 +10,9 @@ export interface Product {
   category: Category;
   price: number;
   discountPercentage?: number;
-  rating?: number;
+  rating: number;
   stock: number;
-  tags?: Tags;
+  tags?: Tags[];
   brand: string;
   sku: string;
   weight: number;
