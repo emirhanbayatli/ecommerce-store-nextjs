@@ -24,7 +24,7 @@ export interface NewProductFormState {
   errors?: {
     [K in keyof Product]?: string[];
   };
-  data?: any;
+  data?: Product;
 }
 
 export default function Admin() {

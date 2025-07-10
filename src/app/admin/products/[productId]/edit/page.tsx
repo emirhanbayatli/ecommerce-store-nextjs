@@ -28,7 +28,7 @@ export interface EditProductFormState {
   errors?: {
     [K in keyof Product]?: string[];
   };
-  data?: any;
+  data?: Product;
 }
 
 export default function EditProduct() {
@@ -42,14 +42,14 @@ export default function EditProduct() {
   >(editProduct, initialState);
 
   const params = useParams<{ productId: string }>();
-  const [product, setProduct] = useState<any>();
+  const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       const docRef = doc(db, "products", params.productId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setProduct(docSnap.data());
+        setProduct(docSnap.data() as Product);
       } else {
         console.log("No such document!");
       }
