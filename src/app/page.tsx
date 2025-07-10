@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Product } from "./../types/types";
 import ItemCard from "./components/ItemCard";
-import { Button } from "./components/Button";
 import { showStar } from "../utils/uiUtils";
 
 export default async function Home() {
