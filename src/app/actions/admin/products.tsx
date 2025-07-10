@@ -8,6 +8,7 @@ import {
   ReturnPolicy,
 } from "../../../types/types";
 import { z } from "zod";
+import { put } from "@vercel/blob";
 
 import { db, collections } from "../../../utils/firebase";
 import {
@@ -90,14 +91,14 @@ const productSchema = z.object({
   returnPolicy: z.nativeEnum(ReturnPolicy, {
     errorMap: () => ({ message: "Please select a return policy" }),
   }),
-  images: z
-    .string()
-    .min(1, "At least one image URL is required")
-    .max(500, "Image URL must not exceed 1000 characters"),
-  thumbnail: z
-    .string()
-    .min(1, "Thumbnail URL is required")
-    .max(500, "Thumbnail URL must not exceed 1000 characters"),
+  // images: z
+  //   .string()
+  //   .min(1, "At least one image URL is required")
+  //   .max(500, "Image URL must not exceed 1000 characters"),
+  // thumbnail: z
+  //   .string()
+  //   .min(1, "Thumbnail URL is required")
+  //   .max(500, "Thumbnail URL must not exceed 1000 characters"),
 });
 
 export async function addNewProductAction(
@@ -127,8 +128,8 @@ export async function addNewProductAction(
     ) as AvailabilityStatus,
     minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
-    images: formData.get("images") as string,
-    thumbnail: formData.get("thumbnail") as string,
+    // images: formData.get("images") as string,
+    // thumbnail: formData.get("thumbnail") as string,
   };
 
   console.table(rawData);
@@ -147,6 +148,50 @@ export async function addNewProductAction(
 
   const id = Date.now().toString();
   const dateNow = Date.now();
+
+  let imageUrl = "";
+  const MAX_ALLOWED_IMAGE_SIZE = 4.5 * 1024 * 1024;
+  const image = formData.get("image") as File | null;
+  const allowedImageTypes = [".jpeg", ".jpg", ".webp"];
+
+  if (image && image.size > 0) {
+    if (
+      !allowedImageTypes.map((allowedType) =>
+        image.name.toLowerCase().endsWith(allowedType),
+      )
+    ) {
+      return {
+        success: false,
+        message: "Please update product image.",
+        inputs: { ...rawData },
+        errors: {
+          images: ["Allowed image formats: .jpeg, .jpg, .webp."],
+        },
+      };
+    }
+    if (image.size > MAX_ALLOWED_IMAGE_SIZE) {
+      return {
+        success: false,
+        message: "Please update product image, maximum allowed size 4.5 MB",
+        inputs: { ...rawData },
+        errors: {
+          images: ["Maximum allowed size 4.5 MB"],
+        },
+      };
+    }
+
+    const imageName = id + "." + image.type.slice(6);
+
+    const blob = await put(imageName, image, {
+      access: "public",
+      token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
+    });
+
+    console.log(blob, "blob");
+
+    imageUrl = blob.url;
+    console.log(imageUrl, "imageUrl");
+  }
 
   try {
     // TODO: query db for a product with the title that is entered in the form. If the title is already present in the DB, return an error and tell the user that product already exists
@@ -168,8 +213,8 @@ export async function addNewProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: result.data.images,
-      thumbnail: result.data.thumbnail,
+      images: [imageUrl],
+      thumbnail: [imageUrl],
       meta: {
         createdAt: dateNow,
         updatedAt: dateNow,
@@ -253,8 +298,8 @@ export async function editProduct(
     ) as AvailabilityStatus,
     minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
-    images: formData.get("images") as string,
-    thumbnail: formData.get("thumbnail") as string,
+    images: formData.get("images") as File | null,
+    thumbnail: formData.get("thumbnail") as File | null,
   };
 
   const result = productSchema.safeParse(rawData);
@@ -291,8 +336,8 @@ export async function editProduct(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: result.data.images,
-      thumbnail: result.data.thumbnail,
+      // images: result.data.images,
+      // thumbnail: result.data.thumbnail,
       meta: {
         updatedAt: new Date(),
       },

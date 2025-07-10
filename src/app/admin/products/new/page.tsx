@@ -656,7 +656,9 @@ export default function Admin() {
                 message: "Image URL must not exceed 500 characters",
               },
             })}
-            type="text"
+            type="file"
+            multiple
+            accept=".jpeg , .jpg , .webp"
             id="images"
             name="images"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -688,8 +690,9 @@ export default function Admin() {
                 message: "Thumbnail URL must not exceed 500 characters",
               },
             })}
-            type="text"
-            id="thumbnail"
+            type="file"
+            multiple
+            accept=".jpeg , .jpg , .webp"
             name="thumbnail"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
             placeholder="Simply separate each link with a comma to add more than one."
