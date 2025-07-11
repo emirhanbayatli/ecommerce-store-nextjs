@@ -152,6 +152,7 @@ export async function addNewProductAction(
   let imageUrl = "";
   const MAX_ALLOWED_IMAGE_SIZE = 4.5 * 1024 * 1024;
   const image = formData.get("image") as File | null;
+  // const thumbnail = formData.get("thumbnail") as File | null;
   const allowedImageTypes = [".jpeg", ".jpg", ".webp"];
 
   if (image && image.size > 0) {
@@ -227,9 +228,9 @@ export async function addNewProductAction(
       data: {
         id: Number(id),
         ...result.data,
-        rating: 0, // varsayılan
-        images: [imageUrl],
-        thumbnail: [imageUrl],
+        rating: 0,
+        images: imageUrl,
+        thumbnail: imageUrl,
         meta: {
           createdAt: String(dateNow),
           updatedAt: String(dateNow),
@@ -286,6 +287,8 @@ export async function editProduct(
   currentState: EditProductFormState | null,
   formData: FormData,
 ) {
+  const imageFile = formData.get("image") as File | null;
+  let imageUrl = currentState?.inputs?.images || "";
   const rawData = {
     productId: formData.get("productId") as string,
     title: formData.get("title") as string,
@@ -310,8 +313,8 @@ export async function editProduct(
     ) as AvailabilityStatus,
     minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
-    images: formData.get("images") as File | null,
-    thumbnail: formData.get("thumbnail") as File | null,
+    images: imageUrl,
+    thumbnail: imageUrl,
   };
 
   const result = productSchema.safeParse(rawData);
@@ -348,8 +351,8 @@ export async function editProduct(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      // images: result.data.images,
-      // thumbnail: result.data.thumbnail,
+      // images: imagesUrl,
+      // thumbnail: imagesUrl,
       meta: {
         updatedAt: new Date(),
       },

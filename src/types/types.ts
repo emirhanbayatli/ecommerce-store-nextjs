@@ -24,8 +24,8 @@ export interface Product {
   returnPolicy: ReturnPolicy;
   minimumOrderQuantity: number;
   meta?: Meta;
-  images: string[];
-  thumbnail: string[];
+  images: string;
+  thumbnail: string;
 }
 
 export enum Category {
