@@ -287,8 +287,8 @@ export async function editProduct(
   currentState: EditProductFormState | null,
   formData: FormData,
 ) {
-  const imageFile = formData.get("image") as File | null;
-  let imageUrl = currentState?.inputs?.images || "";
+  // const imageFile = formData.get("image") as File | null;
+  const imageUrl = currentState?.inputs?.images || ""; // switch let
   const rawData = {
     productId: formData.get("productId") as string,
     title: formData.get("title") as string,
