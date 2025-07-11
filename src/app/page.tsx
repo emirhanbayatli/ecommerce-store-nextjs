@@ -65,7 +65,7 @@ export default async function Home() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 ">
           {data.products.map((product: Product) =>
-            product.rating >= 4.7 ? (
+            product.rating !== undefined && product.rating >= 4.7 ? (
               <Link key={product.id} href={`/products/${product.id}`}>
                 <ItemCard
                   key={product.id}
