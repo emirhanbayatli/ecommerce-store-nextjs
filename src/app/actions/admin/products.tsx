@@ -224,7 +224,19 @@ export async function addNewProductAction(
     return {
       success: true,
       message: "The product is created successfully",
-      data: { id, ...result.data },
+      data: {
+        id: Number(id),
+        ...result.data,
+        rating: 0, // varsayılan
+        images: [imageUrl],
+        thumbnail: [imageUrl],
+        meta: {
+          createdAt: String(dateNow),
+          updatedAt: String(dateNow),
+          barcode: "",
+          qrCode: "",
+        },
+      },
     };
   } catch (err) {
     console.error("Error adding a new product to Firebase", err);

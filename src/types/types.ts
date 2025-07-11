@@ -10,7 +10,7 @@ export interface Product {
   category: Category;
   price: number;
   discountPercentage?: number;
-  rating: number;
+  rating?: number;
   stock: number;
   tags?: Tags[];
   brand: string;
@@ -23,9 +23,9 @@ export interface Product {
   reviews?: Review[];
   returnPolicy: ReturnPolicy;
   minimumOrderQuantity: number;
-  meta: Meta;
-  images: string;
-  thumbnail: string;
+  meta?: Meta;
+  images: string[];
+  thumbnail: string[];
 }
 
 export enum Category {
