@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="grid grid-cols-4 bg-gray-100 text-xl p-7 mx-auto max-w-7xl">
+    <footer className="grid grid-cols-4 bg-gray-100 text-xl mx-auto py-8 px-16 border-t border-gray-300">
       <div>
         <h1 className="font-bold">About Us</h1>
         <h3>Our Story</h3>
@@ -51,6 +51,9 @@ export default function Footer() {
           >
             <path d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
           </svg>
+        </div>
+        <div className="text-center text-sm text-gray-500 mt-8 col-span-full">
+          © 2025 YourBrand. All rights reserved.
         </div>
       </div>
     </footer>

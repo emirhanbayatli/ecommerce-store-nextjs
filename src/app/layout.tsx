@@ -27,13 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 flex flex-col min-h-screen`}
       >
         <CartContextProvider>
           <header>
             <Navbar />
           </header>
-          {children}
+          <main className="flex-grow">{children}</main>
         </CartContextProvider>
         <footer>
           <Footer />

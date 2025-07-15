@@ -8,7 +8,6 @@ import {
   ReturnPolicy,
 } from "../../../types/types";
 import { z } from "zod";
-import { put } from "@vercel/blob";
 import { db, collections } from "../../../utils/firebase";
 import { vercelBlob } from "../../../utils/vercelBlob";
 
@@ -20,7 +19,6 @@ import {
   deleteDoc,
   updateDoc,
 } from "firebase/firestore";
-import { date } from "zod/v4";
 
 const productSchema = z.object({
   title: z
@@ -310,7 +308,7 @@ export async function editProductAction(
   }
 
   try {
-    // const productId = formData.get("productId") as string;
+    const productId = formData.get("productId") as string;
     const productRef = doc(db, "products", productId);
 
     await updateDoc(productRef, {

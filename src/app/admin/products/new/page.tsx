@@ -41,7 +41,7 @@ export default function Admin() {
   if (isPending) return <p>Loading...</p>;
 
   return (
-    <main className="max-w-4xl mx-auto">
+    <main className="max-w-4xl mx-auto pb-12">
       <h1 className="my-12 font-bold text-2xl text-center">
         Add a New Product
       </h1>

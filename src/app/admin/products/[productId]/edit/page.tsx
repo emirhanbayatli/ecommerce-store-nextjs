@@ -59,7 +59,7 @@ export default function EditProduct() {
 
   if (isPending) return <p>Loading...</p>;
   return (
-    <main className="max-w-4xl mx-auto my-6">
+    <main className="max-w-4xl mx-auto my-6 pb-12">
       {product ? (
         <div>
           <Form
