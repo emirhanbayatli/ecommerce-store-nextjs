@@ -11,7 +11,7 @@ import {
   allReturnPolicies,
   Product,
 } from "../../../../../types/types";
-import { editProduct } from "../../../../actions/admin/products";
+import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
 import { useForm } from "react-hook-form";
 
@@ -39,7 +39,7 @@ export default function EditProduct() {
   const [state, formAction, isPending] = useActionState<
     EditProductFormState,
     FormData
-  >(editProduct, initialState);
+  >(editProductAction, initialState);
 
   const params = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -714,8 +714,9 @@ export default function EditProduct() {
                     message: "Image URL must not exceed 500 characters",
                   },
                 })}
-                defaultValue={product.images}
-                type="text"
+                accept=".jpeg, .jpg, .webp"
+                type="file"
+                multiple
                 id="images"
                 name="images"
                 className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -747,8 +748,9 @@ export default function EditProduct() {
                     message: "Thumbnail URL must not exceed 500 characters",
                   },
                 })}
-                defaultValue={product.thumbnail}
-                type="text"
+                accept=".jpeg, .jpg, .webp"
+                type="file"
+                multiple
                 id="thumbnail"
                 name="thumbnail"
                 className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"

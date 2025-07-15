@@ -1,3 +1,4 @@
+import Image from "next/image";
 interface ItemCardProps {
   id?: number;
   title: string;
@@ -16,7 +17,7 @@ export default function ItemCard({
 }: ItemCardProps) {
   return (
     <div className="rounded shadow-lg bg-white m-4 hover:shadow-2xl transition">
-      <img src={imgSrc} alt={imgAlt} />
+      <Image src={imgSrc} alt={imgAlt} width={250} height={250} />
       <div className="px-6 py-4 ">
         <h3 className="text-gray-700 font-bold text-xl mb-2 text-center">
           {title}

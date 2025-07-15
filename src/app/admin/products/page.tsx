@@ -1,15 +1,16 @@
 "use client";
-import { getProducts } from "../../actions/admin/products";
+import { getProductsAction } from "../../actions/admin/products";
 import { Button } from "../../components/Button";
 import Link from "next/link";
-import { deleteProduct } from "../../actions/admin/products";
+import { deleteProductAction } from "../../actions/admin/products";
 import { useEffect, useState } from "react";
 import { Product } from "../../../types/types";
+import Image from "next/image";
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
     async function fetchProducts() {
-      const data = await getProducts();
+      const data = await getProductsAction();
       setProducts(data);
     }
     fetchProducts();
@@ -29,8 +30,8 @@ export default function AdminProducts() {
                       key={product.id}
                       className="grid justify-items-center grid-cols-5 gap-5 place-items-center p-4"
                     >
-                      <img
-                        src={product.images}
+                      <Image
+                        src={product.images[0]}
                         alt={product.title}
                         width={100}
                         className="rounded-full"
@@ -43,7 +44,9 @@ export default function AdminProducts() {
                       </Link>
                       <Button
                         label="Delete"
-                        onClick={() => deleteProduct(product.id.toString())}
+                        onClick={() =>
+                          deleteProductAction(product.id.toString())
+                        }
                       />
                     </li>
                   ))}
