@@ -1,11 +1,15 @@
-import { put } from "@vercel/blob";
+import { put, del } from "@vercel/blob";
 interface VercelBlobProps {
   formData: FormData;
   rawData: Record<string, any>;
   id: number;
 }
 
-export async function vercelBlob({ formData, rawData, id }: VercelBlobProps) {
+export async function vercelBlobPutAction({
+  formData,
+  rawData,
+  id,
+}: VercelBlobProps) {
   let imageUrl = "";
   let thumbnailUrl = "";
   const MAX_ALLOWED_IMAGE_SIZE = 4.5 * 1024 * 1024;
@@ -56,22 +60,23 @@ export async function vercelBlob({ formData, rawData, id }: VercelBlobProps) {
         },
       };
     }
+
     const imageType = images.type.slice(6);
     const thumbnailType = thumbnail.type.slice(6);
-    const imageName = id + "." + imageType;
-    const thumbnailName = id + "." + thumbnailType;
+    const imageName = id + "-full." + imageType;
+    const thumbnailName = id + "-thumb." + thumbnailType;
 
-    const imageBlob = await put(imageName, images, {
+    const imagePutBlob = await put(imageName, images, {
       access: "public",
       token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
     });
 
-    const thumbnailBlob = await put(thumbnailName, thumbnail, {
+    const thumbnailPutBlob = await put(thumbnailName, thumbnail, {
       access: "public",
       token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
     });
-    imageUrl = imageBlob.url;
-    thumbnailUrl = thumbnailBlob.url;
+    imageUrl = imagePutBlob.url;
+    thumbnailUrl = thumbnailPutBlob.url;
   }
   return {
     success: true,
@@ -82,4 +87,15 @@ export async function vercelBlob({ formData, rawData, id }: VercelBlobProps) {
       thumbnail: thumbnailUrl,
     },
   };
+}
+
+export async function vercelBlobDeleteAction(url: string) {
+  try {
+    await del(url, {
+      token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
+    });
+    console.log("Image deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting image:", error);
+  }
 }

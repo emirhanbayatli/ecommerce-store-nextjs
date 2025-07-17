@@ -30,12 +30,15 @@ export default function AdminProducts() {
                       key={product.id}
                       className="grid justify-items-center grid-cols-5 gap-5 place-items-center p-4"
                     >
-                      <Image
-                        src={product.images[0]}
-                        alt={product.title}
-                        width={100}
-                        className="rounded-full"
-                      />
+                      <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
+                        <Image
+                          src={product.images}
+                          alt={product.title}
+                          width={100}
+                          height={100}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <span className="text-center">{product.title}</span>
                       <span>{product.price} $</span>
 

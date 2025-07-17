@@ -9,7 +9,10 @@ import {
 } from "../../../types/types";
 import { z } from "zod";
 import { db, collections } from "../../../utils/firebase";
-import { vercelBlob } from "../../../utils/vercelBlob";
+import {
+  vercelBlobPutAction,
+  vercelBlobDeleteAction,
+} from "../../../utils/vercelBlob";
 
 import {
   getDocs,
@@ -18,6 +21,7 @@ import {
   doc,
   deleteDoc,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
 
 const productSchema = z.object({
@@ -135,7 +139,7 @@ export async function addNewProductAction(
   }
   const id = Date.now().toString();
   const dateNow = Date.now();
-  const blobResult = await vercelBlob({
+  const blobResult = await vercelBlobPutAction({
     formData,
     rawData,
     id: Number(id),
@@ -144,7 +148,7 @@ export async function addNewProductAction(
   if (!blobResult.success) {
     return {
       success: false,
-      message: "Failed uploading images",
+      message: "Failed adding images",
       inputs: { ...rawData },
       errors: blobResult.errors,
     };
@@ -273,31 +277,6 @@ export async function editProductAction(
   };
 
   const result = productSchema.safeParse(rawData);
-
-  const productId = formData.get("productId") as string;
-
-  const blobResult = await vercelBlob({
-    formData,
-    rawData,
-    id: Number(productId),
-  });
-
-  if (!blobResult.success) {
-    console.error(
-      "Failed uploading images when editing a product ben yazdim",
-      blobResult,
-    );
-    return {
-      success: false,
-      message: "Failed uploading images",
-      inputs: { ...rawData },
-      errors: blobResult.errors,
-    };
-  }
-
-  const imageUrl = blobResult.data?.images;
-  const thumbnailUrl = blobResult.data?.thumbnail;
-
   if (!result.success) {
     return {
       success: false,
@@ -306,6 +285,24 @@ export async function editProductAction(
       errors: result.error.flatten().fieldErrors,
     };
   }
+  const id = Date.now().toString();
+  const blobResult = await vercelBlobPutAction({
+    formData,
+    rawData,
+    id: Number(id),
+  });
+
+  if (!blobResult.success) {
+    return {
+      success: false,
+      message: "Failed updating images",
+      inputs: { ...rawData },
+      errors: blobResult.errors,
+    };
+  }
+
+  const imageUrl = blobResult.data?.images;
+  const thumbnailUrl = blobResult.data?.thumbnail;
 
   try {
     const productId = formData.get("productId") as string;
@@ -351,8 +348,18 @@ export async function editProductAction(
 
 export async function deleteProductAction(id: string) {
   const productRef = doc(db, "products", id);
+  const docSnap = await getDoc(productRef);
+  const product = docSnap.data();
+  let imageUrl = product?.images;
+  let thumbnailUrl = product?.thumbnail;
+
+  console.log("imageUrl to delete:", imageUrl);
+  console.log("thumbnailUrl to delete:", thumbnailUrl);
+
   try {
-    await deleteDoc(productRef);
+    // await deleteDoc(productRef);
+    await vercelBlobDeleteAction(imageUrl);
+    await vercelBlobDeleteAction(thumbnailUrl);
     console.log(`Product with ID ${id} was deleted successfully.`);
   } catch (error) {
     console.error("Failed to delete product:", id, error);

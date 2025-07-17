@@ -1,41 +1,58 @@
-"use client";
-import { useParams } from "next/navigation";
 import ItemDesc from "@/app/components/ItemDesc";
 import { showStar } from "../../../utils/uiUtils";
-import { useState, useEffect } from "react";
-import { Product } from "@/types/types";
-
-export default function ProductDetails() {
-  const params = useParams<{ productId: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
-
-  useEffect(() => {
-    fetch(`https://dummyjson.com/products/${params.productId}`)
-      .then((res) => res.json())
-      .then((data) => setProduct(data))
-      .catch((error) => console.error("Error fetching product:", error));
-  }, [params.productId]);
-
-  if (!product) {
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/utils/firebase";
+export default async function ProductDetails({
+  params,
+}: {
+  params: { productId: string };
+}) {
+  if (Number(params.productId) >= 31) {
+    const productRef = doc(db, "products", params.productId);
+    const docSnap = await getDoc(productRef);
+    const product = docSnap.data();
+    console.log(product, "product details");
+    if (!product) {
+      return (
+        <h1 className="mt-4 text-3xl text-center text-gray-60">
+          Loading product...
+        </h1>
+      );
+    }
     return (
-      <h1 className="text-3xl text-center text-gray-60 h-screen">
-        Loading product...
-      </h1>
+      <main>
+        <div className="flex flex-wrap justify-center gap-4 p-6">
+          <ItemDesc
+            id={product.id}
+            imgSrc={product.images}
+            imgAlt={product.title}
+            title={product.title}
+            price={product.price + " $"}
+            description={product.description}
+            rating={showStar(Number(product.rating))}
+          />
+        </div>
+      </main>
+    );
+  } else {
+    const res = await fetch(
+      "https://dummyjson.com/products/" + params.productId,
+    );
+    const data = await res.json();
+    return (
+      <main>
+        <div className="flex flex-wrap justify-center gap-4 p-6">
+          <ItemDesc
+            id={Number(data.product?.id)}
+            imgSrc={data.product?.images[0]}
+            imgAlt={data.product?.title}
+            title={data.product?.title}
+            price={data.product?.price + " $"}
+            description={data.product?.description}
+            rating={showStar(Number(data.product?.rating))}
+          />
+        </div>
+      </main>
     );
   }
-  return (
-    <main>
-      <div className="flex flex-wrap justify-center gap-4 p-6">
-        <ItemDesc
-          id={product.id}
-          imgSrc={product.images[0]}
-          imgAlt={product.title}
-          title={product.title}
-          price={product.price + " $"}
-          description={product.description}
-          rating={showStar(Number(product.rating))}
-        />
-      </div>
-    </main>
-  );
 }

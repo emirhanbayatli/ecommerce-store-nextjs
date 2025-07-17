@@ -4,6 +4,8 @@ import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
 import { Product } from "@/types/types";
 import { useCartDispatchContext } from "../CartContextProvider";
+import Image from "next/image";
+
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
   const cartDispatch = useCartDispatchContext();
@@ -57,12 +59,15 @@ export default function Cart() {
                     key={product.id}
                     className="grid justify-items-center grid-cols-5 gap-4 place-items-center p-4"
                   >
-                    <img
-                      src={product.images[0]}
-                      alt={product.title}
-                      width={100}
-                      className="rounded"
-                    />
+                    <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
+                      <Image
+                        src={product.images}
+                        alt={product.title}
+                        width={100}
+                        height={100}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <span className="text-center">{product.title}</span>
                     <span>{product.price} $</span>
                     <span> {product.quantity}</span>

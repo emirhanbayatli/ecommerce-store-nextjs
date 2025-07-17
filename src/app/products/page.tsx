@@ -2,9 +2,12 @@ import Link from "next/link";
 import { Product } from "../../types/types";
 import ItemCard from "../components/ItemCard";
 import { showStar } from "../../utils/uiUtils";
+import { getProductsAction } from "../actions/admin/products";
 
 export default async function Products() {
   try {
+    const aproduct = await getProductsAction();
+
     const res = await fetch("https://dummyjson.com/products");
     const data = await res.json();
 
@@ -20,6 +23,23 @@ export default async function Products() {
               title={product.title}
               price={product.price + " $"}
               rating={`${product.rating} ${showStar(Number(product.rating))}`}
+            />
+          </Link>
+        ))}
+        {aproduct.map((product: Product) => (
+          <Link key={product.id} href={`/products/${product.id}`}>
+            <ItemCard
+              key={product.id}
+              id={product.id}
+              imgSrc={product.images}
+              imgAlt={product.title}
+              title={product.title}
+              price={product.price + " $"}
+              rating={`${
+                product.rating !== undefined
+                  ? showStar(Number(product.rating))
+                  : showStar(0)
+              }`}
             />
           </Link>
         ))}
