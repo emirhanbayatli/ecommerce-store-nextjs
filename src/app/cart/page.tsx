@@ -61,7 +61,7 @@ export default function Cart() {
                   >
                     <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
                       <Image
-                        src={product.images}
+                        src={product.images[0]}
                         alt={product.title}
                         width={100}
                         height={100}

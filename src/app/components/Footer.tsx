@@ -53,7 +53,7 @@ export default function Footer() {
           </svg>
         </div>
         <div className="text-center text-sm text-gray-500 mt-8 col-span-full">
-          © 2025 YourBrand. All rights reserved.
+          © 2025 E-Commerce. All rights reserved.
         </div>
       </div>
     </footer>

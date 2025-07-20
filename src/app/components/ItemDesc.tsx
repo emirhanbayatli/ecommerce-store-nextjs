@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "../components/Button";
 import { useCartDispatchContext } from "../CartContextProvider";
 import Image from "next/image";

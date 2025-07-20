@@ -6,32 +6,15 @@ import { getProductsAction } from "../actions/admin/products";
 
 export default async function Products() {
   try {
-    const aproduct = await getProductsAction();
-
-    const res = await fetch("https://dummyjson.com/products");
-    const data = await res.json();
-
+    const product = await getProductsAction();
     return (
       <main className="grid grid-cols-4 gap-6 p-6">
-        {data.products.map((product: Product) => (
+        {product.map((product: Product) => (
           <Link key={product.id} href={`/products/${product.id}`}>
             <ItemCard
               key={product.id}
               id={product.id}
               imgSrc={product.images[0]}
-              imgAlt={product.title}
-              title={product.title}
-              price={product.price + " $"}
-              rating={`${product.rating} ${showStar(Number(product.rating))}`}
-            />
-          </Link>
-        ))}
-        {aproduct.map((product: Product) => (
-          <Link key={product.id} href={`/products/${product.id}`}>
-            <ItemCard
-              key={product.id}
-              id={product.id}
-              imgSrc={product.images}
               imgAlt={product.title}
               title={product.title}
               price={product.price + " $"}
