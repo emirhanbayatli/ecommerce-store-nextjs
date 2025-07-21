@@ -2,9 +2,10 @@
 import { useForm } from "react-hook-form";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export interface Auth {
+interface Auth {
   email: string;
   password: string;
+  fullName: string;
 }
 
 function signIn(data: Auth) {

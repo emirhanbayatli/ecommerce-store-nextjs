@@ -29,10 +29,17 @@ export interface Product {
 }
 
 export enum Category {
-  fragrances = "fragrances",
   beauty = "beauty",
-  groceries = "groceries",
-  furniture = "furniture",
+  Fragrances = "fragrances",
+  //mobile-accessories = "mobile-accessories",
+  Furniture = "furniture",
+  Groceries = "groceries",
+  HomeDecoration = "home-decoration",
+  KitchenAccessories = "kitchen-accessories",
+  Laptops = "laptops",
+  MensShirts = "mens-shirts",
+  MensShoes = "mens-shoes",
+  MensWatches = "mens-watches",
 }
 export enum Tags {
   mascara = "mascara",

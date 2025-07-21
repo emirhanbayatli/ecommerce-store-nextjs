@@ -52,7 +52,7 @@ export default function ItemDesc({
               label="Add To Cart"
               className="my-4"
               onClick={() => {
-                addProductToCart(id);
+                addProductToCart(Number(id));
               }}
             />
           </div>

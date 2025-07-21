@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@heroicons/react": "^2.2.0",
     "@vercel/blob": "^1.1.1",
     "firebase": "^11.10.0",
     "lucide-react": "^0.523.0",

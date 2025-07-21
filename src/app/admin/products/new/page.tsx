@@ -11,6 +11,9 @@ import { addNewProductAction } from "../../../actions/admin/products";
 import Form from "next/form";
 import { Button } from "@/app/components/Button";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import Link from "next/link";
+
 const initialState: NewProductFormState = {
   success: false,
   inputs: {},
@@ -33,6 +36,24 @@ export default function Admin() {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const urls = Array.from(files).map((file) => URL.createObjectURL(file));
+      setImagePreviews(urls);
+    }
+  };
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setThumbnailPreview(url);
+    }
+  };
   const [state, formAction, isPending] = useActionState<
     NewProductFormState,
     FormData
@@ -163,6 +184,7 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="price"
             name="price"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -195,6 +217,7 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="discountPercentage"
             name="discountPercentage"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -229,6 +252,7 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="stock"
             name="stock"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -356,6 +380,7 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="weight"
             name="weight"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -389,6 +414,7 @@ export default function Admin() {
                 valueAsNumber: true,
               })}
               type="number"
+              step="0.01"
               id="width"
               name="dimensions_width"
               placeholder="Width"
@@ -409,6 +435,7 @@ export default function Admin() {
                 valueAsNumber: true,
               })}
               type="number"
+              step="0.01"
               id="height"
               name="dimensions_height"
               placeholder="Height"
@@ -429,6 +456,7 @@ export default function Admin() {
                 valueAsNumber: true,
               })}
               type="number"
+              step="0.01"
               id="depth"
               name="dimensions_depth"
               placeholder="Depth"
@@ -582,6 +610,7 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="minimumOrderQuantity"
             name="minimumOrderQuantity"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -645,20 +674,10 @@ export default function Admin() {
             Images
           </label>
           <input
-            {...register("images", {
-              required: "At least one image URL is required",
-              minLength: {
-                value: 1,
-                message: "Image URL must be at least 1 character",
-              },
-              maxLength: {
-                value: 500,
-                message: "Image URL must not exceed 500 characters",
-              },
-            })}
             type="file"
             multiple
             accept=".jpeg , .jpg , .webp"
+            onChange={handleImagesChange}
             id="images"
             name="images"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
@@ -672,46 +691,54 @@ export default function Admin() {
               {errors.images.message as string}
             </p>
           )}
+          <div className="flex gap-5 flex-wrap">
+            {imagePreviews?.map((src, index) => (
+              <img
+                key={index}
+                src={src}
+                alt={`Image Preview ${index}`}
+                className="rounded shadow max-w-32  mt-4"
+              />
+            ))}
+          </div>
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="thumbnail" className="font-bold mb-1">
             Thumbnail
           </label>
           <input
             {...register("thumbnail", {
-              required: "Thumbnail URL is required",
-              minLength: {
-                value: 1,
-                message: "Thumbnail URL must be at least 1 character",
-              },
-              maxLength: {
-                value: 500,
-                message: "Thumbnail URL must not exceed 500 characters",
-              },
+              required: "Thumbnail is required",
             })}
             type="file"
             multiple
+            onChange={handleThumbnailChange}
             accept=".jpeg , .jpg , .webp"
             name="thumbnail"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
             placeholder="Simply separate each link with a comma to add more than one."
           />
-          {state?.errors?.thumbnail && (
-            <p className="text-red-600 text-sm">{state.errors.thumbnail}</p>
-          )}
+
           {errors.thumbnail?.message && (
             <p className="text-red-600 text-sm">
               {errors.thumbnail.message as string}
             </p>
           )}
+          {thumbnailPreview && (
+            <div className="mt-4">
+              <img
+                src={thumbnailPreview}
+                alt="Thumbnail Preview"
+                className="rounded shadow max-w-32"
+              />
+            </div>
+          )}
         </div>
 
-        <Button
-          type="submit"
-          className="my-8 col-span-2"
-          label="Create Product"
-        />
+        <Button type="submit" label="Create Product" />
+        <Link href={"/admin/products"}>
+          <Button className="w-full" label="Cancel" />
+        </Link>
       </Form>
     </main>
   );

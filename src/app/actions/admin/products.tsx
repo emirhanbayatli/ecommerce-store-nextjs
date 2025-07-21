@@ -158,7 +158,13 @@ export async function addNewProductAction(
   const thumbnailUrl = blobResult.data?.thumbnail;
 
   try {
-    // TODO: query db for a product with the title that is entered in the form. If the title is already present in the DB, return an error and tell the user that product already exists
+    const title = formData.get("title") as string;
+    const products = await getProductsAction();
+    const found = products.find((product) => product.title === title);
+
+    if (found) {
+      throw new Error("Two products cannot have the same title!");
+    }
 
     await setDoc(doc(db, collections.products, id), {
       title: result.data.title,
@@ -177,8 +183,8 @@ export async function addNewProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: imageUrl,
-      thumbnail: thumbnailUrl,
+      images: [imageUrl],
+      thumbnail: [thumbnailUrl],
       meta: {
         createdAt: dateNow,
         updatedAt: dateNow,
@@ -237,6 +243,7 @@ export async function getProductsAction(): Promise<Product[]> {
       returnPolicy: data.returnPolicy,
       images: data.images,
       thumbnail: data.thumbnail,
+      rating: data.rating,
       meta: {
         createdAt: data.meta?.createdAt ?? 0,
         updatedAt: data.meta?.updatedAt ?? 0,
@@ -325,8 +332,8 @@ export async function editProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: imageUrl,
-      thumbnail: thumbnailUrl,
+      images: [imageUrl],
+      thumbnail: [thumbnailUrl],
       meta: {
         updatedAt: Date.now().toString(),
       },
@@ -339,6 +346,7 @@ export async function editProductAction(
   } catch (error) {
     console.error("Error updating a new product to Firebase", error);
   }
+
   return {
     success: false,
     message: "Failed updating a product in the database",
@@ -352,9 +360,6 @@ export async function deleteProductAction(id: string) {
   const product = docSnap.data();
   let imageUrl = product?.images;
   let thumbnailUrl = product?.thumbnail;
-
-  console.log("imageUrl to delete:", imageUrl);
-  console.log("thumbnailUrl to delete:", thumbnailUrl);
 
   try {
     // await deleteDoc(productRef);

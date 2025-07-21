@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Product } from "@/types/types";
 import { useCartDispatchContext } from "../CartContextProvider";
 import Image from "next/image";
+import { getProductsAction } from "../actions/admin/products";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,20 +17,21 @@ export default function Cart() {
     );
   }
 
-  const { clearCart } = cartDispatch;
-  const { removeProductToCart } = cartDispatch;
+  const { clearCart, removeProductToCart } = cartDispatch;
+
   useEffect(() => {
-    fetch(`https://dummyjson.com/products`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data.products || []))
-      .catch((error) => console.error("Error fetching product:", error));
+    async function getFirebaseProducts() {
+      const productsForFirebase = await getProductsAction();
+      setProducts(productsForFirebase);
+    }
+    getFirebaseProducts();
   }, []);
 
   const cart = useCartContext();
 
   const cartProducts = cart
     .map((item) => {
-      const product = products.find((p) => p.id === item.id);
+      const product = products.find((product) => product.id === item.id);
       return product
         ? {
             ...product,

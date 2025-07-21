@@ -6,10 +6,11 @@ import { getProductsAction } from "../actions/admin/products";
 
 export default async function Products() {
   try {
-    const product = await getProductsAction();
+    const products = await getProductsAction();
+
     return (
       <main className="grid grid-cols-4 gap-6 p-6">
-        {product.map((product: Product) => (
+        {products.map((product: Product) => (
           <Link key={product.id} href={`/products/${product.id}`}>
             <ItemCard
               key={product.id}

@@ -16,8 +16,10 @@ export default function ItemCard({
   rating,
 }: ItemCardProps) {
   return (
-    <div className="rounded shadow-lg bg-white m-4 hover:shadow-2xl transition">
-      <Image src={imgSrc} alt={imgAlt} width={250} height={250} />
+    <div className="w-80 h-[370px] rounded shadow-lg bg-white p-4 hover:shadow-2xl transition ">
+      <div className="flex justify-center">
+        <Image src={imgSrc} alt={imgAlt} width={200} height={200} />
+      </div>
       <div className="px-6 py-4 ">
         <h3 className="text-gray-700 font-bold text-xl mb-2 text-center">
           {title}

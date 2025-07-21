@@ -3,11 +3,11 @@ import { Product } from "./../types/types";
 import ItemCard from "./components/ItemCard";
 import { showStar } from "../utils/uiUtils";
 import Image from "next/image";
+import { getProductsAction } from "./actions/admin/products";
 
 export default async function Home() {
   try {
-    const res = await fetch("https://dummyjson.com/products");
-    const data = await res.json();
+    const products = await getProductsAction();
 
     return (
       <main className="px-24">
@@ -26,56 +26,61 @@ export default async function Home() {
 
         <h1 className="text-center font-bold text-3xl my-8">Categories</h1>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <Image
-              src="/Groceries.jpg"
-              alt="Groceries"
-              className="w-full h-40 object-cover rounded-t-xl"
-              width={250}
-              height={250}
-            />
-            <p className="py-4 font-semibold">Groceries</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <Image
-              src="/Beauty.jpg"
-              alt="Beauty"
-              className="w-full h-40 object-cover rounded-t-xl"
-              width={250}
-              height={250}
-            />
-            <p className="py-4 font-semibold">Beauty</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <Image
-              src="/Fragrances.jpg"
-              alt="Fragrances"
-              className="w-full h-40 object-cover rounded-t-xl"
-              width={250}
-              height={250}
-            />
-            <p className="py-4 font-semibold">Fragrances</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <Image
-              src="/Furniture.jpg"
-              alt="Furniture"
-              className="w-full h-40 object-cover rounded-t-xl"
-              width={250}
-              height={250}
-            />
-            <p className="py-4 font-semibold">Furniture</p>
-          </div>
+          <Link href="/categories/groceries">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/Groceries.jpg"
+                alt="Groceries"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={250}
+                height={250}
+              />
+              <p className="py-4 font-semibold">Groceries</p>
+            </div>
+          </Link>
+          <Link href="/categories/beauty">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/Beauty.jpg"
+                alt="Beauty"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={250}
+                height={250}
+              />
+              <p className="py-4 font-semibold">Beauty</p>
+            </div>
+          </Link>
+          <Link href="/categories/fragrances">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/Fragrances.jpg"
+                alt="Fragrances"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={250}
+                height={250}
+              />
+              <p className="py-4 font-semibold">Fragrances</p>
+            </div>
+          </Link>
+          <Link href="/categories/furniture">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/Furniture.jpg"
+                alt="Furniture"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={250}
+                height={250}
+              />
+              <p className="py-4 font-semibold">Furniture</p>
+            </div>
+          </Link>
         </div>
         <h1 className="text-center font-bold text-3xl my-8">
           Featured Products
         </h1>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 ">
-          {data.products.map((product: Product) =>
+          {products.map((product: Product) =>
             product.rating !== undefined && product.rating >= 4.7 ? (
               <Link key={product.id} href={`/products/${product.id}`}>
                 <ItemCard
