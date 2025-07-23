@@ -5,10 +5,20 @@ import { useCartContext } from "../CartContextProvider";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { allCategories } from "@/types/types";
+import { useAuthContext, useAuthDispatchContext } from "../AuthContextProvider";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const cart = useCartContext();
   const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const user = useAuthContext();
+  const setUser = useAuthDispatchContext();
+  const router = useRouter();
+
+  function logOutAction() {
+    setUser(null);
+    router.push("/");
+  }
 
   return (
     <nav className="bg-gray-100 shadow-md p-4 sticky top-0 z-50">
@@ -42,7 +52,9 @@ export default function Navbar() {
                       return (
                         <MenuItem key={category}>
                           <a
-                            href={`/categories/${category.toLowerCase()}`}
+                            href={`/categories/${category
+                              .toLowerCase()
+                              .replace(" ", "-")}`}
                             className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                           >
                             {category}
@@ -61,11 +73,20 @@ export default function Navbar() {
             </Link>
           </li>
 
-          <li>
-            <Link href="/user/signIn" className="hover:text-gray-500">
-              Sign In
-            </Link>
-          </li>
+          {user === null ? (
+            <li>
+              <Link href="/user/signIn" className="hover:text-gray-500">
+                Sign In
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <button onClick={logOutAction} className="hover:text-gray-500">
+                Sign Out
+              </button>
+            </li>
+          )}
+          {user !== null ? <li>{user}</li> : null}
           <li>
             <Link
               href="/cart"

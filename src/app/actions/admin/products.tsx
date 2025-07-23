@@ -19,7 +19,6 @@ import {
   collection,
   setDoc,
   doc,
-  deleteDoc,
   updateDoc,
   getDoc,
 } from "firebase/firestore";
@@ -358,8 +357,8 @@ export async function deleteProductAction(id: string) {
   const productRef = doc(db, "products", id);
   const docSnap = await getDoc(productRef);
   const product = docSnap.data();
-  let imageUrl = product?.images;
-  let thumbnailUrl = product?.thumbnail;
+  const imageUrl = product?.images;
+  const thumbnailUrl = product?.thumbnail;
 
   try {
     // await deleteDoc(productRef);

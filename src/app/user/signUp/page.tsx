@@ -1,17 +1,22 @@
 "use client";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "@/utils/firebase";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthDispatchContext } from "@/app/AuthContextProvider";
+import { setDoc, doc } from "firebase/firestore";
+import { collections, db, UserRoles } from "../../../utils/firebase";
 
 interface Auth {
   email: string;
   password: string;
+  role: string;
 }
 export default function SignUp() {
   const [error, setError] = useState<string>();
+
   const router = useRouter();
 
   const {
@@ -21,12 +26,25 @@ export default function SignUp() {
     reset,
   } = useForm<Auth>({ mode: "all" });
 
+  const setUser = useAuthDispatchContext();
+  const defaultUserRole = UserRoles.USER;
+  const adminRole = UserRoles.ADMIN;
+
+  async function userSaveToFirebase(user: User) {
+    await setDoc(doc(db, collections.users, user.uid), {
+      uid: user.uid,
+      email: user.email,
+      role: defaultUserRole,
+      createdAt: new Date().toString(),
+    });
+  }
+
   async function signUpAction(data: Auth) {
     await createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
-        console.log("kayit basarili ");
         const user = userCredential.user;
-        console.log("kayit basarili ", user);
+        setUser(user.email);
+        userSaveToFirebase(user);
         reset();
         router.push("/");
       })
@@ -34,6 +52,7 @@ export default function SignUp() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error(errorCode, errorMessage);
+        setUser(null);
         setError(errorMessage);
       });
   }

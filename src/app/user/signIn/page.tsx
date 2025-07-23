@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuthDispatchContext } from "@/app/AuthContextProvider";
 
 interface Auth {
   email: string;
@@ -22,11 +23,13 @@ export default function SignIp(data: Auth) {
     reset,
   } = useForm<Auth>({ mode: "all" });
 
+  const setUser = useAuthDispatchContext();
+
   async function signInAction(data: Auth) {
     signInWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log("giris basarili ", user);
+        setUser(user.email);
         reset();
         router.push("/");
       })
@@ -34,6 +37,7 @@ export default function SignIp(data: Auth) {
         const errorCode = error.code;
         const errorMessage = error.message;
         setError(errorMessage);
+        setUser(null);
         console.error(errorCode, errorMessage);
       });
   }

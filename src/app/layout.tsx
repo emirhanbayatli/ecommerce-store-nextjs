@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartContextProvider } from "./CartContextProvider";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { AuthContexProvider } from "./AuthContextProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -29,12 +30,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 flex flex-col min-h-screen`}
       >
-        <CartContextProvider>
-          <header>
-            <Navbar />
-          </header>
-          <main className="flex-grow">{children}</main>
-        </CartContextProvider>
+        <AuthContexProvider>
+          <CartContextProvider>
+            <header>
+              <Navbar />
+            </header>
+            <main className="flex-grow">{children}</main>
+          </CartContextProvider>
+        </AuthContexProvider>
         <footer>
           <Footer />
         </footer>
