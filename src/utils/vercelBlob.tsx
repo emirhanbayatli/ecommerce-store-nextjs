@@ -13,7 +13,7 @@ export async function vercelBlobPutAction({
   let imageUrl = "";
   let thumbnailUrl = "";
   const MAX_ALLOWED_IMAGE_SIZE = 4.5 * 1024 * 1024;
-  const images = formData.get("images") as File | null;
+  const images = formData.get("images") as File;
   const thumbnail = formData.get("thumbnail") as File | null;
   const allowedImageTypes = [".jpeg", ".jpg", ".webp"];
 

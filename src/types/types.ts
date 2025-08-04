@@ -43,8 +43,8 @@ export enum Category {
 }
 
 export enum Tags {
-  mascara = "Mascara",
-  beauty = "Beauty",
+  mascara = "mascara",
+  beauty = "beauty",
   eyeshadow = "Eyeshadow",
   face_powder = "Face Powder",
   lipstick = "Lipstick",
@@ -71,7 +71,7 @@ export enum Tags {
   beverages = "Beverages",
 }
 
-export const allTags = Object.keys(Tags);
+export const allTags = Object.values(Tags);
 
 export const allCategories = Object.values(Category);
 

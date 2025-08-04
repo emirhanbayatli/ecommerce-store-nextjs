@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Product } from "./../types/types";
 import ItemCard from "./components/ItemCard";
-import { showStar } from "../utils/uiUtils";
+import { discountCalculation, showStar } from "../utils/uiUtils";
 import Image from "next/image";
 import { getProductsAction } from "./actions/admin/products";
 
@@ -90,6 +90,15 @@ export default async function Home() {
                   imgSrc={product.images[0]}
                   imgAlt={product.title}
                   price={`$${product.price}`}
+                  discount={
+                    product?.discountPercentage &&
+                    product.discountPercentage > 0
+                      ? discountCalculation(
+                          product.price,
+                          product.discountPercentage,
+                        )
+                      : product?.price
+                  }
                   rating={showStar(product.rating)}
                 />
               </Link>

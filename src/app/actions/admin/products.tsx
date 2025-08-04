@@ -182,8 +182,8 @@ export async function addNewProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: [imageUrl],
-      thumbnail: [thumbnailUrl],
+      images: imageUrl,
+      thumbnail: thumbnailUrl,
       meta: {
         createdAt: dateNow,
         updatedAt: dateNow,
@@ -357,12 +357,15 @@ export async function deleteProductAction(id: string) {
   const productRef = doc(db, "products", id);
   const docSnap = await getDoc(productRef);
   const product = docSnap.data();
-  const imageUrl = product?.images;
-  const thumbnailUrl = product?.thumbnail;
+  const imageUrls = product?.images;
+  const thumbnailUrl = product?.thumbnail[0];
 
   try {
     // await deleteDoc(productRef);
-    await vercelBlobDeleteAction(imageUrl);
+    for (const imageUrl of imageUrls) {
+      await vercelBlobDeleteAction(imageUrl);
+      console.log(imageUrl);
+    }
     await vercelBlobDeleteAction(thumbnailUrl);
     console.log(`Product with ID ${id} was deleted successfully.`);
   } catch (error) {

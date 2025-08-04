@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { discountCalculation } from "../../utils/uiUtils";
 interface ItemCardProps {
   id?: number;
   title: string;
@@ -6,6 +7,7 @@ interface ItemCardProps {
   imgAlt: string;
   price?: string;
   rating?: string;
+  discount: number;
 }
 
 export default function ItemCard({
@@ -14,6 +16,7 @@ export default function ItemCard({
   imgAlt,
   price,
   rating,
+  discount,
 }: ItemCardProps) {
   return (
     <div className="w-80 h-[370px] rounded shadow-lg bg-white p-4 hover:shadow-2xl transition ">
@@ -24,9 +27,22 @@ export default function ItemCard({
         <h3 className="text-gray-700 font-bold text-xl mb-2 text-center">
           {title}
         </h3>
-        <p className="text-gray-700 font-bold text-xl mb-2 text-center">
-          {price}
-        </p>
+
+        {discount > 0 ? (
+          <div>
+            <p className="text-gray-700 font-bold text-xl mb-2 text-center line-through">
+              {price}
+            </p>
+            <p className="text-gray-700 font-bold text-xl mb-2 text-center">
+              {discount}
+            </p>
+          </div>
+        ) : (
+          <p className="text-gray-700 font-bold text-xl mb-2 text-center">
+            {price}
+          </p>
+        )}
+
         <p className="text-gray-700 text-xl text-center">{rating}</p>
       </div>
     </div>

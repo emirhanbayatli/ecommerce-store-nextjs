@@ -1,18 +1,20 @@
 "use client";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "@/utils/firebase";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthDispatchContext } from "@/app/AuthContextProvider";
-
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/utils/firebase";
+import { FirebaseError } from "firebase/app";
 interface Auth {
   email: string;
   password: string;
 }
 
-export default function SignIp(data: Auth) {
+export default function SignIn(data: Auth) {
   const [error, setError] = useState<string>();
   const router = useRouter();
 
@@ -25,23 +27,44 @@ export default function SignIp(data: Auth) {
 
   const setUser = useAuthDispatchContext();
 
-  async function signInAction(data: Auth) {
-    signInWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        setUser(user.email);
-        reset();
-        router.push("/");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setError(errorMessage);
-        setUser(null);
-        console.error(errorCode, errorMessage);
-      });
+  async function getUsersFirebase(user: User) {
+    const docRef = doc(db, "users", user?.uid);
+    const docSnap = await getDoc(docRef);
+    const userData = docSnap.data();
+    if (docSnap.exists()) {
+      return userData;
+    } else {
+      console.log("No such document!");
+    }
   }
 
+  async function signInAction(data: Auth) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+      const user = userCredential.user;
+      setUser(user.email);
+      const userData = await getUsersFirebase(user);
+      if (userData?.role === "admin") {
+        router.push("/admin/products");
+      } else {
+        router.push("/");
+      }
+      reset();
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        setError(error.message);
+        setUser(null);
+        console.error(error.code, error.message);
+      } else {
+        setError("Unexpected error occurred.");
+        console.error("Unknown error:", error);
+      }
+    }
+  }
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
       <form

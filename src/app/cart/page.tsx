@@ -6,11 +6,12 @@ import { Product } from "@/types/types";
 import { useCartDispatchContext } from "../CartContextProvider";
 import Image from "next/image";
 import { getProductsAction } from "../actions/admin/products";
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
   const cartDispatch = useCartDispatchContext();
-
+  const [price, setPrice] = useState();
   if (!cartDispatch) {
     throw new Error(
       "CartDispatchContext is undefined. Make sure your component is wrapped in the CartContextProvider.",
@@ -18,7 +19,7 @@ export default function Cart() {
   }
 
   const { clearCart, removeProductToCart } = cartDispatch;
-
+  const router = useRouter();
   useEffect(() => {
     async function getFirebaseProducts() {
       const productsForFirebase = await getProductsAction();
@@ -97,6 +98,8 @@ export default function Cart() {
       ) : (
         <div className="text-center my-12">
           <h2 className="text-2xl my-4">Your shopping cart is empty!</h2>
+
+          <Button label="Go Shopping !" onClick={() => router.push("/")} />
         </div>
       )}
     </div>
