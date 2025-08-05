@@ -2,13 +2,14 @@
 import { signInWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "@/utils/firebase";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthDispatchContext } from "@/app/AuthContextProvider";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { FirebaseError } from "firebase/app";
+import { getErrorMessageFromCode } from "@/utils/uiUtils";
 interface Auth {
   email: string;
   password: string;
@@ -16,6 +17,7 @@ interface Auth {
 
 export default function SignIn(data: Auth) {
   const [error, setError] = useState<string>();
+  const [message, setMessage] = useState<string>();
   const router = useRouter();
 
   const {
@@ -47,7 +49,11 @@ export default function SignIn(data: Auth) {
       );
       const user = userCredential.user;
       setUser(user.email);
+      setMessage("User login was successful.");
+
       const userData = await getUsersFirebase(user);
+      localStorage.setItem("user", JSON.stringify(user.email, userData?.role));
+
       if (userData?.role === "admin") {
         router.push("/admin/products");
       } else {
@@ -56,7 +62,8 @@ export default function SignIn(data: Auth) {
       reset();
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
-        setError(error.message);
+        console.log("Error codesssssss:", error.code);
+        setError(getErrorMessageFromCode(error.code));
         setUser(null);
         console.error(error.code, error.message);
       } else {
@@ -134,12 +141,13 @@ export default function SignIn(data: Auth) {
         </button>
 
         <p className="text-center text-sm mt-2">
-          Don't have an account?{" "}
+          Don't have an account?
           <Link href="/user/signUp" className="text-blue-600 ">
             Sign Up
           </Link>
         </p>
         {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+        {message && <p className="text-green-400 text-sm mt-1">{message}</p>}
       </form>
     </div>
   );

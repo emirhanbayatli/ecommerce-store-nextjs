@@ -7,11 +7,12 @@ import { useCartDispatchContext } from "../CartContextProvider";
 import Image from "next/image";
 import { getProductsAction } from "../actions/admin/products";
 import { useRouter } from "next/navigation";
+import { discountCalculation } from "@/utils/uiUtils";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
   const cartDispatch = useCartDispatchContext();
-  const [price, setPrice] = useState();
+
   if (!cartDispatch) {
     throw new Error(
       "CartDispatchContext is undefined. Make sure your component is wrapped in the CartContextProvider.",
@@ -72,7 +73,15 @@ export default function Cart() {
                       />
                     </div>
                     <span className="text-center">{product.title}</span>
-                    <span>{product.price} $</span>
+                    <span>
+                      {product.discountPercentage !== undefined
+                        ? discountCalculation(
+                            product.price,
+                            product.discountPercentage,
+                          )
+                        : product.price}
+                      $
+                    </span>
                     <span> {product.quantity}</span>
                     <Button
                       label="-"
@@ -84,7 +93,7 @@ export default function Cart() {
             </div>
           </div>
           <div className="flex justify-end p-4">
-            <span className="font-bold text-lg">
+            <div className="font-bold text-lg">
               Total: {total.toFixed(2)} $
               <Button
                 label="Clear Cart"
@@ -92,7 +101,7 @@ export default function Cart() {
                 className="m-2"
                 onClick={clearCart}
               />
-            </span>
+            </div>
           </div>
         </div>
       ) : (

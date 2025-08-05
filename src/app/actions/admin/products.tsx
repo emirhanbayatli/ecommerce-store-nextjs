@@ -1,3 +1,4 @@
+"use server";
 import { NewProductFormState } from "@/app/admin/products/new/page";
 import { EditProductFormState } from "../../admin/products/[productId]/edit/page";
 import {
@@ -21,6 +22,7 @@ import {
   doc,
   updateDoc,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 const productSchema = z.object({
@@ -182,8 +184,8 @@ export async function addNewProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: imageUrl,
-      thumbnail: thumbnailUrl,
+      images: [imageUrl],
+      thumbnail: [thumbnailUrl],
       meta: {
         createdAt: dateNow,
         updatedAt: dateNow,
@@ -361,7 +363,7 @@ export async function deleteProductAction(id: string) {
   const thumbnailUrl = product?.thumbnail[0];
 
   try {
-    // await deleteDoc(productRef);
+    await deleteDoc(productRef);
     for (const imageUrl of imageUrls) {
       await vercelBlobDeleteAction(imageUrl);
       console.log(imageUrl);

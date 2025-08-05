@@ -1,24 +1,24 @@
 export default function Footer() {
   return (
-    <footer className="grid grid-cols-4 bg-gray-100 text-xl mx-auto py-8 px-16 border-t border-gray-300">
+    <footer className="grid grid-cols-4 grid-rows-1 bg-gray-100 text-xl mx-auto py-8 px-16 border-t border-gray-300">
       <div>
         <h1 className="font-bold">About Us</h1>
-        <h3>Our Story</h3>
-        <h3>Careers</h3>
+        {/* <h3>Our Story</h3>
+        <h3>Careers</h3> */}
       </div>
       <div>
         <h1 className="font-bold">Customer Service</h1>
-        <h3>FAQ</h3>
-        <h3>Return Policy</h3>
+        {/* <h3>FAQ</h3>
+        <h3>Return Policy</h3> */}
       </div>
       <div>
         <h1 className="font-bold">Support</h1>
-        <h3>Contact</h3>
-        <h3>Get in Touch</h3>
+        {/* <h3>Contact</h3>
+        <h3>Get in Touch</h3> */}
       </div>
       <div>
-        <h1 className="font-bold">Social Media</h1>
-        <div className="flex gap-3 my-3">
+        {/* <h1 className="font-bold">Social Media</h1> */}
+        <div className="flex  gap-3 my-3 col-span-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 512 512"

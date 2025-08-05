@@ -1,5 +1,5 @@
 import ItemDesc from "@/app/components/ItemDesc";
-import { showStar } from "../../../utils/uiUtils";
+import { Carousel, showStar } from "../../../utils/uiUtils";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 export default async function ProductDetails({
@@ -22,6 +22,7 @@ export default async function ProductDetails({
   return (
     <main>
       <div className="flex flex-wrap justify-center gap-4 p-6">
+        <Carousel />
         <ItemDesc
           id={Number(params.productId)}
           imgSrc={product.images[0]}

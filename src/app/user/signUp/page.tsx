@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useAuthDispatchContext } from "@/app/AuthContextProvider";
 import { setDoc, doc } from "firebase/firestore";
 import { collections, db, UserRoles } from "../../../utils/firebase";
+import { getErrorMessageFromCode } from "@/utils/uiUtils";
 
 interface Auth {
   email: string;
@@ -16,6 +17,7 @@ interface Auth {
 }
 export default function SignUp() {
   const [error, setError] = useState<string>();
+  const [message, setMessage] = useState<string>();
 
   const router = useRouter();
 
@@ -44,6 +46,7 @@ export default function SignUp() {
       .then((userCredential) => {
         const user = userCredential.user;
         setUser(user.email);
+        setMessage("User registration and login were successful.");
         userSaveToFirebase(user);
         reset();
         router.push("/");
@@ -53,7 +56,7 @@ export default function SignUp() {
         const errorMessage = error.message;
         console.error(errorCode, errorMessage);
         setUser(null);
-        setError(errorMessage);
+        setError(getErrorMessageFromCode(errorCode));
       });
   }
 
@@ -133,6 +136,7 @@ export default function SignUp() {
         </p>
 
         {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+        {message && <p className="text-green-400 text-sm mt-1">{message}</p>}
       </form>
     </div>
   );

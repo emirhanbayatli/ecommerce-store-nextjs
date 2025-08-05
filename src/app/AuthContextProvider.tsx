@@ -6,26 +6,34 @@ import {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 
 type User = string | null;
 
-export const AuthContex = createContext<User>(null);
+export const AuthContext = createContext<User>(null);
 const AuthDispatchContext = createContext<Dispatch<SetStateAction<User>>>(
   () => {},
 );
 
-export const AuthContexProvider = ({ children }: { children: ReactNode }) => {
+export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>(null);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(storedUser.slice(1));
+    }
+  }, []);
+
   return (
-    <AuthContex.Provider value={user}>
+    <AuthContext.Provider value={user}>
       <AuthDispatchContext.Provider value={setUser}>
         {children}
       </AuthDispatchContext.Provider>
-    </AuthContex.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export const useAuthContext = () => useContext(AuthContex);
+export const useAuthContext = () => useContext(AuthContext);
 export const useAuthDispatchContext = () => useContext(AuthDispatchContext);

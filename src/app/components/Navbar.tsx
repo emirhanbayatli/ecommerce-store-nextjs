@@ -9,17 +9,18 @@ import { useAuthContext, useAuthDispatchContext } from "../AuthContextProvider";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-  const cart = useCartContext();
-  const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const user = useAuthContext();
   const setUser = useAuthDispatchContext();
+  const cart = useCartContext();
+  const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const userName = user?.split("@")[0];
   const router = useRouter();
 
   function logOutAction() {
+    localStorage.removeItem("user");
     setUser(null);
     router.push("/");
   }
-
   return (
     <nav className="bg-gray-100 shadow-md p-4 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -86,7 +87,8 @@ export default function Navbar() {
               </button>
             </li>
           )}
-          {user !== null ? <li>{user}</li> : null}
+          {user !== null ? <li>{userName}</li> : null}
+
           <li>
             <Link
               href="/cart"
