@@ -17,13 +17,18 @@ export default function AdminProducts() {
   }, []);
   return (
     <main>
-      <h1 className="text-3xl text-center my-6">Admin Products</h1>
+      <div className="flex justify-evenly">
+        <h1 className="text-3xl">Products</h1>
+        <Link href={"/admin/products/new"}>
+          <Button label="Add New Product" />
+        </Link>
+      </div>
 
       <div className="container mx-auto px-4 my-12 max-w-5xl">
         {products.length > 0 ? (
           <div className="border rounded-xl">
             <div className="min-w-full">
-              <div className="bg-white divide-y divide-gray-100">
+              <div>
                 <ul>
                   {products.map((product: Product) => (
                     <li
@@ -59,7 +64,7 @@ export default function AdminProducts() {
           </div>
         ) : (
           <div className="text-center my-12">
-            <h2 className="text-2xl my-4">Product list is empty!</h2>
+            <h2 className="text-2xl my-4">Loading</h2>
           </div>
         )}
       </div>

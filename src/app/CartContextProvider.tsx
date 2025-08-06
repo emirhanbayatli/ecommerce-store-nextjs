@@ -12,6 +12,7 @@ type CartDispatch = {
   addProductToCart: (productId: number) => void;
   clearCart: () => void;
   removeProductToCart: (productId: number) => void;
+  increaseProductQuantity: (productId: number) => void;
 };
 
 export const CartContext = createContext<CartItem[]>([]);
@@ -85,6 +86,24 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
       setErrorMessage("Failed to remove product.");
     }
   }
+  function increaseProductQuantity(productId: number) {
+    try {
+      setCart((prevCart) => {
+        return prevCart
+          .map((item) =>
+            item.id === productId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item,
+          )
+          .filter((item) => item.quantity > 0);
+      });
+      setMessage("Product quantity increased.");
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Failed to increase product quantity.");
+    }
+  }
+
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 2000);
@@ -104,6 +123,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
         value={{
           addProductToCart,
           removeProductToCart,
+          increaseProductQuantity,
           clearCart,
         }}
       >

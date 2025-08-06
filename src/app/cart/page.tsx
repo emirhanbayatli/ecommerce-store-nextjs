@@ -8,6 +8,7 @@ import Image from "next/image";
 import { getProductsAction } from "../actions/admin/products";
 import { useRouter } from "next/navigation";
 import { discountCalculation } from "@/utils/uiUtils";
+import { Trash2 } from "lucide-react";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,7 +20,8 @@ export default function Cart() {
     );
   }
 
-  const { clearCart, removeProductToCart } = cartDispatch;
+  const { clearCart, removeProductToCart, increaseProductQuantity } =
+    cartDispatch;
   const router = useRouter();
   useEffect(() => {
     async function getFirebaseProducts() {
@@ -56,7 +58,7 @@ export default function Cart() {
       {cartProducts.length > 0 ? (
         <div className="border rounded-xl">
           <div className="min-w-full">
-            <div className="bg-white divide-y divide-gray-100">
+            <div>
               <ul>
                 {cartProducts.map((product) => (
                   <li
@@ -83,22 +85,31 @@ export default function Cart() {
                       $
                     </span>
                     <span> {product.quantity}</span>
-                    <Button
-                      label="-"
-                      onClick={() => removeProductToCart(product.id)}
-                    />
+                    <div>
+                      <button
+                        className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded hover:text-white"
+                        onClick={() => removeProductToCart(product.id)}
+                      >
+                        -
+                      </button>
+                      <button
+                        className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded hover:text-white"
+                        onClick={() => increaseProductQuantity(product.id)}
+                      >
+                        +
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
-          <div className="flex justify-end p-4">
+          <div className="flex justify-end p-4 gap-2">
             <div className="font-bold text-lg">
               Total: {total.toFixed(2)} $
               <Button
-                label="Clear Cart"
-                type="button"
-                className="m-2"
+                className="bg-gray-200 hover:bg-gray-600"
+                label={<Trash2 size={16} className="text-black" />}
                 onClick={clearCart}
               />
             </div>

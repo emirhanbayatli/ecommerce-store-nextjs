@@ -55,7 +55,7 @@ export default function SignIn(data: Auth) {
       localStorage.setItem("user", JSON.stringify(user.email, userData?.role));
 
       if (userData?.role === "admin") {
-        router.push("/admin/products");
+        router.push("/admin");
       } else {
         router.push("/");
       }
