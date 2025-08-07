@@ -53,10 +53,10 @@ export default function Cart() {
 
   return (
     <div className="container mx-auto px-4 my-12 max-w-5xl">
-      <h1 className="font-bold text-3xl mb-6 text-center">Shopping Cart</h1>
+      <h1 className="font-bold text-3xl mb-6 ">Your Cart</h1>
 
       {cartProducts.length > 0 ? (
-        <div className="border rounded-xl">
+        <div className="bg-white rounded-xl">
           <div className="min-w-full">
             <div>
               <ul>
@@ -87,7 +87,7 @@ export default function Cart() {
                     <span> {product.quantity}</span>
                     <div>
                       <button
-                        className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded hover:text-white"
+                        className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded mr-2 hover:text-white"
                         onClick={() => removeProductToCart(product.id)}
                       >
                         -
@@ -104,15 +104,16 @@ export default function Cart() {
               </ul>
             </div>
           </div>
-          <div className="flex justify-end p-4 gap-2">
-            <div className="font-bold text-lg">
-              Total: {total.toFixed(2)} $
-              <Button
+          <div className="flex flex-col items-end p-4 gap-3">
+            <h2 className="font-bold text-lg">Total: {total.toFixed(2)} $</h2>
+            {/* <Button
                 className="bg-gray-200 hover:bg-gray-600"
                 label={<Trash2 size={16} className="text-black" />}
                 onClick={clearCart}
-              />
-            </div>
+              /> */}
+            <button className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded hover:text-white">
+              Check Out
+            </button>
           </div>
         </div>
       ) : (

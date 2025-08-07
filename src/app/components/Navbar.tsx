@@ -35,7 +35,7 @@ export default function Navbar() {
             <div>
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton className="inline-flex w-full justify-center gap-x-1.5">
+                  <MenuButton className="inline-flex w-full justify-center gap-x-1.5 cursor-pointer">
                     Categories
                     <ChevronDownIcon
                       aria-hidden="true"
@@ -76,13 +76,19 @@ export default function Navbar() {
 
           {user === null ? (
             <li>
-              <Link href="/user/signIn" className="hover:text-gray-500">
+              <Link
+                href="/user/signIn"
+                className="hover:text-gray-500 cursor-pointer"
+              >
                 Sign In
               </Link>
             </li>
           ) : (
             <li>
-              <button onClick={logOutAction} className="hover:text-gray-500">
+              <button
+                onClick={logOutAction}
+                className="hover:text-gray-500 cursor-pointer"
+              >
                 Sign Out
               </button>
             </li>

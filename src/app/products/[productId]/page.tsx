@@ -77,10 +77,11 @@ export default async function ProductDetails({
         <h2 className="text-xl font-semibold mb-4">Product Information</h2>
 
         <div>
-          <p>
-            <span className="font-medium">Brand:</span> {product.brand}
-          </p>
-
+          {product.brand && (
+            <p>
+              <span className="font-medium">Brand:</span> {product.brand}
+            </p>
+          )}
           <h3 className="mt-4 font-semibold">Dimensions</h3>
           <p>
             <span className="font-medium">Height:</span> {dimensions.height} cm
