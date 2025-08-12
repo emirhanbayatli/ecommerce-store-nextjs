@@ -2,12 +2,22 @@
 import { getProductsAction } from "../../actions/admin/products";
 import { Button } from "../../components/Button";
 import Link from "next/link";
-import { deleteProductAction } from "../../actions/admin/products";
+import { deleteProductAction } from "../../actions/admin/deleteAction";
 import { useEffect, useState } from "react";
 import { Product } from "../../../types/types";
 import Image from "next/image";
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [message, setMessage] = useState<{
+    text: string;
+    success: boolean;
+  } | null>(null);
+
+  async function handleDelete(id: string) {
+    const res = await deleteProductAction(id);
+    setMessage({ text: res.message, success: res.success });
+    setTimeout(() => setMessage(null), 3000);
+  }
   useEffect(() => {
     async function fetchProducts() {
       const data = await getProductsAction();
@@ -23,7 +33,17 @@ export default function AdminProducts() {
           <Button label="Add New Product" />
         </Link>
       </div>
-
+      {message && (
+        <div
+          className={`my-4 p-3 rounded text-center font-semibold ${
+            message.success
+              ? "bg-green-200 text-green-800 text-sm mt-1 fixed top-1/2 "
+              : "bg-red-200 text-red-600 text-sm mt-1 fixed top-1/2 "
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
       <div className="container mx-auto px-4 my-12 max-w-5xl">
         {products.length > 0 ? (
           <div className="border rounded-xl">
@@ -52,9 +72,7 @@ export default function AdminProducts() {
                       </Link>
                       <Button
                         label="Delete"
-                        onClick={() =>
-                          deleteProductAction(product.id.toString())
-                        }
+                        onClick={() => handleDelete(product.id.toString())}
                       />
                     </li>
                   ))}

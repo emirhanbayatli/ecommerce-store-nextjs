@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "../components/Button";
 import { useCartDispatchContext } from "../CartContextProvider";
-import Image from "next/image";
+import Carousel from "./Carousel";
 
 export interface ItemDescProps {
   id: number;
   title: string;
-  imgSrc: string;
+  imgSrc: string[];
   imgAlt: string;
   price: string;
   rating: string;
@@ -36,13 +36,7 @@ export default function ItemDesc({
     <>
       <div className="flex items-center justify-center min-h-screen">
         <div className="rounded shadow-lg bg-white m-4 flex max-w-4xl ">
-          <Image
-            src={imgSrc}
-            alt={imgAlt}
-            width={600}
-            height={600}
-            className="max-w-xl"
-          />
+          <Carousel images={imgSrc} />
           <div className="px-6 py-4 flex flex-col gap-3 justify-center">
             <h3 className="text-gray-700 font-bold text-xl mb-2 ">{title}</h3>
             <p className="text-gray-700 text-lg  ">{rating}</p>

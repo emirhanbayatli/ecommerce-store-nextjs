@@ -30,7 +30,7 @@ export default function SignUp() {
 
   const setUser = useAuthDispatchContext();
   const defaultUserRole = UserRoles.USER;
-  const adminRole = UserRoles.ADMIN;
+  // const adminRole = UserRoles.ADMIN;
 
   async function userSaveToFirebase(user: User) {
     await setDoc(doc(db, collections.users, user.uid), {

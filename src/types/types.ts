@@ -9,7 +9,7 @@ export interface Product {
   description: string;
   category: Category;
   price: number;
-  discountPercentage?: number;
+  discountPercentage: number;
   rating?: number;
   stock: number;
   tags?: Tags[];

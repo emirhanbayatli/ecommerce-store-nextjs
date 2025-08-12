@@ -2,7 +2,7 @@
 import { signInWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "@/utils/firebase";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthDispatchContext } from "@/app/AuthContextProvider";
@@ -16,6 +16,7 @@ interface Auth {
 }
 
 export default function SignIn(data: Auth) {
+  console.log(data);
   const [error, setError] = useState<string>();
   const [message, setMessage] = useState<string>();
   const router = useRouter();

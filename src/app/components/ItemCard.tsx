@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { discountCalculation } from "../../utils/uiUtils";
 interface ItemCardProps {
   id?: number;
   title: string;
@@ -19,12 +18,12 @@ export default function ItemCard({
   discount,
 }: ItemCardProps) {
   return (
-    <div className="w-80 h-[370px] rounded shadow-lg bg-white p-4 hover:shadow-2xl transition ">
+    <div className="w-80 rounded shadow-lg bg-white p-4 hover:shadow-2xl transition ">
       <div className="flex justify-center">
         <Image src={imgSrc} alt={imgAlt} width={200} height={200} />
       </div>
       <div className="px-6 py-4 ">
-        <h3 className="text-gray-700 font-bold text-xl mb-2 text-center">
+        <h3 className="text-gray-700 font-bold text-xl mb-2 text-center ">
           {title}
         </h3>
 

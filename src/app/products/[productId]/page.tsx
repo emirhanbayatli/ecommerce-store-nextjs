@@ -1,8 +1,7 @@
 import ItemDesc from "@/app/components/ItemDesc";
-import { Carousel, showStar } from "../../../utils/uiUtils";
+import { showStar } from "../../../utils/uiUtils";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
-import React from "react";
 
 interface Review {
   reviewerName: string;
@@ -37,7 +36,7 @@ export default async function ProductDetails({
       <div className="flex flex-wrap justify-center">
         <ItemDesc
           id={Number(params.productId)}
-          imgSrc={product.images[0]}
+          imgSrc={product.images}
           imgAlt={product.title}
           title={product.title}
           price={product.price + " $"}

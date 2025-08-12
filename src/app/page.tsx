@@ -1,30 +1,38 @@
 import Link from "next/link";
 import { Product } from "./../types/types";
-import ItemCard from "./components/ItemCard";
+import Carousel from "./components/Carousel";
+import Highlight from "./components/HighlightCard";
+
 import { discountCalculation, showStar } from "../utils/uiUtils";
 import Image from "next/image";
 import { getProductsAction } from "./actions/admin/products";
 
 export default async function Home() {
+  const images = [
+    "/carousel/1.webp",
+    "/carousel/2.webp",
+    "/carousel/3.webp",
+    "/carousel/4.webp",
+    "/carousel/5.webp",
+  ];
+  const images_2 = [
+    "/carousel/5.webp",
+    "/carousel/4.webp",
+    "/carousel/3.webp",
+    "/carousel/2.webp",
+    "/carousel/1.webp",
+  ];
   try {
     const products = await getProductsAction();
 
     return (
       <main className="px-24">
-        <div className="relative w-full my-3">
-          <Image
-            src="/banner.webp"
-            alt="örnek"
-            className="w-full h-100 object-fill"
-            width={1920}
-            height={600}
-          />
-          <button className="absolute bottom-4 right-4 bg-black  text-white px-4 py-2 rounded  ">
-            Shop Now!
-          </button>
+        <div className="flex gap-3 w-full my-3">
+          <Carousel images={images} />
+          <Carousel images={images_2} />
         </div>
 
-        <h1 className="text-center font-bold text-3xl my-8">Categories</h1>
+        <h1 className="font-bold text-3xl my-8">Categories</h1>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <Link href="/categories/groceries">
             <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
@@ -75,15 +83,30 @@ export default async function Home() {
             </div>
           </Link>
         </div>
-        <h1 className="text-center font-bold text-3xl my-8">
-          Featured Products
-        </h1>
+        <h1 className="font-bold text-3xl my-8">Featured Products</h1>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 ">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
           {products.map((product: Product) =>
             product.rating !== undefined && product.rating >= 4.7 ? (
               <Link key={product.id} href={`/products/${product.id}`}>
-                <ItemCard
+                <Highlight
+                  key={product.id}
+                  id={product.id}
+                  title={product.title}
+                  imgSrc={product.images[0]}
+                  imgAlt={product.title}
+                  price={`$${product.price}`}
+                  discount={
+                    product?.discountPercentage &&
+                    product.discountPercentage > 0
+                      ? discountCalculation(
+                          product.price,
+                          product.discountPercentage,
+                        )
+                      : product?.price
+                  }
+                />
+                {/* <ItemCard
                   key={product.id}
                   id={product.id}
                   title={product.title}
@@ -100,12 +123,12 @@ export default async function Home() {
                       : product?.price
                   }
                   rating={showStar(product.rating)}
-                />
+                /> */}
               </Link>
             ) : null,
           )}
         </div>
-        <div className="flex justify-between mx-4 my-5">
+        {/* <div className="flex justify-between mx-4 my-5">
           <div className="flex items-center gap-2 bg-gray-200 p-4 rounded">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -174,7 +197,7 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">24/7 live support</p>
           </div>
-        </div>
+        </div> */}
       </main>
     );
   } catch (error) {

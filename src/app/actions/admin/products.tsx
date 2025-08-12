@@ -1,4 +1,3 @@
-"use server";
 import { NewProductFormState } from "@/app/admin/products/new/page";
 import { EditProductFormState } from "../../admin/products/[productId]/edit/page";
 import {
@@ -10,10 +9,7 @@ import {
 } from "../../../types/types";
 import { z } from "zod";
 import { db, collections } from "../../../utils/firebase";
-import {
-  vercelBlobPutAction,
-  vercelBlobDeleteAction,
-} from "../../../utils/vercelBlob";
+import { vercelBlobPutAction } from "../../../utils/vercelBlob";
 
 import {
   getDocs,
@@ -21,8 +17,6 @@ import {
   setDoc,
   doc,
   updateDoc,
-  getDoc,
-  deleteDoc,
 } from "firebase/firestore";
 
 const productSchema = z.object({
@@ -353,24 +347,4 @@ export async function editProductAction(
     message: "Failed updating a product in the database",
     inputs: { ...rawData },
   };
-}
-
-export async function deleteProductAction(id: string) {
-  const productRef = doc(db, "products", id);
-  const docSnap = await getDoc(productRef);
-  const product = docSnap.data();
-  const imageUrls = product?.images;
-  const thumbnailUrl = product?.thumbnail[0];
-
-  try {
-    await deleteDoc(productRef);
-    for (const imageUrl of imageUrls) {
-      await vercelBlobDeleteAction(imageUrl);
-      console.log(imageUrl);
-    }
-    await vercelBlobDeleteAction(thumbnailUrl);
-    console.log(`Product with ID ${id} was deleted successfully.`);
-  } catch (error) {
-    console.error("Failed to delete product:", id, error);
-  }
 }

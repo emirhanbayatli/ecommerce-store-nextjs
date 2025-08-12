@@ -16,9 +16,6 @@ export function discountCalculation(
   return price;
 }
 
-export function Carousel() {
-  return <div></div>;
-}
 export function getErrorMessageFromCode(code: string): string {
   switch (code) {
     case "auth/user-not-found":

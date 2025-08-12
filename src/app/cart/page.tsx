@@ -8,7 +8,7 @@ import Image from "next/image";
 import { getProductsAction } from "../actions/admin/products";
 import { useRouter } from "next/navigation";
 import { discountCalculation } from "@/utils/uiUtils";
-import { Trash2 } from "lucide-react";
+import { BuyButton } from "../components/BuyButton";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,8 +20,7 @@ export default function Cart() {
     );
   }
 
-  const { clearCart, removeProductToCart, increaseProductQuantity } =
-    cartDispatch;
+  const { removeProductToCart, increaseProductQuantity } = cartDispatch;
   const router = useRouter();
   useEffect(() => {
     async function getFirebaseProducts() {
@@ -49,7 +48,20 @@ export default function Cart() {
         p !== undefined,
     );
 
-  const total = cartProducts.reduce((sum, p) => sum + p.totalPrice, 0);
+  const totalDiscountValue = cartProducts.map((product) => {
+    const discountedPrice = discountCalculation(
+      product.price,
+      product.discountPercentage,
+    );
+    const totalDiscounted = discountedPrice * product.quantity;
+    return totalDiscounted;
+  });
+
+  const subTotal = cartProducts.reduce((sum, p) => sum + p.totalPrice, 0);
+  const totalDiscount = totalDiscountValue.reduce((sum, val) => sum + val, 0);
+
+  const totalPayable = subTotal - totalDiscount;
+  console.log("totalDiscount", totalDiscount);
 
   return (
     <div className="container mx-auto px-4 my-12 max-w-5xl">
@@ -98,6 +110,7 @@ export default function Cart() {
                       >
                         +
                       </button>
+                      <BuyButton productId={product.id.toString()} />
                     </div>
                   </li>
                 ))}
@@ -105,7 +118,16 @@ export default function Cart() {
             </div>
           </div>
           <div className="flex flex-col items-end p-4 gap-3">
-            <h2 className="font-bold text-lg">Total: {total.toFixed(2)} $</h2>
+            <h2 className="font-bold text-lg">
+              Subtotal: ${subTotal.toFixed(2)}
+            </h2>
+            <h2 className="font-bold text-lg">
+              Discount: ${totalPayable.toFixed(2)}
+            </h2>
+            <h2 className="font-bold text-lg">
+              Total: ${totalDiscount.toFixed(2)}
+            </h2>
+
             {/* <Button
                 className="bg-gray-200 hover:bg-gray-600"
                 label={<Trash2 size={16} className="text-black" />}

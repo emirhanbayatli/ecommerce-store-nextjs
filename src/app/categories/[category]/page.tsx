@@ -1,7 +1,7 @@
 import { getProductsAction } from "@/app/actions/admin/products";
 import ItemCard from "@/app/components/ItemCard";
 import { Product } from "@/types/types";
-import { showStar } from "@/utils/uiUtils";
+import { discountCalculation, showStar } from "@/utils/uiUtils";
 import Link from "next/link";
 
 export default async function Categories({
@@ -18,16 +18,21 @@ export default async function Categories({
           return (
             <Link key={product.id} href={`/products/${product.id}`}>
               <ItemCard
+                key={product.id}
                 id={product.id}
+                title={product.title}
                 imgSrc={product.images[0]}
                 imgAlt={product.title}
-                title={product.title}
-                price={product.price + " $"}
-                rating={`${
-                  product.rating !== undefined
-                    ? showStar(Number(product.rating))
-                    : showStar(0)
-                }`}
+                price={`$${product.price}`}
+                discount={
+                  product?.discountPercentage && product.discountPercentage > 0
+                    ? discountCalculation(
+                        product.price,
+                        product.discountPercentage,
+                      )
+                    : product?.price
+                }
+                rating={showStar(product.rating ?? 0)}
               />
             </Link>
           );
