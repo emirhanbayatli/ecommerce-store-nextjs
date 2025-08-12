@@ -7,7 +7,6 @@ export interface ItemDescProps {
   id: number;
   title: string;
   imgSrc: string[];
-  imgAlt: string;
   price: string;
   rating: string;
   description: string;
@@ -17,7 +16,7 @@ export default function ItemDesc({
   id,
   title,
   imgSrc,
-  imgAlt,
+
   price,
   rating,
   description,

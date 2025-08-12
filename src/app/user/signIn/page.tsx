@@ -142,11 +142,12 @@ export default function SignIn(data: Auth) {
         </button>
 
         <p className="text-center text-sm mt-2">
-          Don't have an account?
+          Don&#39;t have an account?{" "}
           <Link href="/user/signUp" className="text-blue-600 ">
             Sign Up
           </Link>
         </p>
+
         {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
         {message && <p className="text-green-400 text-sm mt-1">{message}</p>}
       </form>
