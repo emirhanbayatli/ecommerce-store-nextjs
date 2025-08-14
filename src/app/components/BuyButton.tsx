@@ -1,8 +1,10 @@
 "use client";
 
+import { checkout } from "@/app/actions/cart/checkout";
+
 export const BuyButton = ({ productId }: { productId: string }) => {
   return (
-    <form action="/api/checkout_session" method="POST">
+    <form action={checkout}>
       <input type="hidden" name="productId" value={productId} />
       <button
         type="submit"

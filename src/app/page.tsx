@@ -26,22 +26,22 @@ export default async function Home() {
     const products = await getProductsAction();
 
     return (
-      <main className="px-24">
+      <main className="p-4 md:p-12 lg:p-24">
         <div className="flex gap-3 w-full my-3">
           <Carousel images={images} />
-          <Carousel images={images_2} />
+          <Carousel images={images_2} className="hidden lg:block" />
         </div>
 
         <h1 className="font-bold text-3xl my-8">Categories</h1>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link href="/categories/groceries">
             <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
               <Image
-                src="/Groceries.jpg"
+                src="/sebze.jpg"
                 alt="Groceries"
                 className="w-full h-40 object-cover rounded-t-xl"
-                width={250}
-                height={250}
+                width={100}
+                height={40}
               />
               <p className="py-4 font-semibold">Groceries</p>
             </div>
@@ -85,7 +85,7 @@ export default async function Home() {
         </div>
         <h1 className="font-bold text-3xl my-8">Featured Products</h1>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           {products.map((product: Product) =>
             product.rating !== undefined && product.rating >= 4.7 ? (
               <Link key={product.id} href={`/products/${product.id}`}>
@@ -106,29 +106,11 @@ export default async function Home() {
                       : product?.price
                   }
                 />
-                {/* <ItemCard
-                  key={product.id}
-                  id={product.id}
-                  title={product.title}
-                  imgSrc={product.images[0]}
-                  imgAlt={product.title}
-                  price={`$${product.price}`}
-                  discount={
-                    product?.discountPercentage &&
-                    product.discountPercentage > 0
-                      ? discountCalculation(
-                          product.price,
-                          product.discountPercentage,
-                        )
-                      : product?.price
-                  }
-                  rating={showStar(product.rating)}
-                /> */}
               </Link>
             ) : null,
           )}
         </div>
-        {/* <div className="flex justify-between mx-4 my-5">
+        <div className="flex justify-between mx-4 my-5">
           <div className="flex items-center gap-2 bg-gray-200 p-4 rounded">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -197,7 +179,7 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">24/7 live support</p>
           </div>
-        </div> */}
+        </div>
       </main>
     );
   } catch (error) {
