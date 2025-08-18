@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Product } from "./../types/types";
 import Carousel from "./components/Carousel";
 import Highlight from "./components/HighlightCard";
-
 import { discountCalculation } from "../utils/uiUtils";
 import Image from "next/image";
 import { getProductsAction } from "./actions/admin/products";
