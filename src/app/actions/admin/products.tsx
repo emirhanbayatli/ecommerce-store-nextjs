@@ -18,6 +18,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { addProductStripe, updateProductStripe } from "./utilsStripe";
 
 const productSchema = z.object({
   title: z
@@ -161,6 +162,8 @@ export async function addNewProductAction(
       throw new Error("Two products cannot have the same title!");
     }
 
+    const stripe = await addProductStripe(result);
+
     await setDoc(doc(db, collections.products, id), {
       title: result.data.title,
       description: result.data.description,
@@ -184,6 +187,8 @@ export async function addNewProductAction(
         createdAt: dateNow,
         updatedAt: dateNow,
       },
+      stripeProductId: stripe.stripeProductId,
+      stripePriceId: stripe.stripePriceId,
     });
 
     return {
@@ -243,6 +248,8 @@ export async function getProductsAction(): Promise<Product[]> {
         createdAt: data.meta?.createdAt ?? 0,
         updatedAt: data.meta?.updatedAt ?? 0,
       },
+      stripeProductId: data.stripeProductId,
+      stripePriceId: data.stripePriceId,
     };
   });
   return products as Product[];
@@ -253,6 +260,8 @@ export async function editProductAction(
   formData: FormData,
 ) {
   const rawData = {
+    stripeProductId: formData.get("stripeProductId") as string,
+    stripePriceId: formData.get("stripePriceId") as string,
     productId: formData.get("productId") as string,
     title: formData.get("title") as string,
     description: formData.get("description") as string,
@@ -306,6 +315,14 @@ export async function editProductAction(
   const imageUrl = blobResult.data?.images;
   const thumbnailUrl = blobResult.data?.thumbnail;
 
+  const stripe = await updateProductStripe(
+    rawData.stripeProductId.toString(),
+    rawData.stripePriceId.toString(),
+    result,
+  );
+
+  console.log(stripe.newPriceId);
+
   try {
     const productId = formData.get("productId") as string;
     const productRef = doc(db, "products", productId);
@@ -332,6 +349,8 @@ export async function editProductAction(
       meta: {
         updatedAt: Date.now().toString(),
       },
+      stripeProductId: stripe.updatedProductId,
+      stripePriceId: stripe.newPriceId,
     });
 
     return {

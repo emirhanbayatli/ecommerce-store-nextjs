@@ -2,10 +2,17 @@
 
 import { checkout } from "@/app/actions/cart/checkout";
 
-export const BuyButton = ({ productId }: { productId: string }) => {
+export const BuyButton = ({
+  productId,
+  stripePriceId,
+}: {
+  productId: string;
+  stripePriceId: string;
+}) => {
   return (
     <form action={checkout}>
       <input type="hidden" name="productId" value={productId} />
+      <input type="hidden" name="stripePriceId" value={stripePriceId} />
       <button
         type="submit"
         className="text-[#49739c] text-sm font-normal leading-normal"

@@ -2,6 +2,7 @@
 import { vercelBlobDeleteAction } from "../../../utils/vercelBlob";
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../../utils/firebase";
+import { deleteProductStripe } from "./utilsStripe";
 
 export async function deleteProductAction(id: string) {
   const productRef = doc(db, "products", id);
@@ -9,6 +10,10 @@ export async function deleteProductAction(id: string) {
   const product = docSnap.data();
   const imageUrls = product?.images;
   const thumbnailUrl = product?.thumbnail[0];
+
+  if (product?.stripeProductId) {
+    await deleteProductStripe(product.stripeProductId, product.stripePriceId);
+  }
 
   try {
     await deleteDoc(productRef);

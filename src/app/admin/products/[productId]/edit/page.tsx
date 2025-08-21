@@ -10,6 +10,7 @@ import {
   allAvailabilityStatus,
   allReturnPolicies,
   Product,
+  Tags,
 } from "../../../../../types/types";
 import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
@@ -96,6 +97,28 @@ export default function EditProduct() {
                 type="text"
                 id="productId"
                 defaultValue={params.productId}
+                className="bg-stone-200 text-stone-900 p-2 rounded"
+                readOnly
+              />
+              <label htmlFor="productId" className="font-bold mb-1">
+                Stripe Product ID
+              </label>
+              <input
+                name="stripeProductId"
+                type="text"
+                id="stripeProductId"
+                defaultValue={product.stripeProductId}
+                className="bg-stone-200 text-stone-900 p-2 rounded"
+                readOnly
+              />
+              <label htmlFor="productId" className="font-bold mb-1">
+                Stripe Price ID
+              </label>
+              <input
+                name="stripePriceId"
+                type="text"
+                id="stripePriceId"
+                defaultValue={product.stripePriceId}
                 className="bg-stone-200 text-stone-900 p-2 rounded"
                 readOnly
               />
@@ -304,23 +327,14 @@ export default function EditProduct() {
               </label>
               <div className="flex flex-wrap gap-2">
                 {allTags.map((tag) => (
-                  <label key={tag} className="flex items-center gap-1">
+                  <label key={tag}>
                     <input
-                      {...register("tags", {
-                        required: "Tags is required",
-                        validate: (value) =>
-                          (Array.isArray(value) &&
-                            value.every((v) => allTags.includes(v))) ||
-                          "Please choose valid tags",
-                      })}
-                      defaultChecked={product.tags?.includes(tag)}
-                      id={`tag-${tag}`}
-                      name="tags"
                       type="checkbox"
+                      name="tags"
                       value={tag}
-                      className="accent-stone-900"
+                      defaultChecked={product?.tags?.includes(tag as Tags)}
                     />
-                    {tag}
+                    {tag.replace("_", " ")}
                   </label>
                 ))}
               </div>

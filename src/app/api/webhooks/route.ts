@@ -1,4 +1,3 @@
-import { useCartContext } from "@/app/CartContextProvider";
 import { stripe } from "@/utils/stripe";
 import { NextRequest } from "next/server";
 
@@ -32,8 +31,6 @@ export const POST = async (req: NextRequest) => {
 
   console.log("Received Stripe event:", event.type);
 
-  const cart = useCartContext();
-  console.log(cart, "cart");
   switch (event.type) {
     case "checkout.session.completed":
       const session = event.data.object;

@@ -9,6 +9,7 @@ import { getProductsAction } from "../actions/admin/products";
 import { useRouter } from "next/navigation";
 import { discountCalculation } from "@/utils/uiUtils";
 import { BuyButton } from "../components/BuyButton";
+import { BuyAllButton } from "../components/BuyAllButton";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -61,7 +62,6 @@ export default function Cart() {
   const totalDiscount = totalDiscountValue.reduce((sum, val) => sum + val, 0);
 
   const totalPayable = subTotal - totalDiscount;
-  console.log("totalDiscount", totalDiscount);
 
   return (
     <div className="container mx-auto px-4 my-12 max-w-5xl">
@@ -110,7 +110,10 @@ export default function Cart() {
                       >
                         +
                       </button>
-                      <BuyButton productId={product.id.toString()} />
+                      <BuyButton
+                        stripePriceId={product?.stripePriceId ?? ""}
+                        productId={product.id.toString()}
+                      />
                     </div>
                   </li>
                 ))}
@@ -133,9 +136,12 @@ export default function Cart() {
                 label={<Trash2 size={16} className="text-black" />}
                 onClick={clearCart}
               /> */}
-            <button className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded hover:text-white">
+
+            {/* <button className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded hover:text-white">
               Check Out
-            </button>
+            </button> */}
+
+            <BuyAllButton />
           </div>
         </div>
       ) : (

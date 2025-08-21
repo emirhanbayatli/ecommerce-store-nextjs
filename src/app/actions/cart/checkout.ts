@@ -16,7 +16,7 @@ export async function checkout(formData: FormData) {
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          price: "price_1RtQknC3nBV8YOBBZsiZ8Yjc",
+          price: "price_1RtBS9QitHtctVUTVPL5QlKn",
           quantity: 1,
         },
       ],

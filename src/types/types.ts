@@ -26,6 +26,8 @@ export interface Product {
   meta?: Meta;
   images: string;
   thumbnail: string;
+  stripeProductId?: string;
+  stripePriceId?: string;
 }
 
 export enum Category {
@@ -59,8 +61,8 @@ export enum Tags {
   bathroom = "Bathroom",
   fruits = "Fruits",
   meat = "Meat",
-  pet_supplies = "Pet Supplies",
-  cat_food = "Cat Food",
+  pet_supplies = "pet supplies",
+  cat_food = "cat food",
   dog_food = "Dog Food",
   cooking_essentials = "Cooking Essentials",
   vegetables = "Vegetables",

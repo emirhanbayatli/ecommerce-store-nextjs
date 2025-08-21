@@ -91,7 +91,13 @@ export default function Navbar() {
               </button>
             </li>
           )}
-          {user && <li className="text-gray-600">{userName}</li>}
+          <li>
+            {user && (
+              <Link href="/user" className="text-gray-600">
+                {userName}
+              </Link>
+            )}
+          </li>
 
           <li>
             <Link
@@ -179,7 +185,13 @@ export default function Navbar() {
                 </button>
               </li>
             )}
-            {user && <li className="text-gray-600">{userName}</li>}
+            <li>
+              {user && (
+                <Link href="/user" className="text-gray-600">
+                  {userName}
+                </Link>
+              )}
+            </li>
 
             <li className="flex justify-start">
               <Link
