@@ -2,13 +2,13 @@
 import Link from "next/link";
 import {
   Home,
-  Boxes,
+  // Boxes,
   ClipboardList,
-  Users,
-  BarChart,
-  Settings,
+  // Users,
+  // BarChart,
+  // Settings,
 } from "lucide-react";
-import { useAuthContext } from "../AuthContextProvider";
+//import { useAuthContext } from "../AuthContextProvider";
 
 export default function UserLayout({
   children,

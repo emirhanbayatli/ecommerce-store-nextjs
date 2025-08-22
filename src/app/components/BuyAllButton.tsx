@@ -1,37 +1,27 @@
 "use client";
 
 import { checkout } from "@/app/actions/cart/checkout";
-import { useCartContext } from "../CartContextProvider";
-import { getProductsAction } from "../actions/admin/products";
-import { useEffect, useState } from "react";
-import { Product } from "@/types/types";
 
-export const BuyAllButton = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-
-  const cart = useCartContext();
-
-  useEffect(() => {
-    async function getAction() {
-      const data = await getProductsAction();
-      setProducts(data);
-    }
-    getAction();
-  }, []);
-
-  const moreInfoProduct = [];
-
-  cart.map((cartItem) => {
-    products.map((product) => {
-      if (cartItem.id == product.id) {
-        moreInfoProduct.push({ ...product, ...cartItem });
-      }
-    });
-  });
-
+type BuyAllButtonProps = {
+  cart: { stripePriceId: string; quantity: number }[];
+};
+export const BuyAllButton = ({ cart }: BuyAllButtonProps) => {
   return (
     <form action={checkout}>
-      <input type="hidden" name="productInfo" value={moreInfoProduct} />
+      {cart.map((item, index) => (
+        <div key={index}>
+          <input
+            type="hidden"
+            name={`items[${index}][price]`}
+            value={item.stripePriceId}
+          />
+          <input
+            type="hidden"
+            name={`items[${index}][quantity]`}
+            value={item.quantity}
+          />
+        </div>
+      ))}
 
       <button
         type="submit"

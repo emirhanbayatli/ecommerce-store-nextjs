@@ -8,7 +8,6 @@ import Image from "next/image";
 import { getProductsAction } from "../actions/admin/products";
 import { useRouter } from "next/navigation";
 import { discountCalculation } from "@/utils/uiUtils";
-import { BuyButton } from "../components/BuyButton";
 import { BuyAllButton } from "../components/BuyAllButton";
 
 export default function Cart() {
@@ -110,10 +109,6 @@ export default function Cart() {
                       >
                         +
                       </button>
-                      <BuyButton
-                        stripePriceId={product?.stripePriceId ?? ""}
-                        productId={product.id.toString()}
-                      />
                     </div>
                   </li>
                 ))}
@@ -131,17 +126,12 @@ export default function Cart() {
               Total: ${totalDiscount.toFixed(2)}
             </h2>
 
-            {/* <Button
-                className="bg-gray-200 hover:bg-gray-600"
-                label={<Trash2 size={16} className="text-black" />}
-                onClick={clearCart}
-              /> */}
-
-            {/* <button className="bg-gray-200 hover:bg-gray-600 font-bold py-2 px-4 rounded hover:text-white">
-              Check Out
-            </button> */}
-
-            <BuyAllButton />
+            <BuyAllButton
+              cart={cartProducts.map((product) => ({
+                stripePriceId: product.stripePriceId ?? "",
+                quantity: product.quantity,
+              }))}
+            />
           </div>
         </div>
       ) : (
