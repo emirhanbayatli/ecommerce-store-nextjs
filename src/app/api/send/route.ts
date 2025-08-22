@@ -18,6 +18,7 @@ export async function GET() {
 
     return NextResponse.json({ data });
   } catch (err) {
-    return NextResponse.json({ status: 500 });
+    console.error("Email gönderim hatası:", err);
+    return NextResponse.json({ error: "Email gönderilemedi" }, { status: 500 });
   }
 }
