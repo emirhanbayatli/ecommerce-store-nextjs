@@ -1,6 +1,7 @@
 "use server";
 
 import { discountCalculation } from "@/utils/uiUtils";
+import Stripe from "stripe";
 
 interface StripeProductInput {
   data: {
@@ -10,8 +11,7 @@ interface StripeProductInput {
     discountPercentage: number;
   };
 }
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export async function addProductStripe(result: StripeProductInput) {
   const product = await stripe.products.create({
     name: result.data.title,
