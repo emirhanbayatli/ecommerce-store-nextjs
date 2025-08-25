@@ -26,10 +26,11 @@ export default async function Success({ searchParams }: SuccessProps) {
     return redirect("/");
   }
 
-  console.log(
-    session.line_items?.data.map((item) => item.description),
-    "session ",
-  );
+  // session.line_items?.data.forEach((item) => {
+  //   console.log("price id ", item.price?.id);
+  //   console.log("Quantity:", item.quantity);
+  //   console.log("Product name:", item.description);
+  // });
 
   if (status === "complete") {
     return (

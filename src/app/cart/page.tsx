@@ -62,6 +62,8 @@ export default function Cart() {
 
   const totalPayable = subTotal - totalDiscount;
 
+  const priceId = "price_1RyAs3C3nBV8YOBBES5dTLAa";
+
   return (
     <div className="container mx-auto px-4 my-12 max-w-5xl">
       <h1 className="font-bold text-3xl mb-6 ">Your Cart</h1>
@@ -125,7 +127,6 @@ export default function Cart() {
             <h2 className="font-bold text-lg">
               Total: ${totalDiscount.toFixed(2)}
             </h2>
-
             <BuyAllButton />
           </div>
         </div>

@@ -1,10 +1,6 @@
 import { stripe } from "@/utils/stripe";
 import { NextRequest } from "next/server";
-import {
-  saveOrderToFirestore,
-  updateStock,
-  sendConfirmationEmail,
-} from "../../../utils/someFunction";
+
 export const POST = async (req: NextRequest) => {
   const body = await req.text();
 
@@ -38,20 +34,8 @@ export const POST = async (req: NextRequest) => {
   switch (event.type) {
     case "checkout.session.completed":
       const session = event.data.object;
-      console.log("session completed:", session);
+      console.log("Checkout session completed:", session);
       // TODO: Handle the checkout session completed event
-      try {
-        await Promise.all([
-          saveOrderToFirestore(session),
-          sendConfirmationEmail(session),
-          updateStock(session),
-        ]);
-
-        console.log("Tüm işlemler başarıyla tamamlandı!");
-      } catch (err) {
-        console.error("İşlem sırasında hata oluştu:", err);
-        return new Response("Internal Server Error", { status: 500 });
-      }
 
       break;
     case "checkout.session.expired":
