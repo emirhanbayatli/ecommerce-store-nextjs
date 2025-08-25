@@ -1,6 +1,7 @@
 export type CartItem = {
   id: number;
   quantity: number;
+  stripePriceId?: string;
 };
 
 export interface Product {

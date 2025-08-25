@@ -35,18 +35,10 @@ export const POST = async (req: NextRequest) => {
 
   console.log("Received Stripe event:", event.type);
 
-  const session = event.data.object;
-  console.log(
-    "-------------Checkout session completed:--------------",
-    session,
-  );
   switch (event.type) {
     case "checkout.session.completed":
       const session = event.data.object;
-      console.log(
-        "-------------Checkout session completed:--------------",
-        session,
-      );
+      console.log("session completed:", session);
       // TODO: Handle the checkout session completed event
       try {
         await Promise.all([

@@ -10,13 +10,14 @@ export interface ItemDescProps {
   price: string;
   rating: string;
   description: string;
+  stripePriceId: string;
 }
 
 export default function ItemDesc({
   id,
   title,
   imgSrc,
-
+  stripePriceId,
   price,
   rating,
   description,
@@ -46,7 +47,7 @@ export default function ItemDesc({
               label="Add To Cart"
               className="my-4"
               onClick={() => {
-                addProductToCart(Number(id));
+                addProductToCart(Number(id), stripePriceId);
               }}
             />
           </div>

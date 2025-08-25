@@ -35,6 +35,7 @@ export default async function ProductDetails({
     <main>
       <div className="flex flex-wrap justify-center">
         <ItemDesc
+          stripePriceId={product?.stripePriceId}
           id={Number(params.productId)}
           imgSrc={product.images}
           imgAlt={product.title}

@@ -9,7 +9,7 @@ import {
 import { CartItem } from "../types/types";
 
 type CartDispatch = {
-  addProductToCart: (productId: number) => void;
+  addProductToCart: (productId: number, stripePriceId: string) => void;
   clearCart: () => void;
   removeProductToCart: (productId: number) => void;
   increaseProductQuantity: (productId: number) => void;
@@ -34,7 +34,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  function addProductToCart(productId: number) {
+  function addProductToCart(productId: number, stripePriceId: string) {
     try {
       setCart((prevCart) => {
         const existingItem = prevCart.find((item) => item.id === productId);
@@ -42,11 +42,17 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
         if (existingItem) {
           updatedCart = prevCart.map((item) =>
             item.id === productId
-              ? { ...item, quantity: item.quantity + 1 }
+              ? {
+                  ...item,
+                  quantity: item.quantity + 1,
+                }
               : item,
           );
         } else {
-          updatedCart = [...prevCart, { id: productId, quantity: 1 }];
+          updatedCart = [
+            ...prevCart,
+            { id: productId, stripePriceId, quantity: 1 },
+          ];
         }
         setMessage("Product added to cart successfully.");
         return updatedCart;

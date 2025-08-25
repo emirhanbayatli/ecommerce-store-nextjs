@@ -126,12 +126,7 @@ export default function Cart() {
               Total: ${totalDiscount.toFixed(2)}
             </h2>
 
-            <BuyAllButton
-              cart={cartProducts.map((product) => ({
-                stripePriceId: product.stripePriceId ?? "",
-                quantity: product.quantity,
-              }))}
-            />
+            <BuyAllButton />
           </div>
         </div>
       ) : (

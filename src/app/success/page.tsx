@@ -26,6 +26,11 @@ export default async function Success({ searchParams }: SuccessProps) {
     return redirect("/");
   }
 
+  console.log(
+    session.line_items?.data.map((item) => item.description),
+    "session ",
+  );
+
   if (status === "complete") {
     return (
       <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4">

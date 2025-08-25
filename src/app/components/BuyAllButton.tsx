@@ -1,27 +1,24 @@
 "use client";
 
 import { checkout } from "@/app/actions/cart/checkout";
+import { useCartContext } from "../CartContextProvider";
 
-type BuyAllButtonProps = {
-  cart: { stripePriceId: string; quantity: number }[];
-};
-export const BuyAllButton = ({ cart }: BuyAllButtonProps) => {
+export const BuyAllButton = () => {
+  const cart = useCartContext();
+
   return (
     <form action={checkout}>
-      {cart.map((item, index) => (
-        <div key={index}>
-          <input
-            type="hidden"
-            name={`items[${index}][price]`}
-            value={item.stripePriceId}
-          />
-          <input
-            type="hidden"
-            name={`items[${index}][quantity]`}
-            value={item.quantity}
-          />
-        </div>
-      ))}
+      <input
+        type="hidden"
+        name="cartProducts"
+        value={JSON.stringify(
+          cart.map((p) => ({
+            id: p.id,
+            stripePriceId: p.stripePriceId,
+            quantity: p.quantity,
+          })),
+        )}
+      />
 
       <button
         type="submit"
