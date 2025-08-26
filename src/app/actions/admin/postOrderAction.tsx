@@ -1,8 +1,28 @@
 "use server";
 import { getProductsAction } from "../admin/products";
-import { doc, updateDoc, increment } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  increment,
+  collection,
+  addDoc,
+  Timestamp,
+} from "firebase/firestore";
 import { db } from "../../../utils//firebase";
+import { Resend } from "resend";
 
+interface OrderItem {
+  productId: string;
+  quantity: number;
+  price: number;
+}
+
+interface OrderData {
+  userId: string;
+  items: OrderItem[];
+  totalAmount: number;
+  status: "pending" | "paid" | "shipped";
+}
 export default async function updateStockAction(
   stripePriceId: string,
   productsQuantity: number,
@@ -23,4 +43,51 @@ export default async function updateStockAction(
   } catch (error) {
     console.warn(error, "Firebase increment stok action is failed ");
   }
+}
+
+export async function sendConfirmationEmail(
+  to: string,
+  subject: string,
+  html: string,
+) {
+  const resend = new Resend(process.env.RESEND_API_KEY!);
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "Acme <onboarding@resend.dev>",
+      to,
+      subject,
+      html,
+    });
+
+    if (error) {
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    console.warn("Error sending email:", err);
+    return { success: false, error: err };
+  }
+}
+
+export async function saveOrderToFirestore(order: OrderData) {
+  try {
+    const docRef = await addDoc(collection(db, "orders"), {
+      ...order,
+      createdAt: Timestamp.now(),
+    });
+
+    console.log("Order added with ID: ", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding order: ", error);
+  }
+  // try {
+  //   const orderRef = doc(db, "orders", orderData.id);
+  //   await updateDoc(orderRef, orderData);
+  //   console.log("Order saved to Firestore successfully");
+  // } catch (error) {
+  //   console.warn("Error saving order to Firestore:", error);
+  // }
 }

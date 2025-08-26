@@ -9,6 +9,7 @@ import { getProductsAction } from "../actions/admin/products";
 import { useRouter } from "next/navigation";
 import { discountCalculation } from "@/utils/uiUtils";
 import { BuyAllButton } from "../components/BuyAllButton";
+import { saveOrderToFirestore } from "../actions/admin/postOrderAction";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -128,6 +129,21 @@ export default function Cart() {
               Total: ${totalDiscount.toFixed(2)}
             </h2>
             <BuyAllButton />
+            <button
+              onClick={() =>
+                saveOrderToFirestore({
+                  userId: "user123",
+                  items: [
+                    { productId: "p1", quantity: 2, price: 49 },
+                    { productId: "p2", quantity: 1, price: 99 },
+                  ],
+                  totalAmount: 197,
+                  status: "pending",
+                })
+              }
+            >
+              test firestore
+            </button>
           </div>
         </div>
       ) : (

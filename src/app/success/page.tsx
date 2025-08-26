@@ -17,7 +17,6 @@ export default async function Success({ searchParams }: SuccessProps) {
   const session = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ["line_items", "payment_intent"],
   });
-
   const status = session.status;
   const customerEmail = session.customer_details?.email;
   const customerName = session.customer_details?.name;
@@ -97,7 +96,7 @@ export default async function Success({ searchParams }: SuccessProps) {
           <div className="mt-8">
             <Link
               href="/"
-              className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+              className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-sm hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
             >
               Continue Shopping
             </Link>

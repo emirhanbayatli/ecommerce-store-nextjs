@@ -9,7 +9,7 @@ export async function GET() {
       from: "Acme <onboarding@resend.dev>",
       to: "eb.emirhan.eb@gmail.com",
       subject: "test send email",
-      html: "<h1>bu bir test email gonderimidir :)</h1>",
+      html: "<h1>bu bir test email </h1>",
     });
 
     if (error) {
