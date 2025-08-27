@@ -2,9 +2,11 @@
 
 import { checkout } from "@/app/actions/cart/checkout";
 import { useCartContext } from "../CartContextProvider";
+import { useAuthContext } from "../AuthContextProvider";
 
 export const BuyAllButton = () => {
   const cart = useCartContext();
+  const user = useAuthContext();
 
   return (
     <form action={checkout}>
@@ -19,6 +21,7 @@ export const BuyAllButton = () => {
           })),
         )}
       />
+      <input type="hidden" name="userId" value={user?.id || "guest"} />
 
       <button
         type="submit"

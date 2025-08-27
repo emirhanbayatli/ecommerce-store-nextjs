@@ -129,21 +129,6 @@ export default function Cart() {
               Total: ${totalDiscount.toFixed(2)}
             </h2>
             <BuyAllButton />
-            <button
-              onClick={() =>
-                saveOrderToFirestore({
-                  userId: "user123",
-                  items: [
-                    { productId: "p1", quantity: 2, price: 49 },
-                    { productId: "p2", quantity: 1, price: 99 },
-                  ],
-                  totalAmount: 197,
-                  status: "pending",
-                })
-              }
-            >
-              test firestore
-            </button>
           </div>
         </div>
       ) : (

@@ -12,7 +12,7 @@ import { db } from "../../../utils//firebase";
 import { Resend } from "resend";
 
 interface OrderItem {
-  productId: string;
+  stripePriceId: string;
   quantity: number;
   price: number;
 }
@@ -21,7 +21,7 @@ interface OrderData {
   userId: string;
   items: OrderItem[];
   totalAmount: number;
-  status: "pending" | "paid" | "shipped";
+  status: "pending" | "paid" | "shipped" | "delivered" | "canceled";
 }
 export default async function updateStockAction(
   stripePriceId: string,
@@ -83,11 +83,4 @@ export async function saveOrderToFirestore(order: OrderData) {
   } catch (error) {
     console.error("Error adding order: ", error);
   }
-  // try {
-  //   const orderRef = doc(db, "orders", orderData.id);
-  //   await updateDoc(orderRef, orderData);
-  //   console.log("Order saved to Firestore successfully");
-  // } catch (error) {
-  //   console.warn("Error saving order to Firestore:", error);
-  // }
 }

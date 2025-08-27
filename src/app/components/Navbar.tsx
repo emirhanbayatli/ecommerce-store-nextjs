@@ -15,7 +15,7 @@ export default function Navbar() {
   const setUser = useAuthDispatchContext();
   const cart = useCartContext();
   const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const userName = user?.split("@")[0];
+  const userName = user?.email?.split("@")[0] || "User";
   const router = useRouter();
 
   function logOutAction() {

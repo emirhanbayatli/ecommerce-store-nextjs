@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 
 export async function checkout(formData: FormData) {
   const productsStr = formData.get("cartProducts") as string;
+  const userId = formData.get("userId") as string;
 
   const products = JSON.parse(productsStr) as {
     id: number;
@@ -25,6 +26,10 @@ export async function checkout(formData: FormData) {
       mode: "payment",
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?canceled=true`,
+      metadata: {
+        userId: userId,
+        products: JSON.stringify(products.map((p) => p.id)),
+      },
     });
 
     if (session.url) {

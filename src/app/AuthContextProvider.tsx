@@ -9,7 +9,7 @@ import {
   useEffect,
 } from "react";
 
-type User = string | null;
+type User = { email: string | null; id: string | null } | null;
 
 export const AuthContext = createContext<User>(null);
 const AuthDispatchContext = createContext<Dispatch<SetStateAction<User>>>(
@@ -22,7 +22,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(storedUser.slice(1));
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
