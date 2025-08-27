@@ -18,6 +18,7 @@ interface OrderItem {
 }
 
 interface OrderData {
+  userName: string;
   userId: string;
   items: OrderItem[];
   totalAmount: number;

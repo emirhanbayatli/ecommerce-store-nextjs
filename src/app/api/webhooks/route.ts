@@ -114,11 +114,10 @@ export const POST = async (req: NextRequest) => {
         console.warn("Error sending email:", err);
       }
       const userId = session.metadata?.userId;
-      // const productIds = session.metadata?.products
-      //   ? JSON.parse(session.metadata.products)
-      //   : [];
+      const userName = session.customer_details?.name || "Customer";
       try {
         await saveOrderToFirestore({
+          userName: userName,
           userId: userId || "guest",
           items: lineItems.data.map((item) => ({
             productId: item.id,
