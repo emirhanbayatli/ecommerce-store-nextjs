@@ -65,7 +65,7 @@ export default function SignIn(data: Auth) {
       reset();
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
-        console.log("Error codesssssss:", error.code);
+        console.log("Error code:", error.code);
         setError(getErrorMessageFromCode(error.code));
         setUser(null);
         console.error(error.code, error.message);

@@ -51,6 +51,6 @@ export function getErrorMessageFromCode(code: string): string {
     case "auth/invalid-credential":
       return "The provided credential is invalid. Please try again.";
     default:
-      return "Bilinmeyen hata default dondu An unexpected error occurred. Please try again.";
+      return "An unexpected error occurred. Please try again.";
   }
 }

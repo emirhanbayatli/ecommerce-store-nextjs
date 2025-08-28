@@ -45,7 +45,7 @@ export default function SignUp() {
     await createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        setUser(user.email);
+        setUser(user.email ? { email: user.email, id: user.uid } : null);
         setMessage("User registration and login were successful.");
         userSaveToFirebase(user);
         reset();

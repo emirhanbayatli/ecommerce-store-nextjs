@@ -12,6 +12,7 @@ import { BuyAllButton } from "../components/BuyAllButton";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const cartDispatch = useCartDispatchContext();
 
   if (!cartDispatch) {
@@ -22,10 +23,12 @@ export default function Cart() {
 
   const { removeProductToCart, increaseProductQuantity } = cartDispatch;
   const router = useRouter();
+
   useEffect(() => {
     async function getFirebaseProducts() {
       const productsForFirebase = await getProductsAction();
       setProducts(productsForFirebase);
+      setLoading(false);
     }
     getFirebaseProducts();
   }, []);
@@ -48,25 +51,27 @@ export default function Cart() {
         p !== undefined,
     );
 
-  const totalDiscountValue = cartProducts.map((product) => {
+  const subTotal = cartProducts.reduce((sum, p) => sum + p.totalPrice, 0);
+
+  const totalPayable = cartProducts.reduce((sum, product) => {
     const discountedPrice = discountCalculation(
       product.price,
       product.discountPercentage,
     );
-    const totalDiscounted = discountedPrice * product.quantity;
-    return totalDiscounted;
-  });
+    return sum + discountedPrice * product.quantity;
+  }, 0);
 
-  const subTotal = cartProducts.reduce((sum, p) => sum + p.totalPrice, 0);
-  const totalDiscount = totalDiscountValue.reduce((sum, val) => sum + val, 0);
-
-  const totalPayable = subTotal - totalDiscount;
+  const totalDiscount = subTotal - totalPayable;
 
   return (
     <div className="container mx-auto px-4 my-12 max-w-5xl">
       <h1 className="font-bold text-3xl mb-6 ">Your Cart</h1>
 
-      {cartProducts.length > 0 ? (
+      {loading ? (
+        <div className="text-center my-12">
+          <h2 className="text-2xl my-4">Loading your cart...</h2>
+        </div>
+      ) : cartProducts.length > 0 ? (
         <div className="bg-white rounded-xl">
           <div className="min-w-full">
             <div>
@@ -120,10 +125,10 @@ export default function Cart() {
               Subtotal: ${subTotal.toFixed(2)}
             </h2>
             <h2 className="font-bold text-lg">
-              Discount: ${totalPayable.toFixed(2)}
+              Discount: ${totalDiscount.toFixed(2)}
             </h2>
             <h2 className="font-bold text-lg">
-              Total: ${totalDiscount.toFixed(2)}
+              Total: ${totalPayable.toFixed(2)}
             </h2>
             <BuyAllButton />
           </div>
@@ -131,7 +136,6 @@ export default function Cart() {
       ) : (
         <div className="text-center my-12">
           <h2 className="text-2xl my-4">Your shopping cart is empty!</h2>
-
           <Button label="Go Shopping !" onClick={() => router.push("/")} />
         </div>
       )}

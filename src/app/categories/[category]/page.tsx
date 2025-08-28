@@ -4,11 +4,13 @@ import { Product } from "@/types/types";
 import { discountCalculation, showStar } from "@/utils/uiUtils";
 import Link from "next/link";
 
-export default async function Categories({
-  params,
-}: {
-  params: { category: string };
-}) {
+interface CategoryPageProps {
+  params: {
+    category: string;
+  };
+}
+
+export default async function Categories({ params }: CategoryPageProps) {
   const products = await getProductsAction();
 
   return (
@@ -18,7 +20,6 @@ export default async function Categories({
           return (
             <Link key={product.id} href={`/products/${product.id}`}>
               <ItemCard
-                key={product.id}
                 id={product.id}
                 title={product.title}
                 imgSrc={product.images[0]}
@@ -37,7 +38,6 @@ export default async function Categories({
             </Link>
           );
         }
-
         return null;
       })}
     </div>
