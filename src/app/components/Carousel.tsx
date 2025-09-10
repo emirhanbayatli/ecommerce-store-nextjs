@@ -26,9 +26,11 @@ export default function Carousel({ images, className }: CarouselProps) {
 
   return (
     <div
+      data-testid="carousel"
       className={`relative max-w-4xl mx-auto overflow-hidden rounded-lg ${className}`}
     >
       <Image
+        data-testid={`carousel-images-${currentIndex}`}
         src={images[currentIndex]}
         alt={`Image ${currentIndex + 1}`}
         width={900}
@@ -40,6 +42,7 @@ export default function Carousel({ images, className }: CarouselProps) {
                  50vw"
       />
       <button
+        data-testid="carousel-prev-button"
         onClick={prevImage}
         aria-label="Previous Image"
         className="absolute top-1/2 left-4 -translate-y-1/2 bg-white  text-black rounded-full w-10 h-10 flex items-center justify-center"
@@ -47,6 +50,7 @@ export default function Carousel({ images, className }: CarouselProps) {
         ‹
       </button>
       <button
+        data-testid="carousel-next-button"
         onClick={nextImage}
         aria-label="Next Image"
         className="absolute top-1/2 right-4 -translate-y-1/2 bg-white  text-black rounded-full w-10 h-10 flex items-center justify-center "

@@ -16,7 +16,6 @@ interface Auth {
 }
 
 export default function SignIn(data: Auth) {
-  console.log(data);
   const [error, setError] = useState<string>();
   const [message, setMessage] = useState<string>();
   const router = useRouter();
@@ -98,6 +97,7 @@ export default function SignIn(data: Auth) {
                 message: "Email must not exceed 150 characters",
               },
             })}
+            data-testid="email-input"
             type="email"
             placeholder="Email"
             className="border rounded p-2 "
@@ -120,6 +120,7 @@ export default function SignIn(data: Auth) {
                 message: "Password must not exceed 60 characters",
               },
             })}
+            data-testid="password-input"
             type="password"
             placeholder="Password"
             className="border rounded p-2"
@@ -132,6 +133,7 @@ export default function SignIn(data: Auth) {
         </div>
 
         <button
+          data-testid="submit-button"
           disabled={isSubmitting}
           type="submit"
           className={`w-full p-2 rounded font-semibold ${

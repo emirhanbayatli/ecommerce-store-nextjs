@@ -8,7 +8,6 @@ import { allCategories } from "@/types/types";
 import { useAuthContext, useAuthDispatchContext } from "../AuthContextProvider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-//import { Transition } from "@headlessui/react";
 
 export default function Navbar() {
   const user = useAuthContext();

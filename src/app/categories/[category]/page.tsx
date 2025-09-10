@@ -5,18 +5,19 @@ import { discountCalculation, showStar } from "@/utils/uiUtils";
 import Link from "next/link";
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 export default async function Categories({ params }: CategoryPageProps) {
+  const { category } = await params;
   const products = await getProductsAction();
 
   return (
     <div className="grid grid-cols-4 gap-3 p-5">
       {products.map((product: Product) => {
-        if (params.category === product.category) {
+        if (category === product.category) {
           return (
             <Link key={product.id} href={`/products/${product.id}`}>
               <ItemCard

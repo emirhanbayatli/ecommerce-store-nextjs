@@ -3,8 +3,9 @@ interface HighlightProps {
   title: string;
   imgSrc: string;
   imgAlt: string;
-  price?: string;
+  price?: number | string;
   discount: number;
+  className?: string;
 }
 
 const colors = [
@@ -15,6 +16,8 @@ const colors = [
   "bg-purple-300",
   "bg-indigo-300",
   "bg-teal-300",
+  "bg-red-300",
+  "bg-orange-300",
 ];
 
 export default function HighlightCard({
@@ -23,6 +26,7 @@ export default function HighlightCard({
   imgAlt,
   price,
   discount,
+  className,
 }: HighlightProps) {
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
@@ -34,7 +38,8 @@ export default function HighlightCard({
         className="w-40 h-40 object-cover rounded-lg"
       />
       <div
-        className={`p-4 flex flex-col justify-between text-white rounded-r-lg w-3/5 ${randomColor}`}
+        data-testid="highlight-card-info"
+        className={`p-4 flex flex-col justify-between text-white rounded-r-lg w-3/5 ${randomColor} ${className}`}
       >
         <h3 className="text-xl text-center font-bold mb-2">{title}</h3>
 

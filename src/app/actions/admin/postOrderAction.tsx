@@ -8,7 +8,7 @@ import {
   addDoc,
   Timestamp,
 } from "firebase/firestore";
-import { db } from "../../../utils//firebase";
+import { db } from "../../../utils/firebase";
 import { Resend } from "resend";
 
 interface OrderItem {
