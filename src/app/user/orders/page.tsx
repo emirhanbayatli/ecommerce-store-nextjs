@@ -41,6 +41,7 @@ export default function OrdersPage() {
     fetchOrders();
   }, [user]);
 
+  //TODO: orders page is not showing orders, need to fix it
   return (
     <div className="px-10 py-5 flex justify-center">
       <div className="flex flex-col max-w-[960px] w-full">

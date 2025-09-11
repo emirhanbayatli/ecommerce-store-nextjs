@@ -39,6 +39,8 @@ export default function Admin() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
+  //TODO: image yuklemede hata var bunu duzelt
+
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
