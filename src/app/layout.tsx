@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartContextProvider } from "./CartContextProvider";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { AuthContextProvider } from "./AuthContextProvider";
 
 export const metadata: Metadata = {
   title: "E-Commerce",
@@ -27,14 +18,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 `}
+      //   className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 flex flex-col min-h-screen`}
       >
-        <CartContextProvider>
-          <header>
-            <Navbar />
-          </header>
-          {children}
-        </CartContextProvider>
+        <AuthContextProvider>
+          <CartContextProvider>
+            <header>
+              <Navbar />
+            </header>
+            <main className="flex-grow">{children}</main>
+          </CartContextProvider>
+        </AuthContextProvider>
         <footer>
           <Footer />
         </footer>

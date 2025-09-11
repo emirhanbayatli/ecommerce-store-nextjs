@@ -8,17 +8,17 @@ import {
   ReturnPolicy,
 } from "../../../types/types";
 import { z } from "zod";
-import { put } from "@vercel/blob";
-
 import { db, collections } from "../../../utils/firebase";
+import { vercelBlobPutAction } from "../../../utils/vercelBlob";
+
 import {
   getDocs,
   collection,
   setDoc,
   doc,
-  deleteDoc,
   updateDoc,
 } from "firebase/firestore";
+import { addProductStripe, updateProductStripe } from "./utilsStripe";
 
 const productSchema = z.object({
   title: z
@@ -91,14 +91,6 @@ const productSchema = z.object({
   returnPolicy: z.nativeEnum(ReturnPolicy, {
     errorMap: () => ({ message: "Please select a return policy" }),
   }),
-  // images: z
-  //   .string()
-  //   .min(1, "At least one image URL is required")
-  //   .max(500, "Image URL must not exceed 1000 characters"),
-  // thumbnail: z
-  //   .string()
-  //   .min(1, "Thumbnail URL is required")
-  //   .max(500, "Thumbnail URL must not exceed 1000 characters"),
 });
 
 export async function addNewProductAction(
@@ -128,11 +120,7 @@ export async function addNewProductAction(
     ) as AvailabilityStatus,
     minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
-    // images: formData.get("images") as string,
-    // thumbnail: formData.get("thumbnail") as string,
   };
-
-  console.table(rawData);
 
   const result = productSchema.safeParse(rawData);
 
@@ -145,57 +133,36 @@ export async function addNewProductAction(
       errors: result.error.flatten().fieldErrors,
     };
   }
-
   const id = Date.now().toString();
   const dateNow = Date.now();
+  const blobResult = await vercelBlobPutAction({
+    formData,
+    rawData,
+    id: Number(id),
+  });
 
-  let imageUrl = "";
-  const MAX_ALLOWED_IMAGE_SIZE = 4.5 * 1024 * 1024;
-  const image = formData.get("image") as File | null;
-  // const thumbnail = formData.get("thumbnail") as File | null;
-  const allowedImageTypes = [".jpeg", ".jpg", ".webp"];
-
-  if (image && image.size > 0) {
-    if (
-      !allowedImageTypes.map((allowedType) =>
-        image.name.toLowerCase().endsWith(allowedType),
-      )
-    ) {
-      return {
-        success: false,
-        message: "Please update product image.",
-        inputs: { ...rawData },
-        errors: {
-          images: ["Allowed image formats: .jpeg, .jpg, .webp."],
-        },
-      };
-    }
-    if (image.size > MAX_ALLOWED_IMAGE_SIZE) {
-      return {
-        success: false,
-        message: "Please update product image, maximum allowed size 4.5 MB",
-        inputs: { ...rawData },
-        errors: {
-          images: ["Maximum allowed size 4.5 MB"],
-        },
-      };
-    }
-
-    const imageName = id + "." + image.type.slice(6);
-
-    const blob = await put(imageName, image, {
-      access: "public",
-      token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
-    });
-
-    console.log(blob, "blob");
-
-    imageUrl = blob.url;
-    console.log(imageUrl, "imageUrl");
+  if (!blobResult.success) {
+    return {
+      success: false,
+      message: "Failed adding images",
+      inputs: { ...rawData },
+      errors: blobResult.errors,
+    };
   }
 
+  const imageUrl = blobResult.data?.images;
+  const thumbnailUrl = blobResult.data?.thumbnail;
+
   try {
-    // TODO: query db for a product with the title that is entered in the form. If the title is already present in the DB, return an error and tell the user that product already exists
+    const title = formData.get("title") as string;
+    const products = await getProductsAction();
+    const found = products.find((product) => product.title === title);
+
+    if (found) {
+      throw new Error("Two products cannot have the same title!");
+    }
+
+    const stripe = await addProductStripe(result);
 
     await setDoc(doc(db, collections.products, id), {
       title: result.data.title,
@@ -215,11 +182,13 @@ export async function addNewProductAction(
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
       images: [imageUrl],
-      thumbnail: [imageUrl],
+      thumbnail: [thumbnailUrl],
       meta: {
         createdAt: dateNow,
         updatedAt: dateNow,
       },
+      stripeProductId: stripe.stripeProductId,
+      stripePriceId: stripe.stripePriceId,
     });
 
     return {
@@ -229,8 +198,8 @@ export async function addNewProductAction(
         id: Number(id),
         ...result.data,
         rating: 0,
-        images: imageUrl,
-        thumbnail: imageUrl,
+        images: imageUrl ? imageUrl : "",
+        thumbnail: thumbnailUrl ? thumbnailUrl : "",
         meta: {
           createdAt: String(dateNow),
           updatedAt: String(dateNow),
@@ -249,7 +218,7 @@ export async function addNewProductAction(
   }
 }
 
-export async function getProducts(): Promise<Product[]> {
+export async function getProductsAction(): Promise<Product[]> {
   const querySnapshot = await getDocs(collection(db, "products"));
   const products = querySnapshot.docs.map((doc) => {
     const data = doc.data();
@@ -274,22 +243,25 @@ export async function getProducts(): Promise<Product[]> {
       returnPolicy: data.returnPolicy,
       images: data.images,
       thumbnail: data.thumbnail,
+      rating: data.rating,
       meta: {
         createdAt: data.meta?.createdAt ?? 0,
         updatedAt: data.meta?.updatedAt ?? 0,
       },
+      stripeProductId: data.stripeProductId,
+      stripePriceId: data.stripePriceId,
     };
   });
   return products as Product[];
 }
 
-export async function editProduct(
+export async function editProductAction(
   currentState: EditProductFormState | null,
   formData: FormData,
 ) {
-  // const imageFile = formData.get("image") as File | null;
-  const imageUrl = currentState?.inputs?.images || ""; // switch let
   const rawData = {
+    stripeProductId: formData.get("stripeProductId") as string,
+    stripePriceId: formData.get("stripePriceId") as string,
     productId: formData.get("productId") as string,
     title: formData.get("title") as string,
     description: formData.get("description") as string,
@@ -313,26 +285,47 @@ export async function editProduct(
     ) as AvailabilityStatus,
     minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
-    images: imageUrl,
-    thumbnail: imageUrl,
   };
 
   const result = productSchema.safeParse(rawData);
-
   if (!result.success) {
-    console.log(result);
     return {
       success: false,
-      message: "Error updating a new product to Firebase",
+      message: "Error updating a product to Firebase",
       inputs: { ...rawData },
       errors: result.error.flatten().fieldErrors,
     };
   }
+  const id = Date.now().toString();
+  const blobResult = await vercelBlobPutAction({
+    formData,
+    rawData,
+    id: Number(id),
+  });
+
+  if (!blobResult.success) {
+    return {
+      success: false,
+      message: "Failed updating images",
+      inputs: { ...rawData },
+      errors: blobResult.errors,
+    };
+  }
+
+  const imageUrl = blobResult.data?.images;
+  const thumbnailUrl = blobResult.data?.thumbnail;
+
+  const stripe = await updateProductStripe(
+    rawData.stripeProductId.toString(),
+    rawData.stripePriceId.toString(),
+    result,
+  );
+
+  console.log(stripe.newPriceId);
 
   try {
     const productId = formData.get("productId") as string;
     const productRef = doc(db, "products", productId);
-    console.log(result);
 
     await updateDoc(productRef, {
       title: result.data.title,
@@ -351,12 +344,15 @@ export async function editProduct(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      // images: imagesUrl,
-      // thumbnail: imagesUrl,
+      images: [imageUrl],
+      thumbnail: [thumbnailUrl],
       meta: {
-        updatedAt: new Date(),
+        updatedAt: Date.now().toString(),
       },
+      stripeProductId: stripe.updatedProductId,
+      stripePriceId: stripe.newPriceId,
     });
+
     return {
       success: true,
       message: "The product is updating successfully",
@@ -364,19 +360,10 @@ export async function editProduct(
   } catch (error) {
     console.error("Error updating a new product to Firebase", error);
   }
+
   return {
     success: false,
     message: "Failed updating a product in the database",
     inputs: { ...rawData },
   };
-}
-
-export async function deleteProduct(id: string) {
-  const productRef = doc(db, "products", id);
-  try {
-    await deleteDoc(productRef);
-    console.log(`Product with ID ${id} was deleted successfully.`);
-  } catch (error) {
-    console.error("Failed to delete product:", id, error);
-  }
 }

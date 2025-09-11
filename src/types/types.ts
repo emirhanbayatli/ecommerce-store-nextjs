@@ -1,6 +1,7 @@
 export type CartItem = {
   id: number;
   quantity: number;
+  stripePriceId?: string;
 };
 
 export interface Product {
@@ -9,7 +10,7 @@ export interface Product {
   description: string;
   category: Category;
   price: number;
-  discountPercentage?: number;
+  discountPercentage: number;
   rating?: number;
   stock: number;
   tags?: Tags[];
@@ -26,46 +27,56 @@ export interface Product {
   meta?: Meta;
   images: string;
   thumbnail: string;
+  stripeProductId?: string;
+  stripePriceId?: string;
 }
 
 export enum Category {
-  fragrances = "fragrances",
-  beauty = "beauty",
-  groceries = "groceries",
-  furniture = "furniture",
+  Beauty = "Beauty",
+  Fragrances = "Fragrances",
+  MobileAccessories = "Mobile Accessories",
+  Furniture = "Furniture",
+  Groceries = "Groceries",
+  HomeDecoration = "Home Decoration",
+  KitchenAccessories = "Kitchen Accessories",
+  Laptops = "Laptops",
+  MensShirts = "Mens Shirts",
+  MensShoes = "Mens Shoes",
+  MensWatches = "Mens Watches",
 }
+
 export enum Tags {
   mascara = "mascara",
   beauty = "beauty",
-  eyeshadow = "eyeshadow",
-  face_powder = "face_powder",
-  lipstick = "lipstick",
-  nail_polish = "nail_polish",
-  fragrances = "fragrances",
-  perfumes = "perfumes",
-  furniture = "furniture",
-  beds = "beds",
-  sofas = "sofas",
-  bedside_tables = "bedside_tables",
-  office_chairs = "office_chairs",
-  bathroom = "bathroom",
-  fruits = "fruits",
-  meat = "meat",
-  pet_supplies = "pet_supplies",
-  cat_food = "cat_food",
-  dog_food = "dog_food",
-  cooking_essentials = "cooking_essentials",
-  vegetables = "vegetables",
-  dairy = "dairy",
-  seafood = "seafood",
-  condiments = "condiments",
-  desserts = "desserts",
-  beverages = "beverages",
+  eyeshadow = "Eyeshadow",
+  face_powder = "Face Powder",
+  lipstick = "Lipstick",
+  nail_polish = "Nail Polish",
+  fragrances = "Fragrances",
+  perfumes = "Perfumes",
+  furniture = "Furniture",
+  beds = "Beds",
+  sofas = "Sofas",
+  bedside_tables = "Bedside Tables",
+  office_chairs = "Office chairs",
+  bathroom = "Bathroom",
+  fruits = "Fruits",
+  meat = "Meat",
+  pet_supplies = "pet supplies",
+  cat_food = "cat food",
+  dog_food = "Dog Food",
+  cooking_essentials = "Cooking Essentials",
+  vegetables = "Vegetables",
+  dairy = "Dairy",
+  seafood = "Seafood",
+  condiments = "Condiments",
+  desserts = "Desserts",
+  beverages = "Beverages",
 }
 
 export const allTags = Object.values(Tags);
 
-export const allCategories = Object.keys(Category);
+export const allCategories = Object.values(Category);
 
 export enum AvailabilityStatus {
   IN_STOCK = "In Stock",

@@ -1,25 +1,33 @@
 import Link from "next/link";
 import { Product } from "../../types/types";
 import ItemCard from "../components/ItemCard";
-import { showStar } from "../../utils/uiUtils";
+import { discountCalculation, showStar } from "../../utils/uiUtils";
+import { getProductsAction } from "../actions/admin/products";
 
 export default async function Products() {
   try {
-    const res = await fetch("https://dummyjson.com/products");
-    const data = await res.json();
+    const products = await getProductsAction();
 
     return (
       <main className="grid grid-cols-4 gap-6 p-6">
-        {data.products.map((product: Product) => (
+        {products.map((product: Product) => (
           <Link key={product.id} href={`/products/${product.id}`}>
             <ItemCard
               key={product.id}
               id={product.id}
+              title={product.title}
               imgSrc={product.images[0]}
               imgAlt={product.title}
-              title={product.title}
-              price={product.price + " $"}
-              rating={`${product.rating} ${showStar(Number(product.rating))}`}
+              price={`$${product.price}`}
+              discount={
+                product?.discountPercentage && product.discountPercentage > 0
+                  ? discountCalculation(
+                      product.price,
+                      product.discountPercentage,
+                    )
+                  : product?.price
+              }
+              rating={showStar(product.rating ?? 0)}
             />
           </Link>
         ))}

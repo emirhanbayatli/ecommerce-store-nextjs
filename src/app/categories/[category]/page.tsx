@@ -1,0 +1,45 @@
+import { getProductsAction } from "@/app/actions/admin/products";
+import ItemCard from "@/app/components/ItemCard";
+import { Product } from "@/types/types";
+import { discountCalculation, showStar } from "@/utils/uiUtils";
+import Link from "next/link";
+
+export default async function Categories({
+  params,
+}: {
+  params: { category: string };
+}) {
+  const products = await getProductsAction();
+
+  return (
+    <div className="grid grid-cols-4 gap-3 p-5">
+      {products.map((product: Product) => {
+        if (params.category === product.category) {
+          return (
+            <Link key={product.id} href={`/products/${product.id}`}>
+              <ItemCard
+                key={product.id}
+                id={product.id}
+                title={product.title}
+                imgSrc={product.images[0]}
+                imgAlt={product.title}
+                price={`$${product.price}`}
+                discount={
+                  product?.discountPercentage && product.discountPercentage > 0
+                    ? discountCalculation(
+                        product.price,
+                        product.discountPercentage,
+                      )
+                    : product?.price
+                }
+                rating={showStar(product.rating ?? 0)}
+              />
+            </Link>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}

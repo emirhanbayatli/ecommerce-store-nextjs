@@ -10,10 +10,12 @@ import {
   allAvailabilityStatus,
   allReturnPolicies,
   Product,
+  Tags,
 } from "../../../../../types/types";
-import { editProduct } from "../../../../actions/admin/products";
+import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 
 const initialState: EditProductFormState = {
   success: false,
@@ -39,7 +41,7 @@ export default function EditProduct() {
   const [state, formAction, isPending] = useActionState<
     EditProductFormState,
     FormData
-  >(editProduct, initialState);
+  >(editProductAction, initialState);
 
   const params = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -57,9 +59,29 @@ export default function EditProduct() {
     fetchData();
   }, []);
 
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const urls = Array.from(files).map((file) => URL.createObjectURL(file));
+      setImagePreviews(urls);
+    }
+  };
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setThumbnailPreview(url);
+    }
+  };
+
   if (isPending) return <p>Loading...</p>;
+
   return (
-    <main className="max-w-4xl mx-auto my-6">
+    <main className="max-w-4xl mx-auto my-6 pb-12">
       {product ? (
         <div>
           <Form
@@ -75,6 +97,28 @@ export default function EditProduct() {
                 type="text"
                 id="productId"
                 defaultValue={params.productId}
+                className="bg-stone-200 text-stone-900 p-2 rounded"
+                readOnly
+              />
+              <label htmlFor="productId" className="font-bold mb-1">
+                Stripe Product ID
+              </label>
+              <input
+                name="stripeProductId"
+                type="text"
+                id="stripeProductId"
+                defaultValue={product.stripeProductId}
+                className="bg-stone-200 text-stone-900 p-2 rounded"
+                readOnly
+              />
+              <label htmlFor="stripePriceId" className="font-bold mb-1">
+                Stripe Price ID
+              </label>
+              <input
+                name="stripePriceId"
+                type="text"
+                id="stripePriceId"
+                defaultValue={product.stripePriceId}
                 className="bg-stone-200 text-stone-900 p-2 rounded"
                 readOnly
               />
@@ -283,23 +327,14 @@ export default function EditProduct() {
               </label>
               <div className="flex flex-wrap gap-2">
                 {allTags.map((tag) => (
-                  <label key={tag} className="flex items-center gap-1">
+                  <label key={tag}>
                     <input
-                      {...register("tags", {
-                        required: "Tags is required",
-                        validate: (value) =>
-                          (Array.isArray(value) &&
-                            value.every((v) => allTags.includes(v))) ||
-                          "Please choose valid tags",
-                      })}
-                      defaultChecked={product.tags?.includes(tag)}
-                      id={`tag-${tag}`}
-                      name="tags"
                       type="checkbox"
+                      name="tags"
                       value={tag}
-                      className="accent-stone-900"
+                      defaultChecked={product?.tags?.includes(tag as Tags)}
                     />
-                    {tag}
+                    {tag.replace("_", " ")}
                   </label>
                 ))}
               </div>
@@ -703,32 +738,30 @@ export default function EditProduct() {
                 Images
               </label>
               <input
-                {...register("images", {
-                  required: "At least one image URL is required",
-                  minLength: {
-                    value: 1,
-                    message: "Image URL must be at least 1 character",
-                  },
-                  maxLength: {
-                    value: 500,
-                    message: "Image URL must not exceed 500 characters",
-                  },
-                })}
-                defaultValue={product.images}
-                type="text"
+                accept=".jpeg, .jpg, .webp"
+                type="file"
+                multiple
                 id="images"
                 name="images"
                 className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
                 placeholder="Simply separate each link with a comma to add more than one."
+                onChange={handleImagesChange}
               />
-              {state?.errors?.images && (
-                <p className="text-red-600 text-sm">{state.errors.images}</p>
-              )}
               {errors.images?.message && (
                 <p className="text-red-600 text-sm">
                   {errors.images.message as string}
                 </p>
               )}
+              <div className="flex gap-5 flex-wrap">
+                {imagePreviews?.map((src, index) => (
+                  <img
+                    key={index}
+                    src={src}
+                    alt={`Image Preview ${index}`}
+                    className="rounded shadow max-w-32  mt-4"
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-col col-span-2">
@@ -736,39 +769,39 @@ export default function EditProduct() {
                 Thumbnail
               </label>
               <input
-                {...register("thumbnail", {
-                  required: "Thumbnail URL is required",
-                  minLength: {
-                    value: 1,
-                    message: "Thumbnail URL must be at least 1 character",
-                  },
-                  maxLength: {
-                    value: 500,
-                    message: "Thumbnail URL must not exceed 500 characters",
-                  },
-                })}
-                defaultValue={product.thumbnail}
-                type="text"
+                accept=".jpeg, .jpg, .webp"
+                type="file"
                 id="thumbnail"
                 name="thumbnail"
                 className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
                 placeholder="Simply separate each link with a comma to add more than one."
+                onChange={handleThumbnailChange}
               />
-              {state?.errors?.thumbnail && (
-                <p className="text-red-600 text-sm">{state.errors.thumbnail}</p>
-              )}
+
               {errors.thumbnail?.message && (
                 <p className="text-red-600 text-sm">
                   {errors.thumbnail.message as string}
                 </p>
               )}
+              {state?.errors?.thumbnail && (
+                <p className="text-red-600 text-sm">{state.errors.thumbnail}</p>
+              )}
+
+              {thumbnailPreview && (
+                <div className="mt-4">
+                  <img
+                    src={thumbnailPreview}
+                    alt="Thumbnail Preview"
+                    className="rounded shadow max-w-32"
+                  />
+                </div>
+              )}
             </div>
 
-            <Button
-              className="my-8 col-span-2"
-              label="Update Product"
-              type="submit"
-            />
+            <Button label="Update Product" type="submit" />
+            <Link href={"/admin/products"}>
+              <Button className="w-full" label="Cancel" />
+            </Link>
           </Form>
         </div>
       ) : (

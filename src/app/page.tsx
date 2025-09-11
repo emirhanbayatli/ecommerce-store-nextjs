@@ -1,80 +1,109 @@
 import Link from "next/link";
 import { Product } from "./../types/types";
-import ItemCard from "./components/ItemCard";
-import { showStar } from "../utils/uiUtils";
+import Carousel from "./components/Carousel";
+import Highlight from "./components/HighlightCard";
+import { discountCalculation } from "../utils/uiUtils";
+import Image from "next/image";
+import { getProductsAction } from "./actions/admin/products";
 
 export default async function Home() {
+  const images = [
+    "/carousel/1.webp",
+    "/carousel/2.webp",
+    "/carousel/3.webp",
+    "/carousel/4.webp",
+    "/carousel/5.webp",
+  ];
+  const images_2 = [
+    "/carousel/5.webp",
+    "/carousel/4.webp",
+    "/carousel/3.webp",
+    "/carousel/2.webp",
+    "/carousel/1.webp",
+  ];
   try {
-    const res = await fetch("https://dummyjson.com/products");
-    const data = await res.json();
+    const products = await getProductsAction();
 
     return (
-      <main className="px-24">
-        <div className="relative w-full my-3">
-          <img
-            src="/banner.webp"
-            alt="örnek"
-            className="w-full h-100 object-fill"
-          />
-          <button className="absolute bottom-4 right-4 bg-black  text-white px-4 py-2 rounded  ">
-            Shop Now!
-          </button>
+      <main className="p-4 md:p-12 lg:p-24">
+        <div className="flex gap-3 w-full my-3">
+          <Carousel images={images} />
+          <Carousel images={images_2} className="hidden lg:block" />
         </div>
 
-        <h1 className="text-center font-bold text-3xl my-8">Categories</h1>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <img
-              src="/Groceries.jpg"
-              alt="Groceries"
-              className="w-full h-40 object-cover rounded-t-xl"
-            />
-            <p className="py-4 font-semibold">Groceries</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <img
-              src="/Beauty.jpg"
-              alt="Beauty"
-              className="w-full h-40 object-cover rounded-t-xl"
-            />
-            <p className="py-4 font-semibold">Beauty</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <img
-              src="/Fragrances.jpg"
-              alt="Fragrances"
-              className="w-full h-40 object-cover rounded-t-xl"
-            />
-            <p className="py-4 font-semibold">Fragrances</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
-            <img
-              src="/Furniture.jpg"
-              alt="Furniture"
-              className="w-full h-40 object-cover rounded-t-xl"
-            />
-            <p className="py-4 font-semibold">Furniture</p>
-          </div>
+        <h1 className="font-bold text-3xl my-8">Categories</h1>
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Link href="/categories/groceries">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/sebze.jpg"
+                alt="Groceries"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={100}
+                height={40}
+              />
+              <p className="py-4 font-semibold">Groceries</p>
+            </div>
+          </Link>
+          <Link href="/categories/beauty">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/Beauty.jpg"
+                alt="Beauty"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={250}
+                height={250}
+              />
+              <p className="py-4 font-semibold">Beauty</p>
+            </div>
+          </Link>
+          <Link href="/categories/fragrances">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/Fragrances.jpg"
+                alt="Fragrances"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={250}
+                height={250}
+              />
+              <p className="py-4 font-semibold">Fragrances</p>
+            </div>
+          </Link>
+          <Link href="/categories/furniture">
+            <div className="flex flex-col items-center text-center bg-white rounded-xl shadow hover:shadow-lg transition">
+              <Image
+                src="/Furniture.jpg"
+                alt="Furniture"
+                className="w-full h-40 object-cover rounded-t-xl"
+                width={250}
+                height={250}
+              />
+              <p className="py-4 font-semibold">Furniture</p>
+            </div>
+          </Link>
         </div>
-        <h1 className="text-center font-bold text-3xl my-8">
-          Featured Products
-        </h1>
+        <h1 className="font-bold text-3xl my-8">Featured Products</h1>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 ">
-          {data.products.map((product: Product) =>
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {products.map((product: Product) =>
             product.rating !== undefined && product.rating >= 4.7 ? (
               <Link key={product.id} href={`/products/${product.id}`}>
-                <ItemCard
+                <Highlight
                   key={product.id}
                   id={product.id}
                   title={product.title}
                   imgSrc={product.images[0]}
                   imgAlt={product.title}
                   price={`$${product.price}`}
-                  rating={showStar(product.rating)}
+                  discount={
+                    product?.discountPercentage &&
+                    product.discountPercentage > 0
+                      ? discountCalculation(
+                          product.price,
+                          product.discountPercentage,
+                        )
+                      : product?.price
+                  }
                 />
               </Link>
             ) : null,

@@ -3,14 +3,14 @@ export function Button({
   onClick,
   label,
 }: {
-  label: string;
+  label: React.ReactNode;
   className?: string;
   onClick?: () => void;
   type?: string;
 }) {
   return (
     <button
-      className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${className}`}
+      className={`bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded text-white ${className}`}
       onClick={onClick}
     >
       {label}
