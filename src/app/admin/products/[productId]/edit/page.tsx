@@ -111,7 +111,7 @@ export default function EditProduct() {
                 className="bg-stone-200 text-stone-900 p-2 rounded"
                 readOnly
               />
-              <label htmlFor="productId" className="font-bold mb-1">
+              <label htmlFor="stripePriceId" className="font-bold mb-1">
                 Stripe Price ID
               </label>
               <input
