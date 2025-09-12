@@ -54,3 +54,6 @@ export function getErrorMessageFromCode(code: string): string {
       return "An unexpected error occurred. Please try again.";
   }
 }
+
+export const CURRENCY = "usd";
+export const CURRENCY_SYMBOL = "$";

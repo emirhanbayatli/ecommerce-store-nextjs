@@ -25,9 +25,9 @@ export const BuyAllButton = () => {
 
       <button
         type="submit"
-        className="text-[#49739c] text-sm font-normal leading-normal"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transition-colors duration-200"
       >
-        Buy All
+        Check Out
       </button>
     </form>
   );

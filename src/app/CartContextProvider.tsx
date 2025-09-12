@@ -9,10 +9,10 @@ import {
 import { CartItem } from "../types/types";
 
 type CartDispatch = {
-  addProductToCart: (productId: number, stripePriceId: string) => void;
+  addProductToCart: (productId: string, stripePriceId: string) => void;
   clearCart: () => void;
-  removeProductToCart: (productId: number) => void;
-  increaseProductQuantity: (productId: number) => void;
+  removeProductToCart: (productId: string) => void;
+  increaseProductQuantity: (productId: string) => void;
 };
 
 export const CartContext = createContext<CartItem[]>([]);
@@ -34,7 +34,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  function addProductToCart(productId: number, stripePriceId: string) {
+  function addProductToCart(productId: string, stripePriceId: string) {
     try {
       setCart((prevCart) => {
         const existingItem = prevCart.find((item) => item.id === productId);
@@ -75,7 +75,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
       setErrorMessage("Failed to clear the cart.");
     }
   }
-  function removeProductToCart(productId: number) {
+  function removeProductToCart(productId: string) {
     try {
       setCart((prevCart) => {
         return prevCart
@@ -92,7 +92,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
       setErrorMessage("Failed to remove product.");
     }
   }
-  function increaseProductQuantity(productId: number) {
+  function increaseProductQuantity(productId: string) {
     try {
       setCart((prevCart) => {
         return prevCart

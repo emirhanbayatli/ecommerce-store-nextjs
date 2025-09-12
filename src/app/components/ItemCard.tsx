@@ -1,6 +1,6 @@
 import Image from "next/image";
 interface ItemCardProps {
-  id?: number;
+  id?: string;
   title: string;
   imgSrc: string;
   imgAlt: string;
@@ -18,7 +18,7 @@ export default function ItemCard({
   discount,
 }: ItemCardProps) {
   return (
-    <div className="w-80 rounded shadow-lg bg-white p-4 hover:shadow-2xl transition ">
+    <div className="w-full rounded shadow-lg bg-white p-4 hover:shadow-2xl transition ">
       <div className="flex justify-center">
         <Image src={imgSrc} alt={imgAlt} width={200} height={200} />
       </div>

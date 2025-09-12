@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { stripe } from "@/utils/stripe";
 import Link from "next/link";
+import { CURRENCY } from "@/utils/uiUtils";
 
 interface SuccessProps {
   searchParams: Promise<{
@@ -78,7 +79,7 @@ export default async function Success({ searchParams }: SuccessProps) {
                 <strong>Total:</strong>{" "}
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
-                  currency: session.currency ?? "USD",
+                  currency: session.currency ?? CURRENCY,
                 }).format((session.amount_total ?? 0) / 100)}
               </p>
             </div>

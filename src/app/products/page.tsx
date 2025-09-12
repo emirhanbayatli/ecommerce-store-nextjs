@@ -9,14 +9,19 @@ export default async function Products() {
     const products = await getProductsAction();
 
     return (
-      <main className="grid grid-cols-4 gap-6 p-6">
+      <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 p-4 sm:p-6">
         {products.map((product: Product) => (
           <Link key={product.id} href={`/products/${product.id}`}>
             <ItemCard
-              key={product.id}
-              id={product.id}
+              id={product.id.toString()}
               title={product.title}
-              imgSrc={product.images[0]}
+              imgSrc={
+                product.images?.[0] &&
+                (product.images[0].startsWith("http") ||
+                  product.images[0].startsWith("/"))
+                  ? product.images[0]
+                  : "/error-image.png"
+              }
               imgAlt={product.title}
               price={`$${product.price}`}
               discount={
@@ -36,9 +41,11 @@ export default async function Products() {
   } catch (error) {
     console.log(error);
     return (
-      <h1 className="text-3xl text-red-600 text-center">
-        Something went wrong!
-      </h1>
+      <div>
+        <h1 className="text-3xl text-red-600 text-center">
+          Something went wrong!
+        </h1>
+      </div>
     );
   }
 }

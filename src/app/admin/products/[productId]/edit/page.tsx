@@ -80,6 +80,8 @@ export default function EditProduct() {
 
   if (isPending) return <p>Loading...</p>;
 
+  //TODO : FOTOGRAF YUKLENDIGINDE VE GUNCELENDIGINDE STRING OLARAK GELIYOR ANCAK STRING ARRAY OLMASI GEREKIYOR. BUNU DUZELT.
+
   return (
     <main className="max-w-4xl mx-auto my-6 pb-12">
       {product ? (
@@ -100,7 +102,7 @@ export default function EditProduct() {
                 className="bg-stone-200 text-stone-900 p-2 rounded"
                 readOnly
               />
-              <label htmlFor="productId" className="font-bold mb-1">
+              <label htmlFor="stripeProductId" className="font-bold mb-1">
                 Stripe Product ID
               </label>
               <input
@@ -111,7 +113,7 @@ export default function EditProduct() {
                 className="bg-stone-200 text-stone-900 p-2 rounded"
                 readOnly
               />
-              <label htmlFor="productId" className="font-bold mb-1">
+              <label htmlFor="stripePriceId" className="font-bold mb-1">
                 Stripe Price ID
               </label>
               <input

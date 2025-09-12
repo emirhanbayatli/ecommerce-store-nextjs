@@ -138,7 +138,7 @@ export async function addNewProductAction(
   const blobResult = await vercelBlobPutAction({
     formData,
     rawData,
-    id: Number(id),
+    id: id,
   });
 
   if (!blobResult.success) {
@@ -195,7 +195,7 @@ export async function addNewProductAction(
       success: true,
       message: "The product is created successfully",
       data: {
-        id: Number(id),
+        id: id,
         ...result.data,
         rating: 0,
         images: imageUrl ? imageUrl : "",
@@ -224,7 +224,7 @@ export async function getProductsAction(): Promise<Product[]> {
     const data = doc.data();
 
     return {
-      id: Number(doc.id),
+      id: doc.id,
       title: data.title,
       description: data.description,
       category: data.category,
@@ -300,7 +300,7 @@ export async function editProductAction(
   const blobResult = await vercelBlobPutAction({
     formData,
     rawData,
-    id: Number(id),
+    id: id,
   });
 
   if (!blobResult.success) {

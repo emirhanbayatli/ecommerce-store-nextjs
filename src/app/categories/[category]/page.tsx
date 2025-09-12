@@ -21,7 +21,7 @@ export default async function Categories({ params }: CategoryPageProps) {
           return (
             <Link key={product.id} href={`/products/${product.id}`}>
               <ItemCard
-                id={product.id}
+                id={product.id.toString()}
                 title={product.title}
                 imgSrc={product.images[0]}
                 imgAlt={product.title}

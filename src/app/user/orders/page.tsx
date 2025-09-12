@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { db } from "@/utils/firebase";
 import { collection, getDocs, Timestamp } from "firebase/firestore";
 import { useAuthContext } from "@/app/AuthContextProvider";
+import { CURRENCY_SYMBOL } from "@/utils/uiUtils";
 
 interface OrderProps {
   id: string;
@@ -80,7 +81,9 @@ export default function OrdersPage() {
                     <td className="px-4 py-2 text-sm text-gray-500">
                       {order.createdAt.toDate().toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-2 text-sm">{order.totalAmount}$</td>
+                    <td className="px-4 py-2 text-sm">
+                      {order.totalAmount + CURRENCY_SYMBOL}
+                    </td>
                     <td className="px-4 py-2">
                       <button className="w-full h-8 rounded-lg bg-gray-200 text-gray-900 text-sm font-medium">
                         {order.status}

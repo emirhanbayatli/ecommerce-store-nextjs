@@ -4,7 +4,7 @@ import { useCartDispatchContext } from "../CartContextProvider";
 import Carousel from "./Carousel";
 
 export interface ItemDescProps {
-  id: number;
+  id: string;
   title: string;
   imgSrc: string[];
   imgAlt: string;
@@ -35,7 +35,7 @@ export default function ItemDesc({
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center ">
         <div className="rounded shadow-lg bg-white m-4 flex max-w-4xl ">
           <Carousel images={imgSrc} />
           <div className="px-6 py-4 flex flex-col gap-3 justify-center">
@@ -48,7 +48,7 @@ export default function ItemDesc({
               label="Add To Cart"
               className="my-4"
               onClick={() => {
-                addProductToCart(Number(id), stripePriceId);
+                addProductToCart(id.toString(), stripePriceId);
               }}
             />
           </div>

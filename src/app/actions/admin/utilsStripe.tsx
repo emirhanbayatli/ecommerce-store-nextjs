@@ -1,6 +1,6 @@
 "use server";
 
-import { discountCalculation } from "@/utils/uiUtils";
+import { CURRENCY, discountCalculation } from "@/utils/uiUtils";
 import Stripe from "stripe";
 
 interface StripeProductInput {
@@ -18,7 +18,7 @@ export async function addProductStripe(result: StripeProductInput) {
     description: result.data.description,
   });
   const price = await stripe.prices.create({
-    currency: "usd",
+    currency: CURRENCY,
     unit_amount:
       discountCalculation(result.data.price, result.data.discountPercentage) *
       100,
@@ -43,7 +43,7 @@ export async function updateProductStripe(
     });
 
     const newPrice = await stripe.prices.create({
-      currency: "usd",
+      currency: CURRENCY,
       unit_amount:
         discountCalculation(result.data.price, result.data.discountPercentage) *
         100,

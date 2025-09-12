@@ -1,5 +1,5 @@
 import ItemDesc from "@/app/components/ItemDesc";
-import { showStar } from "../../../utils/uiUtils";
+import { CURRENCY_SYMBOL, showStar } from "../../../utils/uiUtils";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 
@@ -14,9 +14,10 @@ interface Review {
 export default async function ProductDetails({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
-  const productRef = doc(db, "products", params.productId);
+  const { productId } = await params;
+  const productRef = doc(db, "products", productId);
   const docSnap = await getDoc(productRef);
   const product = docSnap.data();
 
@@ -33,14 +34,14 @@ export default async function ProductDetails({
 
   return (
     <main>
-      <div className="flex flex-wrap justify-center">
+      <div>
         <ItemDesc
           stripePriceId={product?.stripePriceId}
-          id={Number(params.productId)}
+          id={productId}
           imgSrc={product.images}
           imgAlt={product.title}
           title={product.title}
-          price={product.price + " $"}
+          price={product.price + CURRENCY_SYMBOL}
           description={product.description}
           rating={`${
             product.rating !== undefined

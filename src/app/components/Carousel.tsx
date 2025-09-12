@@ -27,7 +27,7 @@ export default function Carousel({ images, className }: CarouselProps) {
   return (
     <div
       data-testid="carousel"
-      className={`relative max-w-4xl mx-auto overflow-hidden rounded-lg ${className}`}
+      className={`flex items-center relative max-w-4xl mx-auto overflow-hidden rounded-lg ${className}`}
     >
       <Image
         data-testid={`carousel-images-${currentIndex}`}

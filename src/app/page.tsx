@@ -84,7 +84,7 @@ export default async function Home() {
         </div>
         <h1 className="font-bold text-3xl my-8">Featured Products</h1>
 
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
           {products.map((product: Product) =>
             product.rating !== undefined && product.rating >= 4.7 ? (
               <Link key={product.id} href={`/products/${product.id}`}>
@@ -109,8 +109,8 @@ export default async function Home() {
             ) : null,
           )}
         </div>
-        <div className="flex justify-between mx-4 my-5">
-          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded">
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mx-4 my-5">
+          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -127,7 +127,7 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">Free shipping</p>
           </div>
-          <div className="flex items-center gap-2  bg-gray-200 p-4 rounded">
+          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -144,7 +144,7 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">Easy Returns</p>
           </div>
-          <div className="flex items-center gap-2  bg-gray-200 p-4 rounded">
+          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -161,7 +161,7 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">Secure Payment</p>
           </div>
-          <div className="flex items-center gap-2  bg-gray-200 p-4 rounded">
+          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

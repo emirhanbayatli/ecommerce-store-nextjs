@@ -1,11 +1,11 @@
 export type CartItem = {
-  id: number;
+  id: string;
   quantity: number;
   stripePriceId?: string;
 };
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   description: string;
   category: Category;

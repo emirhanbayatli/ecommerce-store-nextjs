@@ -9,7 +9,7 @@ export async function checkout(formData: FormData) {
   const userId = formData.get("userId") as string;
 
   const products = JSON.parse(productsStr) as {
-    id: number;
+    id: string;
     stripePriceId: string;
     quantity: number;
   }[];

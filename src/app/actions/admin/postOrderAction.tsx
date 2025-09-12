@@ -16,14 +16,21 @@ interface OrderItem {
   quantity: number;
   price: number;
 }
-
+const enum OrderStatus {
+  Pending = "Pending",
+  Paid = "Paid",
+  Shipped = "Shipped",
+  Delivered = "Delivered",
+  Canceled = "Canceled",
+}
 interface OrderData {
   userName: string;
   userId: string;
   items: OrderItem[];
   totalAmount: number;
-  status: "pending" | "paid" | "shipped" | "delivered" | "canceled";
+  status: OrderStatus;
 }
+
 export default async function updateStockAction(
   stripePriceId: string,
   productsQuantity: number,

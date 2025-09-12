@@ -1,4 +1,5 @@
 import { db } from "@/utils/firebase";
+import { CURRENCY_SYMBOL } from "@/utils/uiUtils";
 import { collection, getDocs } from "firebase/firestore";
 
 export default async function Orders() {
@@ -60,7 +61,7 @@ export default async function Orders() {
                       {order.createdAt.toDate().toLocaleDateString()}
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-500">
-                      {order.totalAmount}$
+                      {order.totalAmount + CURRENCY_SYMBOL}
                     </td>
                     <td className="px-4 py-2">
                       <button className="w-full h-8 rounded-lg bg-gray-200 text-gray-900 text-sm font-medium">

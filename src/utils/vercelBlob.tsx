@@ -2,7 +2,7 @@ import { put, del } from "@vercel/blob";
 interface VercelBlobProps {
   formData: FormData;
   rawData: Record<string, unknown>;
-  id: number;
+  id: string;
 }
 
 export async function vercelBlobPutAction({
