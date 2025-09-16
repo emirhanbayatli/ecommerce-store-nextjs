@@ -70,7 +70,7 @@ export default function Cart() {
         <h1 className="font-bold text-3xl mb-6 ">Your Cart</h1>
         {cartProducts.length > 0 ? (
           <button
-            className="flex items-center gap-2 bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-md hover:shadow-lg transition-all duration-200"
+            className="flex items-center gap-2 bg-gray-500 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow-md hover:shadow-lg transition-all duration-200"
             onClick={() => cartDispatch.clearCart()}
           >
             <TrashIcon className="w-5 h-5" />

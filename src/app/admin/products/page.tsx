@@ -38,7 +38,7 @@ export default function AdminProducts() {
           className={`my-4 p-3 rounded text-center font-semibold ${
             message.success
               ? "bg-green-200 text-green-800 text-sm mt-1 fixed top-1/2 "
-              : "bg-red-200 text-red-600 text-sm mt-1 fixed top-1/2 "
+              : "bg-gray-200 text-gray-600 text-sm mt-1 fixed top-1/2 "
           }`}
         >
           {message.text}

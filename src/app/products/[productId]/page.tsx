@@ -2,6 +2,7 @@ import ItemDesc from "@/app/components/ItemDesc";
 import { CURRENCY_SYMBOL, showStar } from "../../../utils/uiUtils";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
+import Link from "next/link";
 
 interface Review {
   reviewerName: string;
@@ -26,9 +27,17 @@ export default async function ProductDetails({
 
   if (!product) {
     return (
-      <h1 className="mt-4 text-3xl text-center text-gray-600">
-        Loading product...
-      </h1>
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-3xl text-gray-600 text-center mb-6">
+          Oops! Product not found.
+        </h1>
+        <Link
+          href="/products"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-md"
+        >
+          Browse Other Products
+        </Link>
+      </div>
     );
   }
 

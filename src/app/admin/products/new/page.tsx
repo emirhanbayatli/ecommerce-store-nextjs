@@ -31,10 +31,40 @@ export interface NewProductFormState {
 }
 
 export default function Admin() {
+  const [state, formAction, isPending] = useActionState<
+    NewProductFormState,
+    FormData
+  >(addNewProductAction, initialState);
+
   const {
     register,
     formState: { errors },
-  } = useForm({ mode: "all" });
+  } = useForm({
+    mode: "all",
+    defaultValues: {
+      title: state.inputs?.title || "",
+      description: state.inputs?.description || "",
+      category: state.inputs?.category || allCategories[0],
+      price: state.inputs?.price,
+      discountPercentage: state.inputs?.discountPercentage,
+      stock: state.inputs?.stock,
+      tags: state.inputs?.tags || [],
+      brand: state.inputs?.brand || "",
+      sku: state.inputs?.sku || "",
+      weight: state.inputs?.weight,
+      dimensions_width: state.inputs?.dimensions?.width,
+      dimensions_height: state.inputs?.dimensions?.height,
+      dimensions_depth: state.inputs?.dimensions?.depth,
+      warrantyInformation: state.inputs?.warrantyInformation || "",
+      shippingInformation: state.inputs?.shippingInformation || "",
+      availabilityStatus:
+        state.inputs?.availabilityStatus || allAvailabilityStatus[0],
+      minimumOrderQuantity: state.inputs?.minimumOrderQuantity,
+      returnPolicy: state.inputs?.returnPolicy || allReturnPolicies[0],
+      images: state.inputs?.images || [],
+      thumbnail: state.inputs?.thumbnail || "",
+    },
+  });
 
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
@@ -56,10 +86,6 @@ export default function Admin() {
       setThumbnailPreview(url);
     }
   };
-  const [state, formAction, isPending] = useActionState<
-    NewProductFormState,
-    FormData
-  >(addNewProductAction, initialState);
 
   if (isPending) return <p>Loading...</p>;
 
@@ -93,10 +119,10 @@ export default function Admin() {
             className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.title && (
-            <p className="text-red-600 text-sm">{state.errors.title}</p>
+            <p className="text-gray-600 text-sm">{state.errors.title}</p>
           )}
           {errors.title?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.title.message as string}
             </p>
           )}
@@ -124,11 +150,11 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.description && (
-            <p className="text-red-600 text-sm">{state.errors.description}</p>
+            <p className="text-gray-600 text-sm">{state.errors.description}</p>
           )}
 
           {errors.description?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.description.message as string}
             </p>
           )}
@@ -159,10 +185,10 @@ export default function Admin() {
             ))}
           </select>
           {state?.errors?.category && (
-            <p className="text-red-600 text-sm">{state.errors.category}</p>
+            <p className="text-gray-600 text-sm">{state.errors.category}</p>
           )}
           {errors.category?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.category.message as string}
             </p>
           )}
@@ -192,10 +218,10 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.price && (
-            <p className="text-red-600 text-sm">{state.errors.price}</p>
+            <p className="text-gray-600 text-sm">{state.errors.price}</p>
           )}
           {errors.price?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.price.message as string}
             </p>
           )}
@@ -225,12 +251,12 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.discountPercentage && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.discountPercentage}
             </p>
           )}
           {errors.discountPercentage?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.discountPercentage.message as string}
             </p>
           )}
@@ -260,10 +286,10 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.stock && (
-            <p className="text-red-600 text-sm">{state.errors.stock}</p>
+            <p className="text-gray-600 text-sm">{state.errors.stock}</p>
           )}
           {errors.stock?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.stock.message as string}
             </p>
           )}
@@ -293,10 +319,10 @@ export default function Admin() {
             ))}
           </div>
           {state?.errors?.tags && (
-            <p className="text-red-600 text-sm">{state.errors.tags}</p>
+            <p className="text-gray-600 text-sm">{state.errors.tags}</p>
           )}
           {errors.tags?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.tags.message as string}
             </p>
           )}
@@ -324,10 +350,10 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.brand && (
-            <p className="text-red-600 text-sm">{state.errors.brand}</p>
+            <p className="text-gray-600 text-sm">{state.errors.brand}</p>
           )}
           {errors.brand?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.brand.message as string}
             </p>
           )}
@@ -355,10 +381,10 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.sku && (
-            <p className="text-red-600 text-sm">{state.errors.sku}</p>
+            <p className="text-gray-600 text-sm">{state.errors.sku}</p>
           )}
           {errors.sku?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.sku.message as string}
             </p>
           )}
@@ -388,10 +414,10 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.weight && (
-            <p className="text-red-600 text-sm">{state.errors.weight}</p>
+            <p className="text-gray-600 text-sm">{state.errors.weight}</p>
           )}
           {errors.weight?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.weight.message as string}
             </p>
           )}
@@ -466,20 +492,20 @@ export default function Admin() {
             />
           </div>
           {state?.errors?.dimensions && (
-            <p className="text-red-600 text-sm">{state.errors.dimensions}</p>
+            <p className="text-gray-600 text-sm">{state.errors.dimensions}</p>
           )}
           {errors.dimensions_width?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.dimensions_width.message as string}
             </p>
           )}
           {errors.dimensions_height?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.dimensions_height.message as string}
             </p>
           )}
           {errors.dimensions_depth?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.dimensions_depth.message as string}
             </p>
           )}
@@ -507,12 +533,12 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.warrantyInformation && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.warrantyInformation}
             </p>
           )}
           {errors.warrantyInformation?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.warrantyInformation.message as string}
             </p>
           )}
@@ -540,12 +566,12 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.shippingInformation && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.shippingInformation}
             </p>
           )}
           {errors.shippingInformation?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.shippingInformation.message as string}
             </p>
           )}
@@ -583,12 +609,12 @@ export default function Admin() {
             })}
           </div>
           {state?.errors?.availabilityStatus && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.availabilityStatus.join(", ")}
             </p>
           )}
           {errors.availabilityStatus?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.availabilityStatus.message as string}
             </p>
           )}
@@ -618,12 +644,12 @@ export default function Admin() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {state?.errors?.minimumOrderQuantity && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.minimumOrderQuantity}
             </p>
           )}
           {errors.minimumOrderQuantity?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.minimumOrderQuantity.message as string}
             </p>
           )}
@@ -662,10 +688,10 @@ export default function Admin() {
             })}
           </div>
           {state?.errors?.returnPolicy && (
-            <p className="text-red-600 text-sm">{state.errors.returnPolicy}</p>
+            <p className="text-gray-600 text-sm">{state.errors.returnPolicy}</p>
           )}
           {errors.returnPolicy?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.returnPolicy.message as string}
             </p>
           )}
@@ -686,10 +712,10 @@ export default function Admin() {
             placeholder="Simply separate each link with a comma to add more than one."
           />
           {state?.errors?.images && (
-            <p className="text-red-600 text-sm">{state.errors.images}</p>
+            <p className="text-gray-600 text-sm">{state.errors.images}</p>
           )}
           {errors.images?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.images.message as string}
             </p>
           )}
@@ -722,7 +748,7 @@ export default function Admin() {
           />
 
           {errors.thumbnail?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.thumbnail.message as string}
             </p>
           )}

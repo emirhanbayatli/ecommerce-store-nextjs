@@ -88,7 +88,7 @@ export default function SignUp() {
             className="border rounded p-2 "
           />
           {errors.email?.message && (
-            <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
+            <p className="text-gray-600 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
 
@@ -110,7 +110,7 @@ export default function SignUp() {
             className="border rounded p-2"
           />
           {errors.password?.message && (
-            <p className="text-red-600 text-sm mt-1">
+            <p className="text-gray-600 text-sm mt-1">
               {errors.password.message}
             </p>
           )}
@@ -135,7 +135,7 @@ export default function SignUp() {
           </Link>
         </p>
 
-        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+        {error && <p className="text-gray-600 text-sm mt-1">{error}</p>}
         {message && <p className="text-green-400 text-sm mt-1">{message}</p>}
       </form>
     </div>

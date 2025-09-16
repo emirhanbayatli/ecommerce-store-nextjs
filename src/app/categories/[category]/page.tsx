@@ -5,13 +5,13 @@ import { discountCalculation, showStar } from "@/utils/uiUtils";
 import Link from "next/link";
 
 interface CategoryPageProps {
-  params: Promise<{
+  params: {
     category: string;
-  }>;
+  };
 }
 
 export default async function Categories({ params }: CategoryPageProps) {
-  const { category } = await params;
+  const { category } = params;
   const products = await getProductsAction();
 
   return (

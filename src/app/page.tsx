@@ -21,6 +21,7 @@ export default async function Home() {
     "/carousel/2.webp",
     "/carousel/1.webp",
   ];
+
   try {
     const products = await getProductsAction();
 
@@ -110,7 +111,9 @@ export default async function Home() {
           )}
         </div>
         <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mx-4 my-5">
-          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
+          <div
+            className={`flex items-center gap-2 p-4 rounded w-full sm:w-full bg-pink-300 text-white`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -127,7 +130,9 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">Free shipping</p>
           </div>
-          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
+          <div
+            className={`flex items-center gap-2 p-4 rounded w-full sm:w-full bg-yellow-300 text-white`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -144,7 +149,9 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">Easy Returns</p>
           </div>
-          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
+          <div
+            className={`flex items-center gap-2 p-4 rounded w-full sm:w-full bg-blue-300 text-white`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -161,7 +168,9 @@ export default async function Home() {
             </svg>
             <p className="text-2xl font-semibold">Secure Payment</p>
           </div>
-          <div className="flex items-center gap-2 bg-gray-200 p-4 rounded w-full sm:w-full">
+          <div
+            className={`flex items-center gap-2 p-4 rounded w-full sm:w-full bg-green-300 text-white`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -184,7 +193,7 @@ export default async function Home() {
   } catch (error) {
     console.log(error);
     return (
-      <h1 className="text-3xl text-red-600 text-center">
+      <h1 className="text-3xl text-gray-600 text-center">
         Something went wrong!
       </h1>
     );

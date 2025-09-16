@@ -142,7 +142,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
         )}
         {errorMessage && (
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-            <p className="text-sm font-medium px-6 py-3 bg-red-400 rounded-lg shadow-lg">
+            <p className="text-sm font-medium px-6 py-3 bg-gray-400 rounded-lg shadow-lg">
               {errorMessage}
             </p>
           </div>

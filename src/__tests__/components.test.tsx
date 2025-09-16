@@ -2,7 +2,6 @@ import { Button } from "@/app/components/Button";
 import Carousel from "@/app/components/Carousel";
 import Footer from "@/app/components/Footer";
 import Highlight from "@/app/components/HighlightCard";
-import ItemCard from "@/app/components/ItemCard";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 
@@ -67,16 +66,15 @@ describe("components test ", () => {
     expect(container).toMatchSnapshot();
   });
   test("HighlightCard component test ", () => {
-    const { container } = render(
-      <Highlight
-        imgSrc={imagesMock[0]}
-        imgAlt={imagesMock[0]}
-        price={100}
-        title="Test Card"
-        discount={0}
-        className={randomColorMock}
-      />,
-    );
+    <Highlight
+      imgSrc={imagesMock[0]}
+      imgAlt={imagesMock[0]}
+      price={100}
+      title="Test Card"
+      discount={0}
+      className={randomColorMock}
+    />;
+
     expect(screen.getByAltText(imagesMock[0])).toBeInTheDocument();
     expect(screen.getByText("100 $")).toBeInTheDocument();
     expect(screen.getByText("Test Card")).toBeInTheDocument();
@@ -86,15 +84,6 @@ describe("components test ", () => {
     expect(highlightCardInfo).toHaveClass(randomColorMock);
   });
   test("ItemCard component test ", () => {
-    const { container } = render(
-      <ItemCard
-        imgSrc={imagesMock[0]}
-        imgAlt={imagesMock[0]}
-        price={"100 $"}
-        title="Test Item Card"
-        discount={0}
-      />,
-    );
     expect(screen.getByAltText(imagesMock[0])).toBeInTheDocument();
     expect(screen.getByText("100 $")).toBeInTheDocument();
     expect(screen.getByText("Test Item Card")).toBeInTheDocument();

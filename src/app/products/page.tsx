@@ -42,7 +42,7 @@ export default async function Products() {
     console.log(error);
     return (
       <div>
-        <h1 className="text-3xl text-red-600 text-center">
+        <h1 className="text-3xl text-gray-600 text-center">
           Something went wrong!
         </h1>
       </div>

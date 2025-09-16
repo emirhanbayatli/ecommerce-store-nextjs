@@ -15,7 +15,7 @@ interface Auth {
   password: string;
 }
 
-export default function SignIn(data: Auth) {
+export default function SignIn() {
   const [error, setError] = useState<string>();
   const [message, setMessage] = useState<string>();
   const router = useRouter();
@@ -103,7 +103,7 @@ export default function SignIn(data: Auth) {
             className="border rounded p-2 "
           />
           {errors.email?.message && (
-            <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
+            <p className="text-gray-600 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
 
@@ -126,7 +126,7 @@ export default function SignIn(data: Auth) {
             className="border rounded p-2"
           />
           {errors.password?.message && (
-            <p className="text-red-600 text-sm mt-1">
+            <p className="text-gray-600 text-sm mt-1">
               {errors.password.message}
             </p>
           )}
@@ -152,7 +152,7 @@ export default function SignIn(data: Auth) {
           </Link>
         </p>
 
-        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+        {error && <p className="text-gray-600 text-sm mt-1">{error}</p>}
         {message && <p className="text-green-400 text-sm mt-1">{message}</p>}
       </form>
     </div>

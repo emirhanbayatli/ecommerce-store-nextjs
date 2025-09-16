@@ -81,12 +81,15 @@ export default function EditProduct() {
   if (isPending) return <p>Loading...</p>;
 
   //TODO : FOTOGRAF YUKLENDIGINDE VE GUNCELENDIGINDE STRING OLARAK GELIYOR ANCAK STRING ARRAY OLMASI GEREKIYOR. BUNU DUZELT.
+  const inputClass =
+    "bg-stone-200 text-stone-900 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   return (
     <main className="max-w-4xl mx-auto my-6 pb-12">
       {product ? (
         <div>
           <Form
+            noValidate
             action={formAction}
             className="grid grid-cols-2 gap-6 bg-white p-8 rounded-xl shadow-md"
           >
@@ -94,36 +97,25 @@ export default function EditProduct() {
               <label htmlFor="productId" className="font-bold mb-1">
                 ID
               </label>
-              <input
-                name="productId"
-                type="text"
-                id="productId"
-                defaultValue={params.productId}
-                className="bg-stone-200 text-stone-900 p-2 rounded"
-                readOnly
-              />
+              <p id="productId" className={inputClass}>
+                {params.productId}
+              </p>
               <label htmlFor="stripeProductId" className="font-bold mb-1">
                 Stripe Product ID
               </label>
-              <input
-                name="stripeProductId"
-                type="text"
-                id="stripeProductId"
-                defaultValue={product.stripeProductId}
-                className="bg-stone-200 text-stone-900 p-2 rounded"
-                readOnly
-              />
+              <p className={inputClass}>
+                {product.stripeProductId
+                  ? product.stripeProductId
+                  : "Not available"}
+              </p>
               <label htmlFor="stripePriceId" className="font-bold mb-1">
                 Stripe Price ID
               </label>
-              <input
-                name="stripePriceId"
-                type="text"
-                id="stripePriceId"
-                defaultValue={product.stripePriceId}
-                className="bg-stone-200 text-stone-900 p-2 rounded"
-                readOnly
-              />
+              <p className="p-2 bg-stone-200 text-stone-900 rounded">
+                {product.stripePriceId
+                  ? product.stripePriceId
+                  : "Not available"}
+              </p>
               <label htmlFor="title" className="font-bold mb-1">
                 Title
               </label>
@@ -143,13 +135,13 @@ export default function EditProduct() {
                 defaultValue={product.title}
                 type="text"
                 id="title"
-                className="bg-stone-200 text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.title && (
-                <p className="text-red-600 text-sm">{state.errors.title}</p>
+                <p className="text600 text-sm">{state.errors.title}</p>
               )}
               {errors.title?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.title.message as string}
                 </p>
               )}
@@ -175,16 +167,14 @@ export default function EditProduct() {
                 type="text"
                 id="description"
                 name="description"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.description && (
-                <p className="text-red-600 text-sm">
-                  {state.errors.description}
-                </p>
+                <p className="text600 text-sm">{state.errors.description}</p>
               )}
 
               {errors.description?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.description.message as string}
                 </p>
               )}
@@ -204,7 +194,7 @@ export default function EditProduct() {
                 defaultValue={product.category}
                 id="category"
                 name="category"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               >
                 {allCategories.map((category) => (
                   <option key={category} value={category}>
@@ -213,10 +203,10 @@ export default function EditProduct() {
                 ))}
               </select>
               {state?.errors?.category && (
-                <p className="text-red-600 text-sm">{state.errors.category}</p>
+                <p className="text600 text-sm">{state.errors.category}</p>
               )}
               {errors.category?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.category.message as string}
                 </p>
               )}
@@ -243,13 +233,13 @@ export default function EditProduct() {
                 type="number"
                 id="price"
                 name="price"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.price && (
-                <p className="text-red-600 text-sm">{state.errors.price}</p>
+                <p className="text600 text-sm">{state.errors.price}</p>
               )}
               {errors.price?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.price.message as string}
                 </p>
               )}
@@ -276,15 +266,15 @@ export default function EditProduct() {
                 type="number"
                 id="discountPercentage"
                 name="discountPercentage"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.discountPercentage && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.discountPercentage}
                 </p>
               )}
               {errors.discountPercentage?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.discountPercentage.message as string}
                 </p>
               )}
@@ -311,13 +301,14 @@ export default function EditProduct() {
                 type="number"
                 id="stock"
                 name="stock"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                step="1"
+                className={inputClass}
               />
               {state?.errors?.stock && (
-                <p className="text-red-600 text-sm">{state.errors.stock}</p>
+                <p className="text600 text-sm">{state.errors.stock}</p>
               )}
               {errors.stock?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.stock.message as string}
                 </p>
               )}
@@ -335,16 +326,17 @@ export default function EditProduct() {
                       name="tags"
                       value={tag}
                       defaultChecked={product?.tags?.includes(tag as Tags)}
+                      className={inputClass}
                     />
                     {tag.replace("_", " ")}
                   </label>
                 ))}
               </div>
               {state?.errors?.tags && (
-                <p className="text-red-600 text-sm">{state.errors.tags}</p>
+                <p className="text600 text-sm">{state.errors.tags}</p>
               )}
               {errors.tags?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.tags.message as string}
                 </p>
               )}
@@ -370,13 +362,13 @@ export default function EditProduct() {
                 type="text"
                 id="brand"
                 name="brand"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.brand && (
-                <p className="text-red-600 text-sm">{state.errors.brand}</p>
+                <p className="text600 text-sm">{state.errors.brand}</p>
               )}
               {errors.brand?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.brand.message as string}
                 </p>
               )}
@@ -402,13 +394,13 @@ export default function EditProduct() {
                 type="text"
                 id="sku"
                 name="sku"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.sku && (
-                <p className="text-red-600 text-sm">{state.errors.sku}</p>
+                <p className="text600 text-sm">{state.errors.sku}</p>
               )}
               {errors.sku?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.sku.message as string}
                 </p>
               )}
@@ -435,13 +427,13 @@ export default function EditProduct() {
                 type="number"
                 id="weight"
                 name="weight"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.weight && (
-                <p className="text-red-600 text-sm">{state.errors.weight}</p>
+                <p className="text600 text-sm">{state.errors.weight}</p>
               )}
               {errors.weight?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.weight.message as string}
                 </p>
               )}
@@ -470,7 +462,7 @@ export default function EditProduct() {
                   id="width"
                   name="dimensions_width"
                   placeholder="Width"
-                  className="dark:bg-stone-200 dark:text-stone-900  p-2 rounded max-w-30"
+                  className={inputClass}
                 />
 
                 <input
@@ -491,7 +483,7 @@ export default function EditProduct() {
                   id="height"
                   name="dimensions_height"
                   placeholder="Height"
-                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+                  className={inputClass}
                 />
 
                 <input
@@ -512,26 +504,24 @@ export default function EditProduct() {
                   id="depth"
                   name="dimensions_depth"
                   placeholder="Depth"
-                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+                  className={inputClass}
                 />
               </div>
               {state?.errors?.dimensions && (
-                <p className="text-red-600 text-sm">
-                  {state.errors.dimensions}
-                </p>
+                <p className="text600 text-sm">{state.errors.dimensions}</p>
               )}
               {errors.dimensions_width?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.dimensions_width.message as string}
                 </p>
               )}
               {errors.dimensions_height?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.dimensions_height.message as string}
                 </p>
               )}
               {errors.dimensions_depth?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.dimensions_depth.message as string}
                 </p>
               )}
@@ -559,15 +549,15 @@ export default function EditProduct() {
                 type="text"
                 id="warrantyInformation"
                 name="warrantyInformation"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.warrantyInformation && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.warrantyInformation}
                 </p>
               )}
               {errors.warrantyInformation?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.warrantyInformation.message as string}
                 </p>
               )}
@@ -595,15 +585,15 @@ export default function EditProduct() {
                 type="text"
                 id="shippingInformation"
                 name="shippingInformation"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.shippingInformation && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.shippingInformation}
                 </p>
               )}
               {errors.shippingInformation?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.shippingInformation.message as string}
                 </p>
               )}
@@ -636,7 +626,7 @@ export default function EditProduct() {
                         type="radio"
                         name="availabilityStatus"
                         value={availabilityStatus}
-                        className="accent-stone-900"
+                        className={inputClass}
                       />
                       {availabilityStatus}
                     </label>
@@ -644,12 +634,12 @@ export default function EditProduct() {
                 })}
               </div>
               {state?.errors?.availabilityStatus && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.availabilityStatus.join(", ")}
                 </p>
               )}
               {errors.availabilityStatus?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.availabilityStatus.message as string}
                 </p>
               )}
@@ -676,15 +666,15 @@ export default function EditProduct() {
                 type="number"
                 id="minimumOrderQuantity"
                 name="minimumOrderQuantity"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.minimumOrderQuantity && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.minimumOrderQuantity}
                 </p>
               )}
               {errors.minimumOrderQuantity?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.minimumOrderQuantity.message as string}
                 </p>
               )}
@@ -716,7 +706,7 @@ export default function EditProduct() {
                         type="radio"
                         name="returnPolicy"
                         value={returnPolicy}
-                        className="accent-stone-900"
+                        className={inputClass}
                       />
                       {returnPolicy}
                     </label>
@@ -724,12 +714,10 @@ export default function EditProduct() {
                 })}
               </div>
               {state?.errors?.returnPolicy && (
-                <p className="text-red-600 text-sm">
-                  {state.errors.returnPolicy}
-                </p>
+                <p className="text600 text-sm">{state.errors.returnPolicy}</p>
               )}
               {errors.returnPolicy?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.returnPolicy.message as string}
                 </p>
               )}
@@ -745,12 +733,12 @@ export default function EditProduct() {
                 multiple
                 id="images"
                 name="images"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
                 placeholder="Simply separate each link with a comma to add more than one."
                 onChange={handleImagesChange}
               />
               {errors.images?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.images.message as string}
                 </p>
               )}
@@ -760,7 +748,7 @@ export default function EditProduct() {
                     key={index}
                     src={src}
                     alt={`Image Preview ${index}`}
-                    className="rounded shadow max-w-32  mt-4"
+                    className={inputClass}
                   />
                 ))}
               </div>
@@ -775,18 +763,18 @@ export default function EditProduct() {
                 type="file"
                 id="thumbnail"
                 name="thumbnail"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
                 placeholder="Simply separate each link with a comma to add more than one."
                 onChange={handleThumbnailChange}
               />
 
               {errors.thumbnail?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.thumbnail.message as string}
                 </p>
               )}
               {state?.errors?.thumbnail && (
-                <p className="text-red-600 text-sm">{state.errors.thumbnail}</p>
+                <p className="text600 text-sm">{state.errors.thumbnail}</p>
               )}
 
               {thumbnailPreview && (
