@@ -152,8 +152,22 @@ export default function SignIn() {
           </Link>
         </p>
 
-        {error && <p className="text-gray-600 text-sm mt-1">{error}</p>}
-        {message && <p className="text-green-400 text-sm mt-1">{message}</p>}
+        {error && (
+          <p
+            data-testid="error-message-sign-in"
+            className="text-gray-600 text-sm mt-1"
+          >
+            {error}
+          </p>
+        )}
+        {message && (
+          <p
+            data-testid="success-message-sign-in"
+            className="text-green-400 text-sm mt-1"
+          >
+            {message}
+          </p>
+        )}
       </form>
     </div>
   );

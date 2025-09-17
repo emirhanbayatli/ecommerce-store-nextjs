@@ -85,7 +85,8 @@ export default function SignUp() {
             })}
             type="email"
             placeholder="Email"
-            className="border rounded p-2 "
+            className="border rounded p-2"
+            data-testid="email-input"
           />
           {errors.email?.message && (
             <p className="text-gray-600 text-sm mt-1">{errors.email.message}</p>
@@ -108,6 +109,7 @@ export default function SignUp() {
             type="password"
             placeholder="Password"
             className="border rounded p-2"
+            data-testid="password-input"
           />
           {errors.password?.message && (
             <p className="text-gray-600 text-sm mt-1">
@@ -117,6 +119,7 @@ export default function SignUp() {
         </div>
 
         <button
+          data-testid="submit-button"
           disabled={isSubmitting}
           type="submit"
           className={`w-full p-2 rounded font-semibold ${
@@ -129,14 +132,28 @@ export default function SignUp() {
         </button>
 
         <p className="text-center text-sm mt-2">
-          Already have an account?
-          <Link href="/user/signIn" className="text-blue-600 ">
+          Already have an account?{" "}
+          <Link href="/user/signIn" className="text-blue-600">
             Sign In
           </Link>
         </p>
 
-        {error && <p className="text-gray-600 text-sm mt-1">{error}</p>}
-        {message && <p className="text-green-400 text-sm mt-1">{message}</p>}
+        {error && (
+          <p
+            data-testid="error-message-sign-up"
+            className="text-gray-600 text-sm mt-1"
+          >
+            {error}
+          </p>
+        )}
+        {message && (
+          <p
+            data-testid="success-message-sign-up"
+            className="text-green-400 text-sm mt-1"
+          >
+            {message}
+          </p>
+        )}
       </form>
     </div>
   );
