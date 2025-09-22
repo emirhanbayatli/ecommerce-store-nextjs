@@ -16,7 +16,7 @@ interface OrderItem {
   quantity: number;
   price: number;
 }
-const enum OrderStatus {
+export const enum OrderStatus {
   Pending = "Pending",
   Paid = "Paid",
   Shipped = "Shipped",
@@ -78,6 +78,8 @@ export async function sendConfirmationEmail(
     return { success: false, error: err };
   }
 }
+
+//TODO: Siparisler firebase e kayit edilmiyor nedenini anlayamadim test edilip duzeltilecek
 
 export async function saveOrderToFirestore(order: OrderData) {
   try {

@@ -5,7 +5,7 @@ import updateStockAction, {
 import { stripe } from "@/utils/stripe";
 import { NextRequest } from "next/server";
 import Stripe from "stripe";
-
+import { OrderStatus as orderStatus } from "@/app/actions/admin/postOrderAction";
 export const POST = async (req: NextRequest) => {
   const body = await req.text();
 
@@ -128,7 +128,7 @@ export const POST = async (req: NextRequest) => {
               item.amount_total !== undefined ? item.amount_total / 100 : 0,
           })),
           totalAmount: session.amount_total! / 100,
-          status: "paid",
+          status: orderStatus.Paid,
         });
 
         console.log("Order saved to Firestore successfully");

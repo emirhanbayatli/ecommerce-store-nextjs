@@ -6,10 +6,10 @@ test.describe("SignIn Page", () => {
   test("should sign in successfully with valid credentials", async ({
     page,
   }) => {
-    expect(await page.getByRole("link", { name: "E-Commerce" })).toBeVisible();
-    expect(await page.getByRole("heading", { name: "Sign In" })).toBeVisible();
-    expect(
-      await page.getByText("Don't have an account? Sign Up"),
+    await expect(page.getByRole("link", { name: "E-Commerce" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
+    await expect(
+      page.getByText("Don't have an account? Sign Up"),
     ).toBeVisible();
     await page.getByTestId("email-input").click();
 
@@ -18,7 +18,7 @@ test.describe("SignIn Page", () => {
     await page.getByTestId("password-input").fill("12345678");
     await page.getByTestId("submit-button").click();
 
-    expect(await page.getByTestId("success-message-sign-in")).toBeVisible({
+    await expect(page.getByTestId("success-message-sign-in")).toBeVisible({
       timeout: 10_000,
     });
 
