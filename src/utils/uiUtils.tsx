@@ -1,4 +1,7 @@
 export function showStar(n: number) {
+  if (n < 0 || n > 5) {
+    return null;
+  }
   const full = Math.floor(n);
   const half = n - full >= 0.5 ? "⯨" : "";
   const empty = "☆".repeat(5 - full - (half ? 1 : 0));

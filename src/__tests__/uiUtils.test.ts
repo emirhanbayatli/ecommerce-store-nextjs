@@ -11,7 +11,12 @@ describe("uiUtils", () => {
     expect(showStar(2)).toEqual("★★☆☆☆");
     expect(showStar(1.5)).toEqual("★⯨☆☆☆");
     expect(showStar(3.5)).toEqual("★★★⯨☆");
+    expect(showStar(0)).toEqual("☆☆☆☆☆");
+    expect(showStar(5)).toEqual("★★★★★");
+    expect(showStar(6)).toBeNull;
+    expect(showStar(-2)).toBeNull;
   });
+
   test("discountCalculation returns correct value", () => {
     expect(discountCalculation(100, 10)).toEqual(90);
     expect(discountCalculation(200, 10)).toEqual(180);

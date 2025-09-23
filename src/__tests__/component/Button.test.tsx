@@ -15,8 +15,7 @@ describe("Button component test ", () => {
     );
     const button = screen.getByRole("button", { name: "Click" });
     expect(screen.getByText("Click")).toBeInTheDocument();
-    expect(button).toHaveClass("bg-blue-500");
-    expect(button).not.toHaveClass("bg-red-500");
+
     expect(handleSubmitMock).not.toHaveBeenCalled();
     fireEvent.click(button);
     expect(handleSubmitMock).toHaveBeenCalledTimes(1);

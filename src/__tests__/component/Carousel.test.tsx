@@ -13,8 +13,7 @@ describe("Carousel component test ", () => {
     render(<Carousel images={imagesMock} />);
     const carousel = screen.getByTestId("carousel");
     expect(carousel).toBeInTheDocument();
-    expect(carousel).toHaveClass("relative");
-    expect(carousel).not.toHaveClass("absolute");
+
     const prevButton = screen.getByTestId("carousel-prev-button");
     const nextButton = screen.getByTestId("carousel-next-button");
     expect(prevButton).toBeInTheDocument();

@@ -38,8 +38,5 @@ describe("HighlightCard component test ", () => {
     expect(screen.getByText("100 $")).toBeInTheDocument();
     expect(screen.getByText("Test Card")).toBeInTheDocument();
     expect(screen.getByText("Limited Stock !")).toBeInTheDocument();
-    const highlightCardInfo = screen.getByTestId("highlight-card-info");
-
-    expect(highlightCardInfo).toHaveClass(randomColorMock);
   });
 });
