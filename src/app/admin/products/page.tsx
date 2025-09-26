@@ -14,10 +14,19 @@ export default function AdminProducts() {
   } | null>(null);
 
   async function handleDelete(id: string) {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this product?",
+    );
+    if (!isConfirmed) return;
+
     const res = await deleteProductAction(id);
     setMessage({ text: res.message, success: res.success });
     setTimeout(() => setMessage(null), 3000);
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   }
+
   useEffect(() => {
     async function fetchProducts() {
       const data = await getProductsAction();
@@ -70,6 +79,7 @@ export default function AdminProducts() {
                       <Link href={`/admin/products/${product.id}/edit`}>
                         <Button label="Edit" />
                       </Link>
+
                       <Button
                         label="Delete"
                         onClick={() => handleDelete(product.id.toString())}

@@ -18,11 +18,11 @@ export default function ItemCard({
   discount,
 }: ItemCardProps) {
   return (
-    <div className="w-full rounded shadow-lg bg-white p-4 hover:shadow-2xl transition ">
+    <div className="w-full rounded shadow-lg bg-white p-4 hover:shadow-2xl transition duration-300">
       <div className="flex justify-center">
         <Image src={imgSrc} alt={imgAlt} width={200} height={200} />
       </div>
-      <div className="px-6 py-4 ">
+      <div className="px-6 py-4">
         <h3 className="text-gray-700 font-bold text-xl mb-2 text-center ">
           {title}
         </h3>

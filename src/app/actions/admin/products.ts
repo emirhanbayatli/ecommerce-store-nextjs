@@ -150,7 +150,7 @@ export async function addNewProductAction(
     };
   }
 
-  const imageUrl = blobResult.data?.images;
+  const imageUrls = blobResult.data?.images;
   const thumbnailUrl = blobResult.data?.thumbnail;
 
   try {
@@ -181,8 +181,8 @@ export async function addNewProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: [imageUrl],
-      thumbnail: [thumbnailUrl],
+      images: imageUrls,
+      thumbnail: thumbnailUrl,
       meta: {
         createdAt: dateNow,
         updatedAt: dateNow,
@@ -198,7 +198,7 @@ export async function addNewProductAction(
         id: id,
         ...result.data,
         rating: 0,
-        images: imageUrl ? imageUrl : "",
+        images: imageUrls || [],
         thumbnail: thumbnailUrl ? thumbnailUrl : "",
         meta: {
           createdAt: String(dateNow),
@@ -208,6 +208,8 @@ export async function addNewProductAction(
         },
       },
     };
+
+    //  images: Array.isArray(imageUrl) ? imageUrl : imageUrl ? [imageUrl] : []
   } catch (err) {
     console.error("Error adding a new product to Firebase", err);
     return {
@@ -219,40 +221,45 @@ export async function addNewProductAction(
 }
 
 export async function getProductsAction(): Promise<Product[]> {
-  const querySnapshot = await getDocs(collection(db, "products"));
-  const products = querySnapshot.docs.map((doc) => {
-    const data = doc.data();
+  try {
+    const querySnapshot = await getDocs(collection(db, "products"));
+    const products = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
 
-    return {
-      id: doc.id,
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      price: data.price,
-      discountPercentage: data.discountPercentage,
-      stock: data.stock,
-      tags: data.tags,
-      brand: data.brand,
-      sku: data.sku,
-      weight: data.weight,
-      dimensions: data.dimensions,
-      warrantyInformation: data.warrantyInformation,
-      shippingInformation: data.shippingInformation,
-      availabilityStatus: data.availabilityStatus,
-      minimumOrderQuantity: data.minimumOrderQuantity,
-      returnPolicy: data.returnPolicy,
-      images: data.images,
-      thumbnail: data.thumbnail,
-      rating: data.rating,
-      meta: {
-        createdAt: data.meta?.createdAt ?? 0,
-        updatedAt: data.meta?.updatedAt ?? 0,
-      },
-      stripeProductId: data.stripeProductId,
-      stripePriceId: data.stripePriceId,
-    };
-  });
-  return products as Product[];
+      return {
+        id: doc.id,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        price: data.price,
+        discountPercentage: data.discountPercentage,
+        stock: data.stock,
+        tags: data.tags,
+        brand: data.brand,
+        sku: data.sku,
+        weight: data.weight,
+        dimensions: data.dimensions,
+        warrantyInformation: data.warrantyInformation,
+        shippingInformation: data.shippingInformation,
+        availabilityStatus: data.availabilityStatus,
+        minimumOrderQuantity: data.minimumOrderQuantity,
+        returnPolicy: data.returnPolicy,
+        images: data.images,
+        thumbnail: data.thumbnail,
+        rating: data.rating,
+        meta: {
+          createdAt: data.meta?.createdAt ?? 0,
+          updatedAt: data.meta?.updatedAt ?? 0,
+        },
+        stripeProductId: data.stripeProductId,
+        stripePriceId: data.stripePriceId,
+      };
+    });
+    return products as Product[];
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
 }
 
 export async function editProductAction(
@@ -312,12 +319,12 @@ export async function editProductAction(
     };
   }
 
-  const imageUrl = blobResult.data?.images;
+  const imageUrls = blobResult.data?.images;
   const thumbnailUrl = blobResult.data?.thumbnail;
 
   const stripe = await updateProductStripe(
-    rawData.stripeProductId.toString(),
-    rawData.stripePriceId.toString(),
+    rawData.stripeProductId,
+    rawData.stripePriceId,
     result,
   );
 
@@ -344,8 +351,8 @@ export async function editProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: [imageUrl],
-      thumbnail: [thumbnailUrl],
+      images: imageUrls,
+      thumbnail: thumbnailUrl,
       meta: {
         updatedAt: Date.now().toString(),
       },
@@ -358,7 +365,7 @@ export async function editProductAction(
       message: "The product is updating successfully",
     };
   } catch (error) {
-    console.error("Error updating a new product to Firebase", error);
+    console.error("Error updating a product to Firebase", error);
   }
 
   return {

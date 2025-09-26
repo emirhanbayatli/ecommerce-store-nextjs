@@ -13,8 +13,11 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const cartDispatch = useCartDispatchContext();
+  const router = useRouter();
 
   if (!cartDispatch) {
     throw new Error(
@@ -23,14 +26,26 @@ export default function Cart() {
   }
 
   const { removeProductToCart, increaseProductQuantity } = cartDispatch;
-  const router = useRouter();
 
   useEffect(() => {
     async function getFirebaseProducts() {
-      const productsForFirebase = await getProductsAction();
-      setProducts(productsForFirebase);
-      setLoading(false);
+      setLoading(true);
+      try {
+        const productsForFirebase = await getProductsAction();
+        setProducts(productsForFirebase);
+      } catch (err) {
+        console.error(
+          "An error occurred while loading products from Firebase",
+          err,
+        );
+        setError(
+          "Unable to load products. Please refresh the page or try again later.",
+        );
+      } finally {
+        setLoading(false);
+      }
     }
+
     getFirebaseProducts();
   }, []);
 
@@ -67,8 +82,8 @@ export default function Cart() {
   return (
     <div className="container mx-auto px-4 my-12 max-w-5xl">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="font-bold text-3xl mb-6 ">Your Cart</h1>
-        {cartProducts.length > 0 ? (
+        <h1 className="font-bold text-3xl mb-6">Your Cart</h1>
+        {cartProducts.length > 0 && (
           <button
             className="flex items-center gap-2 bg-gray-500 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow-md hover:shadow-lg transition-all duration-200"
             onClick={() => cartDispatch.clearCart()}
@@ -76,64 +91,71 @@ export default function Cart() {
             <TrashIcon className="w-5 h-5" />
             Clear Cart
           </button>
-        ) : null}
+        )}
       </div>
+
       {loading ? (
         <div className="text-center my-12">
           <h2 className="text-2xl my-4">Loading your cart...</h2>
         </div>
-      ) : cartProducts.length > 0 ? (
+      ) : error ? (
+        <div className="text-red-500 text-center my-4">{error}</div>
+      ) : cartProducts.length === 0 ? (
+        <div className="text-center my-12">
+          <h2 className="text-2xl my-4">Your shopping cart is empty!</h2>
+          <Button label="Go Shopping!" onClick={() => router.push("/")} />
+        </div>
+      ) : (
         <div className="bg-white rounded-xl">
           <div className="min-w-full">
-            <div>
-              <ul>
-                {cartProducts.map((product) => (
-                  <li
-                    key={product.id}
-                    className="grid justify-items-center grid-cols-4 gap-4 place-items-center p-4"
-                  >
-                    <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
-                      <Image
-                        src={product.images[0]}
-                        alt={product.title}
-                        width={100}
-                        height={100}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <span className="text-center">{product.title}</span>
-                    <span>
-                      {product.discountPercentage !== undefined
-                        ? discountCalculation(
-                            product.price,
-                            product.discountPercentage,
-                          )
-                        : product.price}
-                      $
-                    </span>
+            <ul>
+              {cartProducts.map((product) => (
+                <li
+                  key={product.id}
+                  className="grid justify-items-center grid-cols-4 gap-4 place-items-center p-4"
+                >
+                  <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
+                    <Image
+                      src={product.images[0]}
+                      alt={product.title}
+                      width={100}
+                      height={100}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-center">{product.title}</span>
+                  <span>
+                    {product.discountPercentage !== undefined
+                      ? discountCalculation(
+                          product.price,
+                          product.discountPercentage,
+                        )
+                      : product.price}
+                    $
+                  </span>
 
-                    <div className="flex items-center border rounded-full overflow-hidden shadow-sm w-32">
-                      <button
-                        className="bg-white hover:bg-gray-100 w-10 h-10 flex justify-center items-center transition-transform active:scale-90"
-                        onClick={() => removeProductToCart(product.id)}
-                      >
-                        -
-                      </button>
-                      <span className="flex-1 text-center font-semibold">
-                        {product.quantity}
-                      </span>
-                      <button
-                        className="bg-white hover:bg-gray-100 w-10 h-10 flex justify-center items-center transition-transform active:scale-90"
-                        onClick={() => increaseProductQuantity(product.id)}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                  <div className="flex items-center border rounded-full overflow-hidden shadow-sm w-32">
+                    <button
+                      className="bg-white hover:bg-gray-100 w-10 h-10 flex justify-center items-center transition-transform active:scale-90"
+                      onClick={() => removeProductToCart(product.id)}
+                    >
+                      -
+                    </button>
+                    <span className="flex-1 text-center font-semibold">
+                      {product.quantity}
+                    </span>
+                    <button
+                      className="bg-white hover:bg-gray-100 w-10 h-10 flex justify-center items-center transition-transform active:scale-90"
+                      onClick={() => increaseProductQuantity(product.id)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
+
           <div className="flex flex-col items-end p-4 gap-3">
             <h2 className="font-bold text-lg">
               Subtotal: ${subTotal.toFixed(2)}
@@ -146,11 +168,6 @@ export default function Cart() {
             </h2>
             <BuyAllButton />
           </div>
-        </div>
-      ) : (
-        <div className="text-center my-12">
-          <h2 className="text-2xl my-4">Your shopping cart is empty!</h2>
-          <Button label="Go Shopping !" onClick={() => router.push("/")} />
         </div>
       )}
     </div>

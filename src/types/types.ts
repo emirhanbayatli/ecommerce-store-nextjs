@@ -25,7 +25,7 @@ export interface Product {
   returnPolicy: ReturnPolicy;
   minimumOrderQuantity: number;
   meta?: Meta;
-  images: string;
+  images: string[];
   thumbnail: string;
   stripeProductId?: string;
   stripePriceId?: string;

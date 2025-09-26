@@ -80,7 +80,9 @@ export default function EditProduct() {
 
   if (isPending) return <p>Loading...</p>;
 
-  //TODO : FOTOGRAF YUKLENDIGINDE VE GUNCELENDIGINDE STRING OLARAK GELIYOR ANCAK STRING ARRAY OLMASI GEREKIYOR. BUNU DUZELT.
+  console.log("image", product?.images);
+  console.log("thumnail", product?.thumbnail);
+
   const inputClass =
     "bg-stone-200 text-stone-900 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
@@ -93,6 +95,25 @@ export default function EditProduct() {
             action={formAction}
             className="grid grid-cols-2 gap-6 bg-white p-8 rounded-xl shadow-md"
           >
+            <input
+              id="stripeProductId"
+              type="hidden"
+              name="stripeProductId"
+              value={product.stripeProductId}
+            />
+            <input
+              id="stripePriceId"
+              type="hidden"
+              name="stripePriceId"
+              value={product.stripePriceId}
+            />
+            <input
+              id="productId"
+              type="hidden"
+              name="productId"
+              value={params.productId}
+            />
+
             <div className="flex flex-col col-span-2">
               <label htmlFor="productId" className="font-bold mb-1">
                 ID
@@ -462,7 +483,7 @@ export default function EditProduct() {
                   id="width"
                   name="dimensions_width"
                   placeholder="Width"
-                  className={inputClass}
+                  className="dark:bg-stone-200 dark:text-stone-900  p-2 rounded max-w-30"
                 />
 
                 <input
@@ -483,7 +504,7 @@ export default function EditProduct() {
                   id="height"
                   name="dimensions_height"
                   placeholder="Height"
-                  className={inputClass}
+                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
                 />
 
                 <input
@@ -504,7 +525,7 @@ export default function EditProduct() {
                   id="depth"
                   name="dimensions_depth"
                   placeholder="Depth"
-                  className={inputClass}
+                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
                 />
               </div>
               {state?.errors?.dimensions && (
@@ -748,7 +769,7 @@ export default function EditProduct() {
                     key={index}
                     src={src}
                     alt={`Image Preview ${index}`}
-                    className={inputClass}
+                    className="rounded shadow max-w-32 mt-4"
                   />
                 ))}
               </div>

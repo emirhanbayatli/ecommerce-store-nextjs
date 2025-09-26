@@ -69,8 +69,6 @@ export default function Admin() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
-  //TODO: image yuklemede hata var bunu duzelt
-
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -175,9 +173,6 @@ export default function Admin() {
             name="category"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           >
-            {/* <option defaultValue="" disabled>
-              Select Category
-            </option> */}
             {allCategories.map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -709,7 +704,6 @@ export default function Admin() {
             id="images"
             name="images"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            placeholder="Simply separate each link with a comma to add more than one."
           />
           {state?.errors?.images && (
             <p className="text-gray-600 text-sm">{state.errors.images}</p>
@@ -739,12 +733,10 @@ export default function Admin() {
               required: "Thumbnail is required",
             })}
             type="file"
-            multiple
             onChange={handleThumbnailChange}
             accept=".jpeg , .jpg , .webp"
             name="thumbnail"
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            placeholder="Simply separate each link with a comma to add more than one."
           />
 
           {errors.thumbnail?.message && (
