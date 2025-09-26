@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { discountCalculation } from "@/utils/uiUtils";
 import { BuyAllButton } from "../components/BuyAllButton";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import { LoadingSpinner } from "../components/LoadingSpiner";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -96,7 +97,7 @@ export default function Cart() {
 
       {loading ? (
         <div className="text-center my-12">
-          <h2 className="text-2xl my-4">Loading your cart...</h2>
+          <LoadingSpinner />
         </div>
       ) : error ? (
         <div className="text-red-500 text-center my-4">{error}</div>

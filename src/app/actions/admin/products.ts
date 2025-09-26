@@ -9,16 +9,21 @@ import {
 } from "../../../types/types";
 import { z } from "zod";
 import { db, collections } from "../../../utils/firebase";
-import { vercelBlobPutAction } from "../../../utils/vercelBlob";
+import {
+  vercelBlobPutAction,
+  vercelBlobDeleteAction,
+} from "../../../utils/vercelBlob";
 
 import {
   getDocs,
+  getDoc,
   collection,
   setDoc,
   doc,
   updateDoc,
 } from "firebase/firestore";
 import { addProductStripe, updateProductStripe } from "./utilsStripe";
+import { Images } from "lucide-react";
 
 const productSchema = z.object({
   title: z
@@ -208,8 +213,6 @@ export async function addNewProductAction(
         },
       },
     };
-
-    //  images: Array.isArray(imageUrl) ? imageUrl : imageUrl ? [imageUrl] : []
   } catch (err) {
     console.error("Error adding a new product to Firebase", err);
     return {
@@ -292,6 +295,8 @@ export async function editProductAction(
     ) as AvailabilityStatus,
     minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
+    images: formData.getAll("images") as string[],
+    thumbnail: formData.get("thumbnail") as string,
   };
 
   const result = productSchema.safeParse(rawData);
@@ -304,6 +309,7 @@ export async function editProductAction(
     };
   }
   const id = Date.now().toString();
+
   const blobResult = await vercelBlobPutAction({
     formData,
     rawData,
@@ -328,12 +334,31 @@ export async function editProductAction(
     result,
   );
 
-  console.log(stripe.newPriceId);
+  const productId = formData.get("productId") as string;
+  const productRef = doc(db, "products", productId);
+  const productSnap = await getDoc(productRef);
+
+  const existingImages = productSnap.data()?.images || [];
+  const existingThumbnail = productSnap.data()?.thumbnail || "";
+
+  // const imagesChanged =
+  //   JSON.stringify(rawData.images) !== JSON.stringify(existingImages);
+  // if (imagesChanged) {
+  //   console.log("eski foto silindi");
+  //   await vercelBlobDeleteAction(existingImages);
+  // } else {
+  //   console.log("silinmedi foto");
+  // }
+
+  // const thumbnailChanged = rawData.thumbnail !== existingThumbnail;
+  // if (thumbnailChanged) {
+  //   console.log("eski thumb silindi");
+  //   await vercelBlobDeleteAction(existingThumbnail);
+  // } else {
+  //   console.log("silinmedi thumb");
+  // }
 
   try {
-    const productId = formData.get("productId") as string;
-    const productRef = doc(db, "products", productId);
-
     await updateDoc(productRef, {
       title: result.data.title,
       description: result.data.description,
@@ -351,8 +376,8 @@ export async function editProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: imageUrls,
-      thumbnail: thumbnailUrl,
+      images: imageUrls && imageUrls.length ? imageUrls : existingImages,
+      thumbnail: thumbnailUrl || existingThumbnail,
       meta: {
         updatedAt: Date.now().toString(),
       },

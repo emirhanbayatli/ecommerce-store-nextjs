@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { stripe } from "@/utils/stripe";
 import Link from "next/link";
 import { CURRENCY } from "@/utils/uiUtils";
+import { LoadingSpinner } from "../components/LoadingSpiner";
 
 interface SuccessProps {
   searchParams: Promise<{
@@ -109,7 +110,7 @@ export default async function Success({ searchParams }: SuccessProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-xl font-medium text-gray-700">Loading...</p>
+      <LoadingSpinner />
     </div>
   );
 }

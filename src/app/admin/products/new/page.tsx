@@ -13,6 +13,7 @@ import { Button } from "@/app/components/Button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
+import { LoadingSpinner } from "@/app/components/LoadingSpiner";
 
 const initialState: NewProductFormState = {
   success: false,
@@ -85,7 +86,7 @@ export default function Admin() {
     }
   };
 
-  if (isPending) return <p>Loading...</p>;
+  if (isPending) return <LoadingSpinner />;
 
   return (
     <main className="max-w-4xl mx-auto pb-12">

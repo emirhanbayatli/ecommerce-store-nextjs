@@ -6,6 +6,7 @@ import { deleteProductAction } from "../../actions/admin/deleteAction";
 import { useEffect, useState } from "react";
 import { Product } from "../../../types/types";
 import Image from "next/image";
+import { LoadingSpinner } from "@/app/components/LoadingSpiner";
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [message, setMessage] = useState<{
@@ -91,8 +92,8 @@ export default function AdminProducts() {
             </div>
           </div>
         ) : (
-          <div className="text-center my-12">
-            <h2 className="text-2xl my-4">Loading</h2>
+          <div className="flex justify-center items-center text-center">
+            <LoadingSpinner />
           </div>
         )}
       </div>

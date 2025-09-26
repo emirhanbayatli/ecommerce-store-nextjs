@@ -16,6 +16,7 @@ import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { LoadingSpinner } from "@/app/components/LoadingSpiner";
 
 const initialState: EditProductFormState = {
   success: false,
@@ -59,9 +60,31 @@ export default function EditProduct() {
     fetchData();
   }, []);
 
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [imagePreviews, setImagePreviews] = useState<string[]>();
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>();
 
+  useEffect(() => {
+    if (product) {
+      setImagePreviews(product.images ?? []);
+      setThumbnailPreview(product.thumbnail ?? "");
+    }
+  }, [product]);
+
+  // const imagesInput = document.getElementById("images") as HTMLInputElement;
+  // const thumbnailInput = document.getElementById(
+  //   "thumbnail",
+  // ) as HTMLInputElement;
+
+  // if (imagesInput?.files && imagesInput.files.length > 0) {
+  //   console.log("yeni foto var ");
+  // } else {
+  //   console.log("yeni foto YOK");
+  // }
+  // if (thumbnailInput?.files && thumbnailInput.files.length > 0) {
+  //   console.log("yeni foto var ");
+  // } else {
+  //   console.log("yeni foto YOK");
+  // }
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -78,10 +101,7 @@ export default function EditProduct() {
     }
   };
 
-  if (isPending) return <p>Loading...</p>;
-
-  console.log("image", product?.images);
-  console.log("thumnail", product?.thumbnail);
+  if (isPending) return <LoadingSpinner />;
 
   const inputClass =
     "bg-stone-200 text-stone-900 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -816,7 +836,7 @@ export default function EditProduct() {
           </Form>
         </div>
       ) : (
-        <p>Loading...</p>
+        <LoadingSpinner />
       )}
     </main>
   );
