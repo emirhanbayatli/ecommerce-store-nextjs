@@ -23,7 +23,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { addProductStripe, updateProductStripe } from "./utilsStripe";
-import { Images } from "lucide-react";
 
 const productSchema = z.object({
   title: z
@@ -139,7 +138,7 @@ export async function addNewProductAction(
     };
   }
   const id = Date.now().toString();
-  const dateNow = Date.now();
+  const dateNow = Date.now().toString();
   const blobResult = await vercelBlobPutAction({
     formData,
     rawData,
@@ -298,7 +297,6 @@ export async function editProductAction(
     images: formData.getAll("images") as string[],
     thumbnail: formData.get("thumbnail") as string,
   };
-
   const result = productSchema.safeParse(rawData);
   if (!result.success) {
     return {
@@ -308,55 +306,52 @@ export async function editProductAction(
       errors: result.error.flatten().fieldErrors,
     };
   }
+
+  const productId = formData.get("productId") as string;
+  const productRef = doc(db, "products", productId);
+  const productSnap = await getDoc(productRef);
   const id = Date.now().toString();
 
-  const blobResult = await vercelBlobPutAction({
-    formData,
-    rawData,
-    id: id,
-  });
+  const existingImages = productSnap.data()?.images || [];
+  const existingThumbnail = productSnap.data()?.thumbnail || "";
 
-  if (!blobResult.success) {
-    return {
-      success: false,
-      message: "Failed updating images",
-      inputs: { ...rawData },
-      errors: blobResult.errors,
-    };
+  const imagesSelected = rawData.images.some((file) => file.length > 0);
+  const thumbnailSelected = rawData.thumbnail && rawData.thumbnail.length > 0;
+
+  let imageUrls = existingImages;
+  let thumbnailUrl = existingThumbnail;
+
+  console.log("form images", imagesSelected);
+  console.log("form thumb", thumbnailSelected);
+
+  if (imagesSelected === true || thumbnailSelected === true) {
+    await vercelBlobDeleteAction(existingImages);
+    await vercelBlobDeleteAction(existingThumbnail);
+    const blobResult = await vercelBlobPutAction({
+      formData,
+      rawData,
+      id: id,
+    });
+
+    if (!blobResult.success) {
+      return {
+        success: false,
+        message: "Failed updating images",
+        inputs: { ...rawData },
+        errors: blobResult.errors,
+      };
+    }
+    if (blobResult.success) {
+      imageUrls = blobResult.data?.images || existingImages;
+      thumbnailUrl = blobResult.data?.thumbnail || existingThumbnail;
+    }
   }
-
-  const imageUrls = blobResult.data?.images;
-  const thumbnailUrl = blobResult.data?.thumbnail;
 
   const stripe = await updateProductStripe(
     rawData.stripeProductId,
     rawData.stripePriceId,
     result,
   );
-
-  const productId = formData.get("productId") as string;
-  const productRef = doc(db, "products", productId);
-  const productSnap = await getDoc(productRef);
-
-  const existingImages = productSnap.data()?.images || [];
-  const existingThumbnail = productSnap.data()?.thumbnail || "";
-
-  // const imagesChanged =
-  //   JSON.stringify(rawData.images) !== JSON.stringify(existingImages);
-  // if (imagesChanged) {
-  //   console.log("eski foto silindi");
-  //   await vercelBlobDeleteAction(existingImages);
-  // } else {
-  //   console.log("silinmedi foto");
-  // }
-
-  // const thumbnailChanged = rawData.thumbnail !== existingThumbnail;
-  // if (thumbnailChanged) {
-  //   console.log("eski thumb silindi");
-  //   await vercelBlobDeleteAction(existingThumbnail);
-  // } else {
-  //   console.log("silinmedi thumb");
-  // }
 
   try {
     await updateDoc(productRef, {
@@ -376,8 +371,8 @@ export async function editProductAction(
       availabilityStatus: result.data.availabilityStatus,
       minimumOrderQuantity: result.data.minimumOrderQuantity,
       returnPolicy: result.data.returnPolicy,
-      images: imageUrls && imageUrls.length ? imageUrls : existingImages,
-      thumbnail: thumbnailUrl || existingThumbnail,
+      images: imageUrls,
+      thumbnail: thumbnailUrl,
       meta: {
         updatedAt: Date.now().toString(),
       },

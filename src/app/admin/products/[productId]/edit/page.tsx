@@ -70,21 +70,6 @@ export default function EditProduct() {
     }
   }, [product]);
 
-  // const imagesInput = document.getElementById("images") as HTMLInputElement;
-  // const thumbnailInput = document.getElementById(
-  //   "thumbnail",
-  // ) as HTMLInputElement;
-
-  // if (imagesInput?.files && imagesInput.files.length > 0) {
-  //   console.log("yeni foto var ");
-  // } else {
-  //   console.log("yeni foto YOK");
-  // }
-  // if (thumbnailInput?.files && thumbnailInput.files.length > 0) {
-  //   console.log("yeni foto var ");
-  // } else {
-  //   console.log("yeni foto YOK");
-  // }
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {

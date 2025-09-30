@@ -37,7 +37,7 @@ export default function AdminProducts() {
   }, []);
   return (
     <main>
-      <div className="flex justify-evenly">
+      <div className="flex gap-44 justify-center">
         <h1 className="text-3xl">Products</h1>
         <Link href={"/admin/products/new"}>
           <Button label="Add New Product" />
