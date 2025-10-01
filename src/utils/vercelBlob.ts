@@ -1,4 +1,4 @@
-import { put, del } from "@vercel/blob";
+import { put } from "@vercel/blob";
 interface VercelBlobProps {
   formData: FormData;
   rawData: Record<string, unknown>;
@@ -82,15 +82,4 @@ export async function vercelBlobPutAction({
       thumbnail: thumbnailUrl,
     },
   };
-}
-
-export async function vercelBlobDeleteAction(url: string) {
-  try {
-    await del(url, {
-      token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
-    });
-    console.log("Image deleted successfully.");
-  } catch (error) {
-    console.error("Error deleting image:", error);
-  }
 }

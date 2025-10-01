@@ -1,5 +1,5 @@
 "use server";
-import { vercelBlobDeleteAction } from "../../../utils/vercelBlob";
+import { vercelBlobDeleteAction } from "../../../utils/vercelDeleteAction";
 import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../../utils/firebase";
 import { deleteProductStripe } from "./utilsStripe";

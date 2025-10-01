@@ -9,10 +9,7 @@ import {
 } from "../../../types/types";
 import { z } from "zod";
 import { db, collections } from "../../../utils/firebase";
-import {
-  vercelBlobPutAction,
-  vercelBlobDeleteAction,
-} from "../../../utils/vercelBlob";
+import { vercelBlobPutAction } from "../../../utils/vercelBlob";
 
 import {
   getDocs,
@@ -23,6 +20,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { addProductStripe, updateProductStripe } from "./utilsStripe";
+import { vercelBlobDeleteAction } from "@/utils/vercelDeleteAction";
 
 const productSchema = z.object({
   title: z
@@ -315,8 +313,11 @@ export async function editProductAction(
   const existingImages = productSnap.data()?.images || [];
   const existingThumbnail = productSnap.data()?.thumbnail || "";
 
-  const imagesSelected = rawData.images.some((file) => file.length > 0);
-  const thumbnailSelected = rawData.thumbnail && rawData.thumbnail.length > 0;
+  const images = formData.getAll("images") as File[];
+  const thumbnail = formData.get("thumbnail") as File;
+
+  const imagesSelected = images.some((image) => image && image.size > 0);
+  const thumbnailSelected = thumbnail.size > 0;
 
   let imageUrls = existingImages;
   let thumbnailUrl = existingThumbnail;
@@ -325,7 +326,12 @@ export async function editProductAction(
   console.log("form thumb", thumbnailSelected);
 
   if (imagesSelected === true || thumbnailSelected === true) {
-    await vercelBlobDeleteAction(existingImages);
+    if (existingImages) {
+      for (const image of existingImages) {
+        await vercelBlobDeleteAction(image);
+      }
+    }
+
     await vercelBlobDeleteAction(existingThumbnail);
     const blobResult = await vercelBlobPutAction({
       formData,
@@ -334,6 +340,7 @@ export async function editProductAction(
     });
 
     if (!blobResult.success) {
+      console.log("vercel foto yukleme  hatasi !! ");
       return {
         success: false,
         message: "Failed updating images",
@@ -342,8 +349,8 @@ export async function editProductAction(
       };
     }
     if (blobResult.success) {
-      imageUrls = blobResult.data?.images || existingImages;
-      thumbnailUrl = blobResult.data?.thumbnail || existingThumbnail;
+      imageUrls = blobResult.data?.images;
+      thumbnailUrl = blobResult.data?.thumbnail;
     }
   }
 
