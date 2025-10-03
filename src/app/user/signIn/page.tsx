@@ -54,7 +54,10 @@ export default function SignIn() {
       setMessage("User login was successful.");
 
       const userData = await getUsersFirebase(user);
-      localStorage.setItem("user", JSON.stringify({ email: user.email }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ email: user.email, id: user.uid }),
+      );
 
       if (userData?.role === "admin") {
         router.push("/admin");

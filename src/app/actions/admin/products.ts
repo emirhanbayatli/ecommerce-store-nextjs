@@ -261,7 +261,7 @@ export async function getProductsAction(): Promise<Product[]> {
     return [];
   }
 }
-
+//TODO: Guncelleme ve yeni urun eklemede kullaniciyi bilgilendirmek icin bir sucsess veya error ekrani tasarlanmali
 export async function editProductAction(
   currentState: EditProductFormState | null,
   formData: FormData,
@@ -340,7 +340,6 @@ export async function editProductAction(
     });
 
     if (!blobResult.success) {
-      console.log("vercel foto yukleme  hatasi !! ");
       return {
         success: false,
         message: "Failed updating images",

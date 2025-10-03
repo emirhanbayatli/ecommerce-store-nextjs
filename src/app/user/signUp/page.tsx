@@ -30,7 +30,6 @@ export default function SignUp() {
 
   const setUser = useAuthDispatchContext();
   const defaultUserRole = UserRoles.USER;
-  // const adminRole = UserRoles.ADMIN;
 
   async function userSaveToFirebase(user: User) {
     await setDoc(doc(db, collections.users, user.uid), {
@@ -45,6 +44,10 @@ export default function SignUp() {
     await createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ email: user.email, id: user.uid }),
+        );
         setUser(user.email ? { email: user.email, id: user.uid } : null);
         setMessage("User registration and login were successful.");
         userSaveToFirebase(user);
