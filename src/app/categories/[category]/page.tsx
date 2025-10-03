@@ -4,14 +4,12 @@ import { Product } from "@/types/types";
 import { discountCalculation, showStar } from "@/utils/uiUtils";
 import Link from "next/link";
 
-interface CategoryPageProps {
-  params: {
-    category: string;
-  };
-}
-
-export default async function Categories({ params }: CategoryPageProps) {
-  const { category } = params;
+export default async function Categories({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) {
+  const { category } = await params;
   const products = await getProductsAction();
 
   return (
@@ -34,7 +32,7 @@ export default async function Categories({ params }: CategoryPageProps) {
                       )
                     : product?.price
                 }
-                rating={showStar(product.rating ?? 0)}
+                rating={showStar(product.rating ?? 0) ?? undefined}
               />
             </Link>
           );

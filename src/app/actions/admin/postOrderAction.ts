@@ -1,4 +1,3 @@
-"use server";
 import { getProductsAction } from "../admin/products";
 import {
   doc,
@@ -31,7 +30,7 @@ interface OrderData {
   status: OrderStatus;
 }
 
-export default async function updateStockAction(
+export async function updateStockAction(
   stripePriceId: string,
   productsQuantity: number,
 ) {
@@ -78,8 +77,6 @@ export async function sendConfirmationEmail(
     return { success: false, error: err };
   }
 }
-
-//TODO: Siparisler firebase e kayit edilmiyor nedenini anlayamadim test edilip duzeltilecek
 
 export async function saveOrderToFirestore(order: OrderData) {
   try {

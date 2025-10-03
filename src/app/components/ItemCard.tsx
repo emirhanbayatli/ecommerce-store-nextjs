@@ -5,7 +5,7 @@ interface ItemCardProps {
   imgSrc: string;
   imgAlt: string;
   price?: string;
-  rating?: string;
+  rating?: string | null;
   discount: number;
 }
 

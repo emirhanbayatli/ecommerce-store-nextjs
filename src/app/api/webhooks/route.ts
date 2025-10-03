@@ -1,4 +1,5 @@
-import updateStockAction, {
+import {
+  updateStockAction,
   saveOrderToFirestore,
   sendConfirmationEmail,
 } from "@/app/actions/admin/postOrderAction";
