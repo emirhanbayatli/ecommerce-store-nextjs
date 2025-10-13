@@ -33,15 +33,15 @@ export default function HighlightCard({
 
   return (
     <main className="flex  justify-end max-w-md mx-auto rounded-lg shadow-lg hover:shadow-xl cursor-pointer h-60">
-      <div className="p-4 flex items-center justify-center">
+      <div className="relative w-40 h-40 p-4 flex items-center justify-center">
         <Image
           src={imgSrc}
           alt={imgAlt}
-          width={160}
-          height={160}
-          className="w-40 h-40 object-cover rounded-lg "
+          fill
+          className="object-cover rounded-lg"
         />
       </div>
+
       <div
         data-testid="highlight-card-info"
         className={`p-4 flex flex-col justify-between text-white rounded-r-lg w-3/5 ${randomColor} ${className}`}
