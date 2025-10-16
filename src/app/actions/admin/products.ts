@@ -262,6 +262,7 @@ export async function getProductsAction(): Promise<Product[]> {
   }
 }
 //TODO: Guncelleme ve yeni urun eklemede kullaniciyi bilgilendirmek icin bir sucsess veya error ekrani tasarlanmali
+//TODO: Urun guncelleme yapilirken stripePriceId undefined oldugu zamanlarda hata donuyor
 export async function editProductAction(
   currentState: EditProductFormState | null,
   formData: FormData,

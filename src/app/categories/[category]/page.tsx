@@ -12,10 +12,14 @@ export default async function Categories({
   const { category } = await params;
   const products = await getProductsAction();
 
+  console.log(category, "category");
+
   return (
     <div className="grid grid-cols-4 gap-3 p-5">
       {products.map((product: Product) => {
-        if (category === product.category) {
+        if (
+          category.toLocaleLowerCase() === product.category.toLocaleLowerCase()
+        ) {
           return (
             <Link key={product.id} href={`/products/${product.id}`}>
               <ItemCard
