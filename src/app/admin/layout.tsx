@@ -1,18 +1,19 @@
 "use client";
-import Link from "next/link";
-import {
-  Home,
-  Boxes,
-  ClipboardList,
-  Users,
-  BarChart,
-  Settings,
-} from "lucide-react";
 import { useAuthContext } from "../AuthContextProvider";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { LoadingSpinner } from "../components/LoadingSpiner";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { Boxes, ClipboardList, Users } from "lucide-react";
+
+const navLinks = [
+  { href: "/admin/products", label: "Products", icon: Boxes },
+  { href: "/admin/orders", label: "Orders", icon: ClipboardList },
+  { href: "/admin/customers", label: "Customers", icon: Users },
+];
 
 export default function AdminLayout({
   children,
@@ -22,16 +23,16 @@ export default function AdminLayout({
   const currentUser = useAuthContext();
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
+
   useEffect(() => {
     const fetchUserRole = async () => {
       if (!currentUser?.id) {
         setLoading(false);
         return;
       }
-
       const docRef = doc(db, "users", currentUser.id);
       const docSnap = await getDoc(docRef);
-
       if (docSnap.exists()) {
         setRole(docSnap.data()?.role ?? null);
       } else {
@@ -39,7 +40,6 @@ export default function AdminLayout({
       }
       setLoading(false);
     };
-
     fetchUserRole();
   }, [currentUser?.id]);
 
@@ -49,8 +49,7 @@ export default function AdminLayout({
         <LoadingSpinner />
       </main>
     );
-
-  if (!currentUser || role !== "admin") {
+  if (!currentUser || role !== "admin")
     return (
       <main className="flex items-center justify-center w-full h-screen bg-gray-50">
         <div className="text-center p-6 bg-white shadow-md rounded-lg">
@@ -66,40 +65,69 @@ export default function AdminLayout({
         </div>
       </main>
     );
-  }
 
   return (
-    <main className="flex min-h-screen">
-      <div className="flex justify-center w-50 bg-gray-100 p-4">
-        <ul className="space-y-3 text-sm ">
-          <li className="flex items-center gap-2">
-            <Home size={18} />
-            <Link href="/admin">Home</Link>
-          </li>
-          <li className="flex items-center gap-2">
-            <Boxes size={18} />
-            <Link href="/admin/products">Products</Link>
-          </li>
-          <li className="flex items-center gap-2">
-            <ClipboardList size={18} />
-            <Link href="/admin/orders">Orders</Link>
-          </li>
-          <li className="flex items-center gap-2">
-            <Users size={18} />
-            <Link href="/admin/customers">Customers</Link>
-          </li>
-          <li className="flex items-center gap-2">
-            <BarChart size={18} />
-            <Link href="/admin/reports">Reports</Link>
-          </li>
-          <li className="flex items-center gap-2">
-            <Settings size={18} />
-            <Link href="/admin/settings">Settings</Link>
-          </li>
-        </ul>
+    <div className="flex min-h-screen bg-gray-50">
+      <div className="hidden w-64 flex-col bg-white p-4 md:flex">
+        <div className="mb-6 flex items-center gap-3 px-2">
+          <Boxes className="text-blue-600" size={28} />
+          <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
+        </div>
+        <nav className="flex-1">
+          <ul className="space-y-2">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={`flex items-center gap-3 rounded-lg p-3 text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-blue-100 text-blue-600"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    }`}
+                  >
+                    <link.icon size={20} />
+                    <span>{link.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
       </div>
 
-      <section className="flex-1 p-6 bg-white">{children}</section>
-    </main>
+      <main className="flex-1">
+        <header className="sticky top-0 z-10  bg-white p-2 md:hidden">
+          <div className="flex items-center justify-between px-2">
+            <span className="font-bold text-gray-800">Admin Panel</span>
+          </div>
+          <nav className="mt-2 overflow-x-auto whitespace-nowrap pb-2">
+            <ul className="flex space-x-2">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                        isActive
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      <link.icon size={16} />
+                      <span>{link.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </header>
+
+        <div className="p-6">{children}</div>
+      </main>
+    </div>
   );
 }
