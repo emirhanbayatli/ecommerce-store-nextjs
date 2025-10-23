@@ -1,5 +1,6 @@
 import { getProductsAction } from "@/app/actions/admin/products";
 import ItemCard from "@/app/components/ItemCard";
+import { ProductCard } from "@/app/components/ProductCard";
 import { Product } from "@/types/types";
 import { discountCalculation, showStar } from "@/utils/uiUtils";
 import Link from "next/link";
@@ -15,28 +16,19 @@ export default async function Categories({
   console.log(category, "category");
 
   return (
-    <div className="grid grid-cols-4 gap-3 p-5">
+    <div className="grid grid-cols-4 gap-3 p-5 min-h-screen">
       {products.map((product: Product) => {
         if (
           category.toLocaleLowerCase() === product.category.toLocaleLowerCase()
         ) {
           return (
             <Link key={product.id} href={`/products/${product.id}`}>
-              <ItemCard
-                id={product.id.toString()}
+              <ProductCard
                 title={product.title}
-                imgSrc={product.images[0]}
-                imgAlt={product.title}
+                imageUrl={product.images[0]}
+                altText={product.title}
                 price={`$${product.price}`}
-                discount={
-                  product?.discountPercentage && product.discountPercentage > 0
-                    ? discountCalculation(
-                        product.price,
-                        product.discountPercentage,
-                      )
-                    : product?.price
-                }
-                rating={showStar(product.rating ?? 0) ?? undefined}
+                description={product.description}
               />
             </Link>
           );
