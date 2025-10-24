@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { Product } from "../../types/types";
-import ItemCard from "../components/ItemCard";
-import { discountCalculation, showStar } from "../../utils/uiUtils";
 import { getProductsAction } from "../actions/admin/products";
 import { ProductCard } from "../components/ProductCard";
 

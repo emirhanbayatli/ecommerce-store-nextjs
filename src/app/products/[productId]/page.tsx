@@ -1,9 +1,5 @@
 import ItemDesc from "@/app/components/ItemDesc";
-import {
-  CURRENCY_SYMBOL,
-  discountCalculation,
-  showStar,
-} from "../../../utils/uiUtils";
+import { showStar } from "../../../utils/uiUtils";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import Link from "next/link";

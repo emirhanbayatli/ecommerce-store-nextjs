@@ -1,8 +1,6 @@
 import { getProductsAction } from "@/app/actions/admin/products";
-import ItemCard from "@/app/components/ItemCard";
 import { ProductCard } from "@/app/components/ProductCard";
 import { Product } from "@/types/types";
-import { discountCalculation, showStar } from "@/utils/uiUtils";
 import Link from "next/link";
 
 export default async function Categories({

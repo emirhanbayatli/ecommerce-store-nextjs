@@ -2,11 +2,7 @@
 import { Button } from "../components/Button";
 import { useCartDispatchContext } from "../CartContextProvider";
 import Carousel from "./Carousel";
-import {
-  CURRENCY,
-  CURRENCY_SYMBOL,
-  discountCalculation,
-} from "@/utils/uiUtils";
+import { CURRENCY_SYMBOL, discountCalculation } from "@/utils/uiUtils";
 
 export interface ItemDescProps {
   id: string;
