@@ -14,7 +14,7 @@ export default async function Categories({
   console.log(category, "category");
 
   return (
-    <div className="grid grid-cols-4 gap-3 p-5 min-h-screen">
+    <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 p-4 sm:p-6 min-h-screen">
       {products.map((product: Product) => {
         if (
           category.toLocaleLowerCase() === product.category.toLocaleLowerCase()
@@ -33,6 +33,6 @@ export default async function Categories({
         }
         return null;
       })}
-    </div>
+    </main>
   );
 }
