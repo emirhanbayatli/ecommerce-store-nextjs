@@ -21,7 +21,9 @@ export const ProductCard = ({
       <p className="text-gray-700 dark:text-gray-400 text-base mb-3 line-clamp-3">
         {description}
       </p>
-      <p className="text-primary text-xl font-bold my-2">{price}</p>
+      <p className="text-gray-900 dark:text-gray-400 text-primary text-xl font-bold my-2 text-center">
+        {price}
+      </p>
       <button className="w-full bg-gray-100 dark:bg-gray-800 text-primary dark:text-white py-2 rounded-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
         Add To Cart
       </button>
