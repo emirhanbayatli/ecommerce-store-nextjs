@@ -1,5 +1,4 @@
 "use client";
-import { LoadingSpinner } from "@/app/components/LoadingSpiner";
 import { auth } from "@/utils/firebase";
 import { getErrorMessageFromCode } from "@/utils/uiUtils";
 import { FirebaseError } from "firebase/app";
