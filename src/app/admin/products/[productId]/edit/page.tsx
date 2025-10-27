@@ -16,7 +16,7 @@ import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { LoadingSpinner } from "@/app/components/LoadingSpiner";
+import { LoadingSpinner } from "@/app/components/LoadingSpinner";
 
 const initialState: EditProductFormState = {
   success: false,

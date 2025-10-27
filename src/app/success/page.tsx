@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { stripe } from "@/utils/stripe";
 import Link from "next/link";
 import { CURRENCY } from "@/utils/uiUtils";
-import { LoadingSpinner } from "../components/LoadingSpiner";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 interface SuccessProps {
   searchParams: Promise<{

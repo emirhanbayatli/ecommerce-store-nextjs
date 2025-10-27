@@ -3,7 +3,7 @@ import { useAuthContext } from "../AuthContextProvider";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
-import { LoadingSpinner } from "../components/LoadingSpiner";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

@@ -13,7 +13,7 @@ import { Button } from "@/app/components/Button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
-import { LoadingSpinner } from "@/app/components/LoadingSpiner";
+import { LoadingSpinner } from "@/app/components/LoadingSpinner";
 
 const initialState: NewProductFormState = {
   success: false,

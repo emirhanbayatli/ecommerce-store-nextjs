@@ -6,7 +6,7 @@ import { deleteProductAction } from "../../actions/admin/deleteAction";
 import { useEffect, useState } from "react";
 import { Product } from "../../../types/types";
 import Image from "next/image";
-import { LoadingSpinner } from "@/app/components/LoadingSpiner";
+import { LoadingSpinner } from "@/app/components/LoadingSpinner";
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [message, setMessage] = useState<{
