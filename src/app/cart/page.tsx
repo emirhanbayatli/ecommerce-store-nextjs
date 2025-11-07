@@ -209,24 +209,29 @@ export default function Cart() {
 
           <div className="lg:w-1/3">
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
-              <h2 className="text-xl font-semibold mb-4 border-b pb-4">
+              <h2 className="text-xl font-semibold mb-4  pb-4">
                 Order Summary
               </h2>
               <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">
-                    {CURRENCY_SYMBOL}
-                    {subTotal.toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-green-600">
-                  <span className="text-gray-600">Discount</span>
-                  <span className="font-medium">
-                    -{CURRENCY_SYMBOL}
-                    {totalDiscount.toFixed(2)}
-                  </span>
-                </div>
+                {totalDiscount > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Subtotal</span>
+                      <span className="font-medium">
+                        {CURRENCY_SYMBOL}
+                        {subTotal.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-green-600">
+                      <span className="text-gray-600">Discount</span>
+                      <span className="font-medium">
+                        -{CURRENCY_SYMBOL}
+                        {totalDiscount.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex justify-between pt-4 border-t mt-4">
                   <span className="text-lg font-bold">Total</span>
                   <span className="text-lg font-bold">

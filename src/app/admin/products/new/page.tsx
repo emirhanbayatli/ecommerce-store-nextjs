@@ -64,6 +64,7 @@ export default function Admin() {
       returnPolicy: state.inputs?.returnPolicy || allReturnPolicies[0],
       images: state.inputs?.images || [],
       thumbnail: state.inputs?.thumbnail || "",
+      status: state.inputs?.status || "standard",
     },
   });
 
@@ -126,7 +127,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="description" className="font-bold mb-1">
             Description
@@ -158,7 +158,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="category" className="font-bold mb-1">
             Category
@@ -189,7 +188,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="price" className="font-bold mb-1">
             Price
@@ -222,7 +220,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="discountPercentage" className="font-bold mb-1">
             Discount Percentage
@@ -257,7 +254,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="stock" className="font-bold mb-1">
             Stock
@@ -290,7 +286,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="tags" className="font-bold mb-1">
             Tags
@@ -323,7 +318,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="brand" className="font-bold mb-1">
             Brand
@@ -354,7 +348,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="sku" className="font-bold mb-1">
             SKU
@@ -385,7 +378,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="weight" className="font-bold mb-1">
             Weight
@@ -418,7 +410,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="dimensions" className="font-bold mb-1">
             Dimensions
@@ -506,7 +497,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="warrantyInformation" className="font-bold mb-1">
             Warranty Information
@@ -539,7 +529,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="shippingInformation" className="font-bold mb-1">
             Shipping Information
@@ -572,7 +561,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="availabilityStatus" className="font-bold mb-1">
             Availability Status
@@ -615,7 +603,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="minimumOrderQuantity" className="font-bold mb-1">
             Minimum Order Quantity
@@ -650,7 +637,6 @@ export default function Admin() {
             </p>
           )}
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="returnPolicy" className="font-bold mb-1">
             Return Policy
@@ -689,6 +675,53 @@ export default function Admin() {
           {errors.returnPolicy?.message && (
             <p className="text-gray-600 text-sm">
               {errors.returnPolicy.message as string}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor="status" className="font-bold mb-1">
+            Product Status
+          </label>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-1">
+              <input
+                {...register("status")}
+                type="radio"
+                value="Standard"
+                name="status"
+                className="accent-stone-900"
+              />
+              Standard
+            </label>
+
+            <label className="flex items-center gap-1">
+              <input
+                {...register("status")}
+                type="radio"
+                name="status"
+                value="Explore"
+                className="accent-stone-900"
+              />
+              Explore
+            </label>
+
+            <label className="flex items-center gap-1">
+              <input
+                {...register("status")}
+                type="radio"
+                name="status"
+                value="Featured"
+                className="accent-stone-900"
+              />
+              Featured
+            </label>
+          </div>
+          {state?.errors?.status && (
+            <p className="text-gray-600 text-sm">{state.errors.status}</p>
+          )}
+          {errors.status?.message && (
+            <p className="text-gray-600 text-sm">
+              {errors.status.message as string}
             </p>
           )}
         </div>
@@ -755,7 +788,6 @@ export default function Admin() {
             </div>
           )}
         </div>
-
         <Button type="submit" label="Create Product" />
         <Link href={"/admin/products"}>
           <Button className="w-full" label="Cancel" />

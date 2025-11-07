@@ -29,6 +29,12 @@ export interface Product {
   thumbnail: string;
   stripeProductId?: string;
   stripePriceId?: string;
+  status: Status;
+}
+export enum Status {
+  standard = "Standard",
+  explore = "Explore",
+  featured = "Featured",
 }
 
 export enum Category {
@@ -74,6 +80,7 @@ export enum Tags {
 export const allTags = Object.values(Tags);
 
 export const allCategories = Object.values(Category);
+export const allStatus = Object.values(Status);
 
 export enum AvailabilityStatus {
   IN_STOCK = "In Stock",

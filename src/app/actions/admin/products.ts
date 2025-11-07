@@ -6,6 +6,7 @@ import {
   Product,
   AvailabilityStatus,
   ReturnPolicy,
+  Status,
 } from "../../../types/types";
 import { z } from "zod";
 import { db, collections } from "../../../utils/firebase";
@@ -93,6 +94,9 @@ const productSchema = z.object({
   returnPolicy: z.nativeEnum(ReturnPolicy, {
     errorMap: () => ({ message: "Please select a return policy" }),
   }),
+  status: z.nativeEnum(Status, {
+    errorMap: () => ({ message: "Please select a product status" }),
+  }),
 });
 
 export async function addNewProductAction(
@@ -122,6 +126,7 @@ export async function addNewProductAction(
     ) as AvailabilityStatus,
     minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
+    status: formData.get("status") as Status,
   };
 
   const result = productSchema.safeParse(rawData);
@@ -191,6 +196,7 @@ export async function addNewProductAction(
       },
       stripeProductId: stripe.stripeProductId,
       stripePriceId: stripe.stripePriceId,
+      status: result.data.status,
     });
 
     return {
@@ -253,6 +259,7 @@ export async function getProductsAction(): Promise<Product[]> {
         },
         stripeProductId: data.stripeProductId,
         stripePriceId: data.stripePriceId,
+        status: data.status,
       };
     });
     return products as Product[];
@@ -262,7 +269,7 @@ export async function getProductsAction(): Promise<Product[]> {
   }
 }
 //TODO: Guncelleme ve yeni urun eklemede kullaniciyi bilgilendirmek icin bir sucsess veya error ekrani tasarlanmali
-//TODO: Urun guncelleme yapilirken stripePriceId undefined oldugu zamanlarda hata donuyor
+
 export async function editProductAction(
   currentState: EditProductFormState | null,
   formData: FormData,
@@ -295,6 +302,7 @@ export async function editProductAction(
     returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
     images: formData.getAll("images") as string[],
     thumbnail: formData.get("thumbnail") as string,
+    status: formData.get("status") as Status,
   };
   const result = productSchema.safeParse(rawData);
   if (!result.success) {
@@ -322,9 +330,6 @@ export async function editProductAction(
 
   let imageUrls = existingImages;
   let thumbnailUrl = existingThumbnail;
-
-  console.log("form images", imagesSelected);
-  console.log("form thumb", thumbnailSelected);
 
   if (imagesSelected === true || thumbnailSelected === true) {
     if (existingImages) {
@@ -383,8 +388,9 @@ export async function editProductAction(
       meta: {
         updatedAt: Date.now().toString(),
       },
-      stripeProductId: stripe.updatedProductId,
-      stripePriceId: stripe.newPriceId,
+      stripeProductId: stripe.updatedProductId || "",
+      stripePriceId: stripe.newPriceId || "",
+      status: result.data.status,
     });
 
     return {

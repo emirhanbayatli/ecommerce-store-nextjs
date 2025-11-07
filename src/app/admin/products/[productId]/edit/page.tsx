@@ -11,6 +11,7 @@ import {
   allReturnPolicies,
   Product,
   Tags,
+  Status,
 } from "../../../../../types/types";
 import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
@@ -104,13 +105,13 @@ export default function EditProduct() {
               id="stripeProductId"
               type="hidden"
               name="stripeProductId"
-              value={product.stripeProductId}
+              value={product.stripeProductId || ""}
             />
             <input
               id="stripePriceId"
               type="hidden"
               name="stripePriceId"
-              value={product.stripePriceId}
+              value={product.stripePriceId || ""}
             />
             <input
               id="productId"
@@ -747,6 +748,42 @@ export default function EditProduct() {
                   {errors.returnPolicy.message as string}
                 </p>
               )}
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="status" className="font-bold mb-1">
+                Product Status
+              </label>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-1">
+                  <input
+                    {...register("status")}
+                    type="radio"
+                    value="Standard"
+                    className="accent-stone-900"
+                  />
+                  Standard
+                </label>
+
+                <label className="flex items-center gap-1">
+                  <input
+                    {...register("status")}
+                    type="radio"
+                    value="Explore"
+                    className="accent-stone-900"
+                  />
+                  Explore
+                </label>
+
+                <label className="flex items-center gap-1">
+                  <input
+                    {...register("status")}
+                    type="radio"
+                    value="Featured"
+                    className="accent-stone-900"
+                  />
+                  Featured
+                </label>
+              </div>
             </div>
 
             <div className="flex flex-col col-span-2">
