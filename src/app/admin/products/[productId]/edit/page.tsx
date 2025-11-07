@@ -11,7 +11,6 @@ import {
   allReturnPolicies,
   Product,
   Tags,
-  Status,
 } from "../../../../../types/types";
 import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
