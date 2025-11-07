@@ -13,7 +13,7 @@ export const ProductCard = ({
   price,
 }: ProductCardProps) => (
   <div className="bg-white dark:bg-[#1a2a3a] rounded-xl shadow-lg overflow-hidden">
-    <img alt={altText} className="w-full h-56 object-cover" src={imageUrl} />
+    <img alt={altText} className="w-full h-56 object-contain" src={imageUrl} />
     <div className="p-5">
       <h3 className="text-xl font-semibold text-[#111418] dark:text-white mb-2 line-clamp-1 ">
         {title}
