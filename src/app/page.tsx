@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { CURRENCY_SYMBOL, discountCalculation } from "../utils/uiUtils";
 import { getProductsAction } from "./actions/admin/products";
-import { ProductCard } from "./components/ProductCard";
-import { FeaturedProductCard } from "./components/FeaturedProductCard";
+import ProductCard from "./components/ProductCard";
 import { CategoryCard } from "./components/CategoryCard";
 import { HeroWithSearch } from "./components/HeroWithSearch";
 import FeaturedArea from "./components/FeaturedArea";
@@ -23,14 +21,17 @@ export default async function Home() {
             <h1 className="font-bold text-3xl mb-6">Explore Products</h1>
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {exploreProducts.slice(0, 6).map((product) => (
-                <ProductCard
-                  key={product.id}
-                  imageUrl={product.images[0]}
-                  altText={product.title}
-                  title={product.title}
-                  description={product.description}
-                  price={`${CURRENCY_SYMBOL}${product.price}`}
-                />
+                <Link key={product.id} href={`/products/${product.id}`}>
+                  <ProductCard
+                    key={product.id}
+                    imageUrl={product.images[0]}
+                    altText={product.title}
+                    title={product.title}
+                    description={product.description}
+                    discount={product.discountPercentage}
+                    price={`${product.price}`}
+                  />
+                </Link>
               ))}
             </div>
           </section>

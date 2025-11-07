@@ -1,7 +1,7 @@
-import { discountCalculation } from "@/utils/uiUtils";
+import Link from "next/link";
 import { getProductsAction } from "../actions/admin/products";
-import { FeaturedProductCard } from "./FeaturedProductCard";
-import { ProductCard } from "./ProductCard";
+import FeaturedProductCard from "./FeaturedProductCard";
+import ProductCard from "./ProductCard";
 
 export default async function FeaturedArea() {
   const products = await getProductsAction();
@@ -14,66 +14,82 @@ export default async function FeaturedArea() {
         {featuredProducts.slice(0, 3).map((product, index) => {
           if (index === 2) {
             return (
-              <FeaturedProductCard
+              <Link
                 key={product.id}
-                imageUrl={product.images[0]}
-                imageAlt={product.title}
-                title={product.title}
-                description={product.description}
-                price={`$${discountCalculation(
-                  product.price,
-                  product.discountPercentage,
-                )}`}
-                originalPrice={`$${product.price}`}
-                buttonText="Add to Cart"
-                imagePosition="right"
-                category={product.category}
-              />
+                className="contents"
+                href={`/products/${product.id}`}
+              >
+                <FeaturedProductCard
+                  imageUrl={product.images[0]}
+                  imageAlt={product.title}
+                  title={product.title}
+                  description={product.description}
+                  price={product.price}
+                  discount={product.discountPercentage}
+                  buttonText="Add to Cart"
+                  imagePosition="left"
+                  category={product.category}
+                />
+              </Link>
             );
           }
 
           return (
-            <ProductCard
+            <Link
               key={product.id}
-              imageUrl={product.images[0]}
-              altText={product.title}
-              title={product.title}
-              description={product.description}
-              price={product.price.toString()}
-            />
+              className="contents"
+              href={`/products/${product.id}`}
+            >
+              <ProductCard
+                imageUrl={product.images[0]}
+                altText={product.title}
+                title={product.title}
+                description={product.description}
+                price={product.price.toString()}
+                discount={product.discountPercentage}
+              />
+            </Link>
           );
         })}
 
         {featuredProducts.slice(3, 6).map((product, index) => {
           if (index === 0) {
             return (
-              <FeaturedProductCard
+              <Link
                 key={product.id}
-                imageUrl={product.images[0]}
-                imageAlt={product.title}
-                title={product.title}
-                description={product.description}
-                price={`$${discountCalculation(
-                  product.price,
-                  product.discountPercentage,
-                )}`}
-                originalPrice={`$${product.price}`}
-                buttonText="Add to Cart"
-                imagePosition="left"
-                category={product.category}
-              />
+                className="contents"
+                href={`/products/${product.id}`}
+              >
+                <FeaturedProductCard
+                  imageUrl={product.images[0]}
+                  imageAlt={product.title}
+                  title={product.title}
+                  description={product.description}
+                  price={product.price}
+                  discount={product.discountPercentage}
+                  buttonText="Add to Cart"
+                  imagePosition="left"
+                  category={product.category}
+                />
+              </Link>
             );
           }
 
           return (
-            <ProductCard
+            <Link
               key={product.id}
-              imageUrl={product.images[0]}
-              altText={product.title}
-              title={product.title}
-              description={product.description}
-              price={product.price.toString()}
-            />
+              className="contents"
+              href={`/products/${product.id}`}
+            >
+              <ProductCard
+                imageUrl={product.images[0]}
+                altText={product.title}
+                title={product.title}
+                description={product.description}
+                price={product.price.toString()}
+                discount={product.discountPercentage}
+              />
+            </Link>
           );
         })}
       </div>

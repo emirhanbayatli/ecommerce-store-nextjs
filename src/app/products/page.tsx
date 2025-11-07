@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Product } from "../../types/types";
 import { getProductsAction } from "../actions/admin/products";
-import { ProductCard } from "../components/ProductCard";
+import ProductCard from "../components/ProductCard";
 
 export default async function Products() {
   try {
@@ -15,8 +15,9 @@ export default async function Products() {
               title={product.title}
               imageUrl={product.images[0]}
               altText={product.title}
-              price={`$${product.price}`}
+              price={`${product.price}`}
               description={product.description}
+              discount={product.discountPercentage}
             />
           </Link>
         ))}

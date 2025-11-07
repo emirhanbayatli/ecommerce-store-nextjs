@@ -1,6 +1,7 @@
 import { getProductsAction } from "@/app/actions/admin/products";
-import { ProductCard } from "@/app/components/ProductCard";
+import ProductCard from "@/app/components/ProductCard";
 import { Product } from "@/types/types";
+
 import Link from "next/link";
 
 export default async function Categories({
@@ -25,7 +26,8 @@ export default async function Categories({
                 title={product.title}
                 imageUrl={product.images[0]}
                 altText={product.title}
-                price={`$${product.price}`}
+                price={`${product.price}`}
+                discount={product.discountPercentage}
                 description={product.description}
               />
             </Link>

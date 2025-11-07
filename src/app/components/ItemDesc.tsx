@@ -56,15 +56,16 @@ export default function ItemDesc({
             {discount && discount > 0 ? (
               <>
                 <p className="text-gray-800 font-bold text-3xl">
-                  {discountCalculation(price, discount) + CURRENCY_SYMBOL}
+                  {CURRENCY_SYMBOL +
+                    discountCalculation(Number(price), discount)}
                 </p>
                 <p className="text-gray-400 font-light text-xl line-through">
-                  {price + CURRENCY_SYMBOL}
+                  {CURRENCY_SYMBOL + price}
                 </p>
               </>
             ) : (
               <p className="text-gray-800 font-bold text-3xl">
-                {price + CURRENCY_SYMBOL}
+                {CURRENCY_SYMBOL + price}
               </p>
             )}
           </div>
