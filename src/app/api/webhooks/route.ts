@@ -7,6 +7,7 @@ import { stripe } from "@/utils/stripe";
 import { NextRequest } from "next/server";
 import Stripe from "stripe";
 import { OrderStatus as orderStatus } from "@/app/actions/admin/postOrderAction";
+
 export const POST = async (req: NextRequest) => {
   const body = await req.text();
 
@@ -59,12 +60,10 @@ export const POST = async (req: NextRequest) => {
       <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
-          <!-- HEADER -->
           <div style="background-color: #007BFF; color: white; padding: 15px; border-radius: 8px 8px 0 0; text-align: center;">
             <h2 style="margin: 0;">Your Order Has Been Confirmed!</h2>
           </div>
 
-          <!-- BODY -->
           <div style="padding: 20px;">
             <p>Hello <strong>${
               session.customer_details?.name ?? "Valued Customer"
@@ -99,7 +98,6 @@ export const POST = async (req: NextRequest) => {
             <p>Best regards,<br>E-Commerce Team</p>
           </div>
 
-          <!-- FOOTER -->
           <div style="text-align:center; padding: 15px; font-size: 12px; color: #888;">
             © ${new Date().getFullYear()} E-Commerce. All rights reserved.
           </div>
@@ -142,7 +140,7 @@ export const POST = async (req: NextRequest) => {
     case "checkout.session.expired":
       const expiredSession = event.data.object;
       console.log("Checkout session completed:", expiredSession);
-      // Handle the checkout session expired event
+
       break;
     default:
       console.warn(`Unhandled event type: ${event.type}`);

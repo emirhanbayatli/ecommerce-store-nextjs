@@ -488,7 +488,7 @@ export default function EditProduct() {
                   id="width"
                   name="dimensions_width"
                   placeholder="Width"
-                  className="dark:bg-stone-200 dark:text-stone-900  p-2 rounded max-w-30"
+                  className="bg-stone-200 text-stone-900  p-2 rounded max-w-30"
                 />
 
                 <input
@@ -509,7 +509,7 @@ export default function EditProduct() {
                   id="height"
                   name="dimensions_height"
                   placeholder="Height"
-                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+                  className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
                 />
 
                 <input
@@ -530,7 +530,7 @@ export default function EditProduct() {
                   id="depth"
                   name="dimensions_depth"
                   placeholder="Depth"
-                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+                  className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
                 />
               </div>
               {state?.errors?.dimensions && (

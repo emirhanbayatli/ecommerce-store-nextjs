@@ -146,7 +146,7 @@ export default function Admin() {
             type="text"
             id="description"
             name="description"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.description && (
             <p className="text-gray-600 text-sm">{state.errors.description}</p>
@@ -171,7 +171,7 @@ export default function Admin() {
             })}
             id="category"
             name="category"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           >
             {allCategories.map((category) => (
               <option key={category} value={category}>
@@ -209,7 +209,7 @@ export default function Admin() {
             step="0.01"
             id="price"
             name="price"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.price && (
             <p className="text-gray-600 text-sm">{state.errors.price}</p>
@@ -241,7 +241,7 @@ export default function Admin() {
             step="0.01"
             id="discountPercentage"
             name="discountPercentage"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.discountPercentage && (
             <p className="text-gray-600 text-sm">
@@ -275,7 +275,7 @@ export default function Admin() {
             step="0.01"
             id="stock"
             name="stock"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.stock && (
             <p className="text-gray-600 text-sm">{state.errors.stock}</p>
@@ -337,7 +337,7 @@ export default function Admin() {
             type="text"
             id="brand"
             name="brand"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.brand && (
             <p className="text-gray-600 text-sm">{state.errors.brand}</p>
@@ -367,7 +367,7 @@ export default function Admin() {
             type="text"
             id="sku"
             name="sku"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.sku && (
             <p className="text-gray-600 text-sm">{state.errors.sku}</p>
@@ -399,7 +399,7 @@ export default function Admin() {
             step="0.01"
             id="weight"
             name="weight"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.weight && (
             <p className="text-gray-600 text-sm">{state.errors.weight}</p>
@@ -433,7 +433,7 @@ export default function Admin() {
               id="width"
               name="dimensions_width"
               placeholder="Width"
-              className="dark:bg-stone-200 dark:text-stone-900  p-2 rounded max-w-30"
+              className="bg-stone-200 text-stone-900  p-2 rounded max-w-30"
             />
 
             <input
@@ -454,7 +454,7 @@ export default function Admin() {
               id="height"
               name="dimensions_height"
               placeholder="Height"
-              className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+              className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
             />
 
             <input
@@ -475,7 +475,7 @@ export default function Admin() {
               id="depth"
               name="dimensions_depth"
               placeholder="Depth"
-              className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+              className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
             />
           </div>
           {state?.errors?.dimensions && (
@@ -516,7 +516,7 @@ export default function Admin() {
             type="text"
             id="warrantyInformation"
             name="warrantyInformation"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.warrantyInformation && (
             <p className="text-gray-600 text-sm">
@@ -548,7 +548,7 @@ export default function Admin() {
             type="text"
             id="shippingInformation"
             name="shippingInformation"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.shippingInformation && (
             <p className="text-gray-600 text-sm">
@@ -624,7 +624,7 @@ export default function Admin() {
             step="0.01"
             id="minimumOrderQuantity"
             name="minimumOrderQuantity"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.minimumOrderQuantity && (
             <p className="text-gray-600 text-sm">
@@ -737,7 +737,7 @@ export default function Admin() {
             onChange={handleImagesChange}
             id="images"
             name="images"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
           {state?.errors?.images && (
             <p className="text-gray-600 text-sm">{state.errors.images}</p>
@@ -770,7 +770,7 @@ export default function Admin() {
             onChange={handleThumbnailChange}
             accept=".jpeg , .jpg , .webp"
             name="thumbnail"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className="bg-stone-200 text-stone-900 p-2 rounded"
           />
 
           {errors.thumbnail?.message && (
