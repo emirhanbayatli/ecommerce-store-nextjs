@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, X } from "lucide-react";
 import { Product } from "@/types/types";
+import { discountCalculation } from "@/utils/uiUtils";
 
 type Props = {
   products: Product[];
@@ -82,7 +83,13 @@ export function InstantSearchBar({ products }: Props) {
                       <p className="font-semibold text-gray-800">
                         {product.title}
                       </p>
-                      <p className="text-sm text-gray-500">${product.price}</p>
+                      <p className="text-sm text-gray-500">
+                        $
+                        {discountCalculation(
+                          product.price,
+                          product.discountPercentage,
+                        )}
+                      </p>
                     </div>
                   </Link>
                 </li>

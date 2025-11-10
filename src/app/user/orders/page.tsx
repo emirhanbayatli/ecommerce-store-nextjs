@@ -4,7 +4,6 @@ import { db } from "@/utils/firebase";
 import { collection, getDocs, Timestamp } from "firebase/firestore";
 import { useAuthContext } from "@/app/AuthContextProvider";
 import { CURRENCY_SYMBOL } from "@/utils/uiUtils";
-import { toast } from "sonner";
 
 interface OrderProps {
   id: string;
@@ -47,30 +46,6 @@ export default function OrdersPage() {
     <div className="px-10 py-5 flex justify-center">
       <div className="flex flex-col max-w-[960px] w-full">
         <h1 className="text-2xl font-bold mb-4">My Orders</h1>
-
-        <div>
-          <button onClick={() => toast("Bu bir demo bildirimidir!")}>
-            Bana Tıkla (Normal)
-          </button>
-
-          {/* --- Farklı Toast Tipleri --- */}
-          <div className="flex gap-2">
-            <button onClick={() => toast.success("Başarılı!")}>
-              Başarı (Success)
-            </button>
-
-            <button onClick={() => toast.error("Bir hata oluştu!")}>
-              Hata (Error)
-            </button>
-
-            <button onClick={() => toast.warning("Uyarı!")}>
-              Uyarı (Warning)
-            </button>
-            <button onClick={() => toast.loading("Uyarı!")}>Loading</button>
-            <button onClick={() => toast.info("Uyarı!")}>info</button>
-          </div>
-        </div>
-
         <div className="overflow-x-auto px-4 py-3">
           <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
             <thead className="bg-white">

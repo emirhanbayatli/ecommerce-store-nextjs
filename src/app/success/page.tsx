@@ -27,12 +27,6 @@ export default async function Success({ searchParams }: SuccessProps) {
     return redirect("/");
   }
 
-  // session.line_items?.data.forEach((item) => {
-  //   console.log("price id ", item.price?.id);
-  //   console.log("Quantity:", item.quantity);
-  //   console.log("Product name:", item.description);
-  // });
-
   if (status === "complete") {
     return (
       <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4">

@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { ClipboardList, Users, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useAuthContext } from "../AuthContextProvider";
+import SignIn from "./signIn/page";
 
 export default function UserLayout({
   children,
@@ -9,12 +11,25 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const user = useAuthContext();
 
   const navLinks = [
     { href: "/user", label: "Profile", icon: Users },
     { href: "/user/orders", label: "Orders", icon: ClipboardList },
     { href: "/user/settings", label: "Settings", icon: Settings },
   ];
+
+  // if (user.loading) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center">
+  //       <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+  //     </div>
+  //   );
+  // }
+
+  // if (!user.user && !user.loading) {
+  //   return <SignIn />;
+  // }
   return (
     <div className="flex min-h-screen bg-gray-50">
       <div className="hidden w-64 flex-col bg-white p-4 md:flex">

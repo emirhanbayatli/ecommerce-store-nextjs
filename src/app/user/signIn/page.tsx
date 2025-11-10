@@ -1,10 +1,17 @@
 "use client";
+import { signInWithEmailAndPassword, User } from "firebase/auth";
+import { auth } from "@/utils/firebase";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuthDispatchContext } from "@/app/AuthContextProvider";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/utils/firebase";
+import { FirebaseError } from "firebase/app";
+import { getErrorMessageFromCode } from "@/utils/uiUtils";
 import { LockKeyhole, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { toast } from "sonner";
-import { useAuthContext } from "@/app/AuthContextProvider";
 
 interface Auth {
   email: string;
@@ -13,7 +20,8 @@ interface Auth {
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn } = useAuthContext();
+
+  const router = useRouter();
 
   const {
     register,
@@ -22,15 +30,54 @@ export default function SignIn() {
     reset,
   } = useForm<Auth>({ mode: "all" });
 
-  const onSubmit = async (data: Auth) => {
-    try {
-      await signIn(data.email, data.password);
-      reset();
-    } catch (error) {
-      toast.error("Login failed.");
-    }
-  };
+  const setUser = useAuthDispatchContext();
 
+  async function getUsersFirebase(user: User) {
+    const docRef = doc(db, "users", user?.uid);
+    const docSnap = await getDoc(docRef);
+    const userData = docSnap.data();
+    if (docSnap.exists()) {
+      return userData;
+    } else {
+      console.log("No such document!");
+    }
+  }
+
+  async function signInAction(data: Auth) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+      const user = userCredential.user;
+
+      setUser({ email: user.email, id: user.uid });
+
+      toast.success("User login was successful.");
+
+      const userData = await getUsersFirebase(user);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ email: user.email, id: user.uid }),
+      );
+
+      if (userData?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+      reset();
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        console.log("Error code:", error.code);
+        toast.error(getErrorMessageFromCode(error.code));
+        setUser(null);
+      } else {
+        toast.error("Unexpected error occurred.");
+      }
+    }
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md space-y-8">
@@ -45,13 +92,13 @@ export default function SignIn() {
         </div>
 
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(signInAction)}
           className="bg-white p-8 rounded-lg shadow-md space-y-6"
         >
           <div>
             <label
-              className="block text-sm font-medium text-gray-700"
               htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
             >
               Email
             </label>
@@ -150,6 +197,7 @@ export default function SignIn() {
               Forgot your password?
             </Link>
           </div>
+
           <button
             data-testid="submit-button"
             disabled={isSubmitting}

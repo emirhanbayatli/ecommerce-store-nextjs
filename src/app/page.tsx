@@ -5,6 +5,11 @@ import { CategoryCard } from "./components/CategoryCard";
 import { HeroWithSearch } from "./components/HeroWithSearch";
 import FeaturedArea from "./components/FeaturedArea";
 
+// TODO :  - urun fotogralarini optimize et
+//         - user ve admin giriste sadeece login sayfa gozuksun eger kullanici login ise orders vs gorsun
+//         - urun ekeleme ve duzenleme sayfasi responsive yap
+//         - admin ve user icin setting sayfasi yap
+//         - urun detay sayfasinda benzer urunler gorsun
 export default async function Home() {
   try {
     const products = await getProductsAction();

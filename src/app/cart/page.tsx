@@ -103,7 +103,7 @@ export default function Cart() {
   }
   if (cartProducts.length === 0) {
     return (
-      <div className="text-center my-20">
+      <div className="text-center my-20 min-h-screen flex flex-col  items-center">
         <ShoppingCartIcon className="w-16 h-16 mx-auto text-gray-300" />
         <h2 className="mt-4 text-2xl font-semibold text-gray-800">
           Your cart is currently empty
