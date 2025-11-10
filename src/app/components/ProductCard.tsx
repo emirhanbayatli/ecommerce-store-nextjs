@@ -17,23 +17,23 @@ export default function ProductCard({
   discount,
 }: ProductCardProps) {
   return (
-    <div className="bg-white dark:bg-[#1a2a3a] rounded-xl shadow-lg overflow-hidden">
+    <div className="bg-white  rounded-xl shadow-lg overflow-hidden">
       <img
         alt={altText}
         className="w-full h-56 object-contain"
         src={imageUrl}
       />
       <div className="p-5">
-        <h3 className="text-xl font-semibold text-[#111418] dark:text-white mb-2 line-clamp-1 ">
+        <h3 className="text-xl font-semibold text-[#111418] mb-2 line-clamp-1 ">
           {title}
         </h3>
-        <p className="text-gray-700 dark:text-gray-400 text-base mb-3 line-clamp-3">
+        <p className="text-gray-700  text-base mb-3 line-clamp-3">
           {description}
         </p>
         <div className="text-center my-2 h-16">
           {discount && discount > 0 ? (
             <>
-              <p className="text-gray-800 dark:text-white font-bold text-3xl">
+              <p className="text-gray-800  font-bold text-3xl">
                 {CURRENCY_SYMBOL + discountCalculation(Number(price), discount)}
               </p>
               <p className="text-gray-400  font-light text-xl line-through">
@@ -41,7 +41,7 @@ export default function ProductCard({
               </p>
             </>
           ) : (
-            <p className="text-gray-800  dark:text-white font-bold text-3xl">
+            <p className="text-gray-800   font-bold text-3xl">
               {CURRENCY_SYMBOL + price}
             </p>
           )}
