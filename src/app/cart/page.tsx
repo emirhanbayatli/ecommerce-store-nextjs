@@ -10,6 +10,17 @@ import { CURRENCY_SYMBOL, discountCalculation } from "@/utils/uiUtils";
 import { BuyAllButton } from "../components/BuyAllButton";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { TrashIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import {
+  AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 
 export default function Cart() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -189,20 +200,30 @@ export default function Cart() {
                 ))}
               </ul>
               <div className="p-4 text-right">
-                <button
-                  onClick={() => {
-                    if (
-                      window.confirm(
-                        "Are you sure you want to remove all items from your cart?",
-                      )
-                    ) {
-                      clearCart();
-                    }
-                  }}
-                  className="text-sm font-medium text-gray-500 hover:text-red-600"
-                >
-                  Clear Cart
-                </button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button className="text-sm font-medium text-gray-500 hover:text-red-600">
+                      Clear Cart
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        remove all items from your shopping cart.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={clearCart}>
+                        Yes, Clear Cart
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>

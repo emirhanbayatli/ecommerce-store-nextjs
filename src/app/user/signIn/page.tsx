@@ -11,6 +11,7 @@ import { db } from "@/utils/firebase";
 import { FirebaseError } from "firebase/app";
 import { getErrorMessageFromCode } from "@/utils/uiUtils";
 import { LockKeyhole, Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { toast } from "sonner";
 
 interface Auth {
   email: string;
@@ -18,8 +19,6 @@ interface Auth {
 }
 
 export default function SignIn() {
-  const [error, setError] = useState<string>();
-  const [message, setMessage] = useState<string>();
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
@@ -55,7 +54,7 @@ export default function SignIn() {
 
       setUser({ email: user.email, id: user.uid });
 
-      setMessage("User login was successful.");
+      toast.success("User login was successful.");
 
       const userData = await getUsersFirebase(user);
       localStorage.setItem(
@@ -72,12 +71,10 @@ export default function SignIn() {
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
         console.log("Error code:", error.code);
-        setError(getErrorMessageFromCode(error.code));
+        toast.error(getErrorMessageFromCode(error.code));
         setUser(null);
-        console.error(error.code, error.message);
       } else {
-        setError("Unexpected error occurred.");
-        console.error("Unknown error:", error);
+        toast.error("Unexpected error occurred.");
       }
     }
   }
@@ -209,25 +206,6 @@ export default function SignIn() {
           >
             {isSubmitting ? "Signing In..." : "Sign In"}
           </button>
-
-          <div className="text-center">
-            {error && (
-              <p
-                data-testid="error-message-sign-in"
-                className="text-sm text-gray-900"
-              >
-                {error}
-              </p>
-            )}
-            {message && (
-              <p
-                data-testid="success-message-sign-in"
-                className="text-sm text-green-600"
-              >
-                {message}
-              </p>
-            )}
-          </div>
 
           <p className="text-center text-sm text-gray-600">
             Don&#39;t have an account?{" "}

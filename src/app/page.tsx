@@ -20,7 +20,7 @@ export default async function Home() {
           <section className="my-8 col-span-3">
             <h1 className="font-bold text-3xl mb-6">Explore Products</h1>
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {exploreProducts.slice(0, 6).map((product) => (
+              {exploreProducts.slice(0, 9).map((product) => (
                 <Link key={product.id} href={`/products/${product.id}`}>
                   <ProductCard
                     key={product.id}

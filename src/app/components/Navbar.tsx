@@ -8,6 +8,7 @@ import { allCategories } from "@/types/types";
 import { useAuthContext, useAuthDispatchContext } from "../AuthContextProvider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Navbar() {
   const user = useAuthContext();
@@ -21,6 +22,7 @@ export default function Navbar() {
     localStorage.removeItem("user");
     setUser(null);
     router.push("/");
+    toast.success("Logged out successfully!");
   }
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);

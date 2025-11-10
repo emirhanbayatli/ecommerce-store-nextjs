@@ -7,6 +7,7 @@ import {
   useEffect,
 } from "react";
 import { CartItem } from "../types/types";
+import { toast } from "sonner";
 
 type CartDispatch = {
   addProductToCart: (productId: string, stripePriceId: string) => void;
@@ -22,14 +23,14 @@ export const CartDispatchContext = createContext<CartDispatch | undefined>(
 
 export const CartContextProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [message, setMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
   }, []);
+
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -54,12 +55,14 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
             { id: productId, stripePriceId, quantity: 1 },
           ];
         }
-        setMessage("Product added to cart successfully.");
         return updatedCart;
       });
+
+      toast.success("Product added to cart successfully.");
     } catch (err) {
       console.error("err", err);
-      setErrorMessage(
+
+      toast.error(
         "An error occurred. The product could not be added to the cart.",
       );
     }
@@ -69,10 +72,10 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       setCart([]);
       localStorage.removeItem("cart");
-      setMessage("Cart cleared successfully.");
+      toast.success("Cart cleared successfully.");
     } catch (err) {
       console.error(err);
-      setErrorMessage("Failed to clear the cart.");
+      toast.error("Failed to clear the cart.");
     }
   }
   function removeProductToCart(productId: string) {
@@ -86,10 +89,10 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
           )
           .filter((item) => item.quantity > 0);
       });
-      setMessage("Product removed from cart.");
+      toast.success("Product removed from cart.");
     } catch (err) {
       console.error(err);
-      setErrorMessage("Failed to remove product.");
+      toast.error("Failed to remove product.");
     }
   }
   function increaseProductQuantity(productId: string) {
@@ -103,26 +106,13 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
           )
           .filter((item) => item.quantity > 0);
       });
-      setMessage("Product quantity increased.");
+      toast.success("Product quantity increased.");
     } catch (err) {
       console.error(err);
-      setErrorMessage("Failed to increase product quantity.");
+      toast.error("Failed to increase product quantity.");
     }
   }
 
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => setMessage(null), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
-
-  useEffect(() => {
-    if (errorMessage) {
-      const timer = setTimeout(() => setErrorMessage(null), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [errorMessage]);
   return (
     <CartContext.Provider value={cart}>
       <CartDispatchContext.Provider
@@ -133,21 +123,6 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
           clearCart,
         }}
       >
-        {message && (
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-            <p className="text-sm font-medium px-6 py-3 bg-green-300 rounded-lg shadow-lg">
-              {message}
-            </p>
-          </div>
-        )}
-        {errorMessage && (
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-            <p className="text-sm font-medium px-6 py-3 bg-gray-400 rounded-lg shadow-lg">
-              {errorMessage}
-            </p>
-          </div>
-        )}
-
         {children}
       </CartDispatchContext.Provider>
     </CartContext.Provider>

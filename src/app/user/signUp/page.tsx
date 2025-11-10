@@ -10,6 +10,7 @@ import { setDoc, doc } from "firebase/firestore";
 import { collections, db, UserRoles } from "../../../utils/firebase";
 import { getErrorMessageFromCode } from "@/utils/uiUtils";
 import { LockKeyhole, Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { toast } from "sonner";
 
 interface Auth {
   email: string;
@@ -17,8 +18,6 @@ interface Auth {
   role: string;
 }
 export default function SignUp() {
-  const [error, setError] = useState<string>();
-  const [message, setMessage] = useState<string>();
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
@@ -51,7 +50,7 @@ export default function SignUp() {
           JSON.stringify({ email: user.email, id: user.uid }),
         );
         setUser(user.email ? { email: user.email, id: user.uid } : null);
-        setMessage("User registration and login were successful.");
+        toast.success("User registration and login were successful.");
         userSaveToFirebase(user);
         reset();
         router.push("/");
@@ -61,7 +60,7 @@ export default function SignUp() {
         const errorMessage = error.message;
         console.error(errorCode, errorMessage);
         setUser(null);
-        setError(getErrorMessageFromCode(errorCode));
+        toast.error(getErrorMessageFromCode(errorCode));
       });
   }
 
@@ -184,25 +183,6 @@ export default function SignUp() {
           >
             {isSubmitting ? "Signing Up..." : "Sign Up"}
           </button>
-
-          <div className="text-center">
-            {error && (
-              <p
-                data-testid="error-message-sign-in"
-                className="text-sm text-gray-900"
-              >
-                {error}
-              </p>
-            )}
-            {message && (
-              <p
-                data-testid="success-message-sign-in"
-                className="text-sm text-green-600"
-              >
-                {message}
-              </p>
-            )}
-          </div>
 
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
