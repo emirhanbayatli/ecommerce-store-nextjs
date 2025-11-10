@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../../utils/firebase";
 import { useEffect, useState, useActionState } from "react";
@@ -17,6 +17,7 @@ import Form from "next/form";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { LoadingSpinner } from "@/app/components/LoadingSpinner";
+import { toast } from "sonner";
 
 const initialState: EditProductFormState = {
   success: false,
@@ -46,6 +47,19 @@ export default function EditProduct() {
 
   const params = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.message) {
+      if (state.success) {
+        toast.success(state.message);
+        router.push("/admin/products");
+      } else {
+        toast.error(state.message);
+      }
+    }
+  }, [state, router]);
 
   useEffect(() => {
     async function fetchData() {

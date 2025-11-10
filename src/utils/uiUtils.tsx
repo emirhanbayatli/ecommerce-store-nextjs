@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export function showStar(n: number) {
   if (n < 0 || n > 5) {
     return null;
@@ -6,6 +9,9 @@ export function showStar(n: number) {
   const half = n - full >= 0.5 ? "⯨" : "";
   const empty = "☆".repeat(5 - full - (half ? 1 : 0));
   return "★".repeat(full) + half + empty;
+}
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 export function discountCalculation(
   price: number,

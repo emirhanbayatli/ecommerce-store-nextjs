@@ -4,6 +4,7 @@ import { CartContextProvider } from "./CartContextProvider";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { AuthContextProvider } from "./AuthContextProvider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "E-Commerce",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <footer>
           <Footer />
         </footer>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

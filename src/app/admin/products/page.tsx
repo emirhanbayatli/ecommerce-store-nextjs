@@ -1,12 +1,26 @@
 "use client";
 import { getProductsAction } from "../../actions/admin/products";
-import { Button } from "../../components/Button";
 import Link from "next/link";
 import { deleteProductAction } from "../../actions/admin/deleteAction";
 import { useEffect, useState } from "react";
 import { Product } from "../../../types/types";
 import Image from "next/image";
 import { LoadingSpinner } from "@/app/components/LoadingSpinner";
+import { toast } from "sonner";
+
+import {
+  AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/app/components/ui/alert-dialog";
+import { Button } from "@/app/components/ui/button";
+
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [message, setMessage] = useState<{
@@ -14,19 +28,17 @@ export default function AdminProducts() {
     success: boolean;
   } | null>(null);
 
-  async function handleDelete(id: string) {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this product?",
-    );
-    if (!isConfirmed) return;
+  useEffect(() => {
+    if (message) {
+      if (message.success) {
+        toast.success(message.text);
+      } else {
+        toast.error(message.text);
+      }
 
-    const res = await deleteProductAction(id);
-    setMessage({ text: res.message, success: res.success });
-    setTimeout(() => setMessage(null), 3000);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
-  }
+      setMessage(null);
+    }
+  }, [message]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -35,25 +47,26 @@ export default function AdminProducts() {
     }
     fetchProducts();
   }, []);
+
+  async function handleDelete(id: string) {
+    const res = await deleteProductAction(id);
+    setMessage({ text: res.message, success: res.success });
+    if (res.success) {
+      setProducts((currentProducts) =>
+        currentProducts.filter((product) => product.id.toString() !== id),
+      );
+    }
+  }
+
   return (
     <main>
       <div className="flex gap-44 justify-center">
         <h1 className="text-3xl">Products</h1>
         <Link href={"/admin/products/new"}>
-          <Button label="Add New Product" />
+          <Button>Add New Product</Button>
         </Link>
       </div>
-      {message && (
-        <div
-          className={`my-4 p-3 rounded text-center font-semibold ${
-            message.success
-              ? "bg-green-200 text-green-800 text-sm mt-1 fixed top-1/2 "
-              : "bg-gray-200 text-gray-600 text-sm mt-1 fixed top-1/2 "
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
+
       <div className="container mx-auto px-4 my-12 max-w-5xl">
         {products.length > 0 ? (
           <div className="border rounded-xl">
@@ -78,13 +91,33 @@ export default function AdminProducts() {
                       <span>{product.price} $</span>
 
                       <Link href={`/admin/products/${product.id}/edit`}>
-                        <Button label="Edit" />
+                        <Button variant="outline">Edit</Button>
                       </Link>
 
-                      <Button
-                        label="Delete"
-                        onClick={() => handleDelete(product.id.toString())}
-                      />
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive">Delete</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action is permanent and cannot be undone. Are
+                              you sure you want to delete this product?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() =>
+                                handleDelete(product.id.toString())
+                              }
+                            >
+                              Yes, Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </li>
                   ))}
                 </ul>

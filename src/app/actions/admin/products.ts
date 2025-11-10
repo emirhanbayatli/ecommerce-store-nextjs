@@ -268,7 +268,6 @@ export async function getProductsAction(): Promise<Product[]> {
     return [];
   }
 }
-//TODO: Guncelleme ve yeni urun eklemede kullaniciyi bilgilendirmek icin bir sucsess veya error ekrani tasarlanmali
 
 export async function editProductAction(
   currentState: EditProductFormState | null,

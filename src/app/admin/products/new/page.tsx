@@ -6,7 +6,7 @@ import {
   allAvailabilityStatus,
   allReturnPolicies,
 } from "../../../../types/types";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { addNewProductAction } from "../../../actions/admin/products";
 import Form from "next/form";
 import { Button } from "@/app/components/Button";
@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
 import { LoadingSpinner } from "@/app/components/LoadingSpinner";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const initialState: NewProductFormState = {
   success: false,
@@ -36,6 +38,19 @@ export default function Admin() {
     NewProductFormState,
     FormData
   >(addNewProductAction, initialState);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.message) {
+      if (state.success) {
+        toast.success(state.message);
+        router.push("/admin/products");
+      } else {
+        toast.error(state.message);
+      }
+    }
+  }, [state, router]);
 
   const {
     register,
