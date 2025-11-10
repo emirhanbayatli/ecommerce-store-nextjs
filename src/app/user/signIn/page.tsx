@@ -1,17 +1,10 @@
 "use client";
-import { signInWithEmailAndPassword, User } from "firebase/auth";
-import { auth } from "@/utils/firebase";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useAuthDispatchContext } from "@/app/AuthContextProvider";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/utils/firebase";
-import { FirebaseError } from "firebase/app";
-import { getErrorMessageFromCode } from "@/utils/uiUtils";
 import { LockKeyhole, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { useAuthContext } from "@/app/AuthContextProvider";
 
 interface Auth {
   email: string;
@@ -20,8 +13,7 @@ interface Auth {
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
-
-  const router = useRouter();
+  const { signIn } = useAuthContext();
 
   const {
     register,
@@ -30,54 +22,15 @@ export default function SignIn() {
     reset,
   } = useForm<Auth>({ mode: "all" });
 
-  const setUser = useAuthDispatchContext();
-
-  async function getUsersFirebase(user: User) {
-    const docRef = doc(db, "users", user?.uid);
-    const docSnap = await getDoc(docRef);
-    const userData = docSnap.data();
-    if (docSnap.exists()) {
-      return userData;
-    } else {
-      console.log("No such document!");
-    }
-  }
-
-  async function signInAction(data: Auth) {
+  const onSubmit = async (data: Auth) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password,
-      );
-      const user = userCredential.user;
-
-      setUser({ email: user.email, id: user.uid });
-
-      toast.success("User login was successful.");
-
-      const userData = await getUsersFirebase(user);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ email: user.email, id: user.uid }),
-      );
-
-      if (userData?.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/");
-      }
+      await signIn(data.email, data.password);
       reset();
-    } catch (error: unknown) {
-      if (error instanceof FirebaseError) {
-        console.log("Error code:", error.code);
-        toast.error(getErrorMessageFromCode(error.code));
-        setUser(null);
-      } else {
-        toast.error("Unexpected error occurred.");
-      }
+    } catch (error) {
+      toast.error("Login failed.");
     }
-  }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md space-y-8">
@@ -92,13 +45,13 @@ export default function SignIn() {
         </div>
 
         <form
-          onSubmit={handleSubmit(signInAction)}
+          onSubmit={handleSubmit(onSubmit)}
           className="bg-white p-8 rounded-lg shadow-md space-y-6"
         >
           <div>
             <label
-              htmlFor="email"
               className="block text-sm font-medium text-gray-700"
+              htmlFor="email"
             >
               Email
             </label>
@@ -143,7 +96,7 @@ export default function SignIn() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Parola
+              Password
             </label>
             <div className="relative mt-1">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -190,14 +143,13 @@ export default function SignIn() {
           </div>
 
           <div className="text-sm text-right">
-            <a
+            <Link
               href="/user/reset-password"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
               Forgot your password?
-            </a>
+            </Link>
           </div>
-
           <button
             data-testid="submit-button"
             disabled={isSubmitting}
@@ -208,7 +160,7 @@ export default function SignIn() {
           </button>
 
           <p className="text-center text-sm text-gray-600">
-            Don&#39;t have an account?{" "}
+            Don't have an account?{" "}
             <Link
               href="/user/signUp"
               className="font-medium text-blue-600 hover:text-blue-500"

@@ -1,17 +1,19 @@
 "use client";
-import { auth } from "@/utils/firebase";
-import { getErrorMessageFromCode } from "@/utils/uiUtils";
-import { FirebaseError } from "firebase/app";
-import { sendPasswordResetEmail } from "firebase/auth";
 import { Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useAuthContext } from "@/app/AuthContextProvider";
+import { toast } from "sonner";
+import { FirebaseError } from "firebase/app";
+import { getErrorMessageFromCode } from "@/utils/uiUtils";
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const { resetPassword } = useAuthContext();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,27 +22,28 @@ export default function ResetPassword() {
     setMessage(null);
 
     if (!email) {
-      setError("Email address is required.");
+      toast.error("Email address is required.");
       return;
     }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
       return;
     }
 
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth, email);
-      setMessage(
+      await resetPassword(email);
+      toast.success(
         "Password reset link has been sent. Please check your inbox (and spam folder).",
       );
       setEmail("");
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setError(getErrorMessageFromCode(err.code));
+        toast.error(getErrorMessageFromCode(err.code));
       } else {
-        setError("An unexpected error occurred. Please try again.");
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -109,11 +112,7 @@ export default function ResetPassword() {
             disabled={loading}
             className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all duration-300"
           >
-            {loading ? (
-              <span className="ml-2">Sending...</span>
-            ) : (
-              "Send Reset Link"
-            )}
+            {loading ? "Sending..." : "Send Reset Link"}
           </button>
 
           <p className="text-sm text-gray-500 text-center">

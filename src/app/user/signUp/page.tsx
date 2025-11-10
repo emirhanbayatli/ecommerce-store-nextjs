@@ -1,26 +1,19 @@
 "use client";
-import { createUserWithEmailAndPassword, User } from "firebase/auth";
-import { auth } from "@/utils/firebase";
 import { useForm } from "react-hook-form";
-import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthDispatchContext } from "@/app/AuthContextProvider";
-import { setDoc, doc } from "firebase/firestore";
-import { collections, db, UserRoles } from "../../../utils/firebase";
-import { getErrorMessageFromCode } from "@/utils/uiUtils";
+import Link from "next/link";
 import { LockKeyhole, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { useAuthContext } from "@/app/AuthContextProvider";
 
 interface Auth {
   email: string;
   password: string;
-  role: string;
 }
+
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
-
-  const router = useRouter();
+  const { signUp } = useAuthContext(); // Context'ten alıyoruz
 
   const {
     register,
@@ -29,40 +22,14 @@ export default function SignUp() {
     reset,
   } = useForm<Auth>({ mode: "all" });
 
-  const setUser = useAuthDispatchContext();
-  const defaultUserRole = UserRoles.USER;
-
-  async function userSaveToFirebase(user: User) {
-    await setDoc(doc(db, collections.users, user.uid), {
-      uid: user.uid,
-      email: user.email,
-      role: defaultUserRole,
-      createdAt: new Date().toString(),
-    });
-  }
-
-  async function signUpAction(data: Auth) {
-    await createUserWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ email: user.email, id: user.uid }),
-        );
-        setUser(user.email ? { email: user.email, id: user.uid } : null);
-        toast.success("User registration and login were successful.");
-        userSaveToFirebase(user);
-        reset();
-        router.push("/");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error(errorCode, errorMessage);
-        setUser(null);
-        toast.error(getErrorMessageFromCode(errorCode));
-      });
-  }
+  const onSubmit = async (data: Auth) => {
+    try {
+      await signUp(data.email, data.password);
+      reset();
+    } catch (error) {
+      toast.error("Sign up failed.");
+    }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -78,9 +45,10 @@ export default function SignUp() {
         </div>
 
         <form
-          onSubmit={handleSubmit(signUpAction)}
+          onSubmit={handleSubmit(onSubmit)}
           className="bg-white p-8 rounded-lg shadow-md space-y-6"
         >
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -129,7 +97,7 @@ export default function SignUp() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Parola
+              Password
             </label>
             <div className="relative mt-1">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -183,7 +151,6 @@ export default function SignUp() {
           >
             {isSubmitting ? "Signing Up..." : "Sign Up"}
           </button>
-
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link
