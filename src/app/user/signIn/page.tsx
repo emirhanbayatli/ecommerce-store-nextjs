@@ -5,13 +5,17 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuthDispatchContext } from "@/app/AuthContextProvider";
+import {
+  useAuthContext,
+  useAuthDispatchContext,
+} from "@/app/AuthContextProvider";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { FirebaseError } from "firebase/app";
 import { getErrorMessageFromCode } from "@/utils/uiUtils";
 import { LockKeyhole, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { LoadingSpinner } from "@/app/components/LoadingSpinner";
 
 interface Auth {
   email: string;
@@ -31,6 +35,7 @@ export default function SignIn() {
   } = useForm<Auth>({ mode: "all" });
 
   const setUser = useAuthDispatchContext();
+  const { loading } = useAuthContext();
 
   async function getUsersFirebase(user: User) {
     const docRef = doc(db, "users", user?.uid);
@@ -64,9 +69,11 @@ export default function SignIn() {
 
       if (userData?.role === "admin") {
         router.push("/admin");
-      } else {
-        router.push("/");
       }
+      if (userData?.role === "user") {
+        router.push("/user");
+      }
+
       reset();
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
@@ -208,7 +215,7 @@ export default function SignIn() {
           </button>
 
           <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Don&#39;t have an account?{" "}
             <Link
               href="/user/signUp"
               className="font-medium text-blue-600 hover:text-blue-500"

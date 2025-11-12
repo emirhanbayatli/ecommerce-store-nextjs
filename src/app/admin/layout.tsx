@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Boxes, ClipboardList, Users } from "lucide-react";
+import { toast } from "sonner";
 
 const navLinks = [
   { href: "/admin/products", label: "Products", icon: Boxes },
@@ -20,36 +21,44 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const currentUser = useAuthContext();
+  const { user, loading } = useAuthContext();
   const [role, setRole] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [roleLoading, setRoleLoading] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
     const fetchUserRole = async () => {
-      if (!currentUser?.id) {
-        setLoading(false);
+      if (!user?.id) {
+        setRole(null);
+        setRoleLoading(false);
         return;
       }
-      const docRef = doc(db, "users", currentUser.id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setRole(docSnap.data()?.role ?? null);
-      } else {
+      try {
+        const docRef = doc(db, "users", user.id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setRole(docSnap.data()?.role ?? null);
+        } else {
+          setRole(null);
+        }
+      } catch (err) {
+        console.error("Error fetching user role:", err);
+        toast.error("Error fetching user role");
         setRole(null);
+      } finally {
+        setRoleLoading(false);
       }
-      setLoading(false);
     };
     fetchUserRole();
-  }, [currentUser?.id]);
+  }, [user?.id]);
 
-  if (loading)
+  if (loading || roleLoading || !role)
     return (
       <main className="flex items-center justify-center w-full h-screen">
         <LoadingSpinner />
       </main>
     );
-  if (!currentUser || role !== "admin")
+  if (!user || role !== "admin")
     return (
       <main className="flex items-center justify-center w-full h-screen bg-gray-50">
         <div className="text-center p-6 bg-white shadow-md rounded-lg">

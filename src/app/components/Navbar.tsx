@@ -5,25 +5,15 @@ import { useCartContext } from "../CartContextProvider";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { allCategories } from "@/types/types";
-import { useAuthContext, useAuthDispatchContext } from "../AuthContextProvider";
-import { useRouter } from "next/navigation";
+import { useAuthContext } from "../AuthContextProvider";
+
 import { useState } from "react";
-import { toast } from "sonner";
 
 export default function Navbar() {
-  const user = useAuthContext();
-  const setUser = useAuthDispatchContext();
+  const auth = useAuthContext();
   const cart = useCartContext();
   const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const userName = user?.email?.split("@")[0] || "User";
-  const router = useRouter();
-
-  function logOutAction() {
-    localStorage.removeItem("user");
-    setUser(null);
-    router.push("/");
-    toast.success("Logged out successfully!");
-  }
+  const userName = auth.user?.email?.split("@")[0] || "User";
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -73,7 +63,7 @@ export default function Navbar() {
             </Link>
           </li>
 
-          {user === null ? (
+          {auth.user === null ? (
             <li>
               <Link
                 href="/user/signIn"
@@ -85,7 +75,7 @@ export default function Navbar() {
           ) : (
             <li>
               <button
-                onClick={logOutAction}
+                onClick={auth.logout}
                 className="hover:text-gray-500 cursor-pointer"
               >
                 Sign Out
@@ -93,7 +83,7 @@ export default function Navbar() {
             </li>
           )}
           <li>
-            {user && (
+            {auth.user && (
               <Link href="/user" className="text-gray-600">
                 {userName}
               </Link>
@@ -166,7 +156,7 @@ export default function Navbar() {
               </Link>
             </li>
 
-            {user === null ? (
+            {auth.user === null ? (
               <li>
                 <Link
                   onClick={() => setIsMenuOpen(false)}
@@ -179,7 +169,7 @@ export default function Navbar() {
             ) : (
               <li>
                 <button
-                  onClick={logOutAction}
+                  onClick={auth.logout}
                   className="hover:text-gray-500 cursor-pointer"
                 >
                   Sign Out
@@ -187,7 +177,7 @@ export default function Navbar() {
               </li>
             )}
             <li>
-              {user && (
+              {auth.user && (
                 <Link href="/user" className="text-gray-600">
                   {userName}
                 </Link>
