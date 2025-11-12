@@ -15,7 +15,7 @@ interface OrderProps {
 }
 
 export default function OrdersPage() {
-  const user = useAuthContext();
+  const { user } = useAuthContext();
   const [orders, setOrders] = useState<OrderProps[]>([]);
 
   useEffect(() => {

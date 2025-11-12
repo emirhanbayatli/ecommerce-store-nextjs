@@ -5,17 +5,13 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  useAuthContext,
-  useAuthDispatchContext,
-} from "@/app/AuthContextProvider";
+import { useAuthDispatchContext } from "@/app/AuthContextProvider";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { FirebaseError } from "firebase/app";
 import { getErrorMessageFromCode } from "@/utils/uiUtils";
 import { LockKeyhole, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { toast } from "sonner";
-import { LoadingSpinner } from "@/app/components/LoadingSpinner";
 
 interface Auth {
   email: string;
@@ -35,7 +31,6 @@ export default function SignIn() {
   } = useForm<Auth>({ mode: "all" });
 
   const setUser = useAuthDispatchContext();
-  const { loading } = useAuthContext();
 
   async function getUsersFirebase(user: User) {
     const docRef = doc(db, "users", user?.uid);

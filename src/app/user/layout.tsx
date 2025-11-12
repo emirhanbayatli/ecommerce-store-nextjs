@@ -1,10 +1,17 @@
 "use client";
 import Link from "next/link";
-import { ClipboardList, Users, Settings } from "lucide-react";
+import { ClipboardList, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthContext } from "../AuthContextProvider";
-import SignIn from "./signIn/page";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import SignIn from "./signIn/page";
+
+const navLinks = [
+  { href: "/user", label: "Profile", icon: Users },
+  { href: "/user/orders", label: "Orders", icon: ClipboardList },
+];
+
+const publicRoutes = ["/user/signUp", "/user/reset-password", "/user/signIn"];
 
 export default function UserLayout({
   children,
@@ -14,11 +21,8 @@ export default function UserLayout({
   const pathname = usePathname();
   const { user, loading } = useAuthContext();
 
-  const navLinks = [
-    { href: "/user", label: "Profile", icon: Users },
-    { href: "/user/orders", label: "Orders", icon: ClipboardList },
-    { href: "/user/settings", label: "Settings", icon: Settings },
-  ];
+  if (publicRoutes.includes(pathname)) return <>{children}</>;
+
   if (loading) {
     return (
       <main className="flex justify-center items-center min-h-screen">
@@ -27,7 +31,9 @@ export default function UserLayout({
     );
   }
 
-  if (!user) return <SignIn />;
+  if (!user) {
+    return <SignIn />;
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -57,31 +63,6 @@ export default function UserLayout({
       </div>
 
       <main className="flex-1">
-        <header className="sticky top-0 z-10  bg-white p-2 md:hidden">
-          <nav className="mt-2 overflow-x-auto whitespace-nowrap pb-2">
-            <ul className="flex space-x-2">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                        isActive
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      <link.icon size={16} />
-                      <span>{link.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        </header>
-
         <div className="p-6">{children}</div>
       </main>
     </div>

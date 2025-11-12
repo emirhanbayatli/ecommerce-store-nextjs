@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 
 import { Boxes, ClipboardList, Users } from "lucide-react";
 import { toast } from "sonner";
+import SignIn from "../user/signIn/page";
 
 const navLinks = [
   { href: "/admin/products", label: "Products", icon: Boxes },
@@ -23,18 +24,19 @@ export default function AdminLayout({
 }) {
   const { user, loading } = useAuthContext();
   const [role, setRole] = useState<string | null>(null);
-  const [roleLoading, setRoleLoading] = useState(true);
+  const [roleLoading, setRoleLoading] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
+    if (!user?.id) {
+      setRole(null);
+      setRoleLoading(false);
+      return;
+    }
     const fetchUserRole = async () => {
-      if (!user?.id) {
-        setRole(null);
-        setRoleLoading(false);
-        return;
-      }
+      setRoleLoading(true);
       try {
-        const docRef = doc(db, "users", user.id);
+        const docRef = doc(db, "users", user.id as string);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setRole(docSnap.data()?.role ?? null);
@@ -52,13 +54,19 @@ export default function AdminLayout({
     fetchUserRole();
   }, [user?.id]);
 
-  if (loading || roleLoading || !role)
+  if (loading || roleLoading || (user && role === null)) {
     return (
       <main className="flex items-center justify-center w-full h-screen">
         <LoadingSpinner />
       </main>
     );
-  if (!user || role !== "admin")
+  }
+
+  if (!user) {
+    return <SignIn />;
+  }
+
+  if (role !== "admin") {
     return (
       <main className="flex items-center justify-center w-full h-screen bg-gray-50">
         <div className="text-center p-6 bg-white shadow-md rounded-lg">
@@ -74,6 +82,7 @@ export default function AdminLayout({
         </div>
       </main>
     );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
