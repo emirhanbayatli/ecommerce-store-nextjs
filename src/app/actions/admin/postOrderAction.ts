@@ -15,7 +15,7 @@ interface OrderItem {
   quantity: number;
   price: number;
 }
-export const enum OrderStatus {
+export enum OrderStatus {
   Pending = "Pending",
   Paid = "Paid",
   Shipped = "Shipped",

@@ -1,18 +1,90 @@
+"use client";
 import { db } from "@/utils/firebase";
 import { CURRENCY_SYMBOL } from "@/utils/uiUtils";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { OrderStatus } from "@/app/actions/admin/postOrderAction";
+import { Button } from "@/app/components/ui/button";
+import { useEffect, useState } from "react";
+import { LoadingSpinner } from "@/app/components/LoadingSpinner";
+import { Product } from "@/types/types";
+import { toast } from "sonner";
 
-export default async function Orders() {
-  const querySnapshot = await getDocs(collection(db, "orders"));
-  const orders = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    userName: doc.data().userName,
-    userId: doc.data().userId,
-    totalAmount: doc.data().totalAmount,
-    status: doc.data().status,
-    createdAt: doc.data().createdAt,
-    ...doc.data(),
-  }));
+export interface Order {
+  id: string;
+  userId: string;
+  userName: string;
+  totalAmount: number;
+  status: OrderStatus;
+  createdAt: Timestamp;
+  items: Product[];
+}
+
+export default function Orders() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [selectedStatus, setSelectedStatus] = useState<{
+    [orderId: string]: string;
+  }>({});
+
+  useEffect(() => {
+    async function fetchOrders() {
+      const snapshot = await getDocs(collection(db, "orders"));
+
+      const data = snapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as Order),
+      );
+      setOrders(data);
+      setLoading(false);
+    }
+    fetchOrders();
+  }, []);
+
+  const allOrderStatus = Object.values(OrderStatus);
+
+  async function updateOrderStatus(orderId: string, newStatus: string) {
+    try {
+      await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId
+            ? { ...order, status: newStatus as OrderStatus }
+            : order,
+        ),
+      );
+
+      setSelectedStatus((prev) => {
+        const newState = { ...prev };
+        delete newState[orderId];
+        return newState;
+      });
+
+      toast.success("Order status updated successfully");
+    } catch (err) {
+      toast.error("Order status update failed");
+    }
+  }
+
+  const handleRadioChange = (orderId: string, newStatus: string) => {
+    setSelectedStatus((prev) => ({
+      ...prev,
+      [orderId]: newStatus,
+    }));
+  };
+
+  if (loading)
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </main>
+    );
 
   return (
     <div className="min-h-screen flex flex-col bg-white font-inter overflow-x-hidden">
@@ -37,7 +109,6 @@ export default async function Orders() {
                     "Order Date",
                     "Total Amount",
                     "Status",
-                    "Actions",
                   ].map((col) => (
                     <th
                       key={col}
@@ -49,30 +120,69 @@ export default async function Orders() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
-                  <tr key={order.id} className="border-t border-gray-200">
-                    <td className="px-4 py-2 text-sm text-gray-900">
-                      {order.id}
-                    </td>
-                    <td className="px-4 py-2 text-sm text-gray-500">
-                      {order.userName}
-                    </td>
-                    <td className="px-4 py-2 text-sm text-gray-500">
-                      {order.createdAt.toDate().toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-2 text-sm text-gray-500">
-                      {order.totalAmount + CURRENCY_SYMBOL}
-                    </td>
-                    <td className="px-4 py-2">
-                      <button className="w-full h-8 rounded-lg bg-gray-200 text-gray-900 text-sm font-medium">
-                        {order.status}
-                      </button>
-                    </td>
-                    <td className="px-4 py-2 text-sm font-bold text-blue-600 cursor-pointer">
-                      View Details
-                    </td>
-                  </tr>
-                ))}
+                {orders.map((order: Order) => {
+                  const currentDisplayStatus =
+                    selectedStatus[order.id] || order.status;
+
+                  const isButtonDisabled =
+                    !selectedStatus[order.id] ||
+                    selectedStatus[order.id] === order.status;
+
+                  return (
+                    <tr key={order.id} className="border-t border-gray-200">
+                      <td className="px-4 py-2 text-sm text-gray-900 align-top">
+                        {order.id}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-500 align-top">
+                        {order.userName}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-500 align-top">
+                        {order.createdAt.toDate().toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-500 align-top">
+                        {order.totalAmount + CURRENCY_SYMBOL}
+                      </td>
+
+                      <td className="px-4 py-2 text-sm">
+                        <div className="flex flex-col gap-3">
+                          <div className="flex flex-wrap gap-x-4 gap-y-2">
+                            {allOrderStatus.map((status) => (
+                              <label
+                                key={status}
+                                className="flex items-center gap-1 cursor-pointer"
+                              >
+                                <input
+                                  type="radio"
+                                  name={`status-${order.id}`}
+                                  value={status}
+                                  checked={currentDisplayStatus === status}
+                                  onChange={() =>
+                                    handleRadioChange(order.id, status)
+                                  }
+                                />
+                                {status}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            updateOrderStatus(
+                              order.id,
+                              selectedStatus[order.id],
+                            )
+                          }
+                          disabled={isButtonDisabled}
+                        >
+                          Update Status
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
