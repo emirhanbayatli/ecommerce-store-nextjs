@@ -67,7 +67,7 @@ export default function Orders() {
       });
 
       toast.success("Order status updated successfully");
-    } catch (err) {
+    } catch {
       toast.error("Order status update failed");
     }
   }

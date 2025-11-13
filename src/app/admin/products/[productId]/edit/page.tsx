@@ -103,7 +103,7 @@ export default function EditProduct() {
   if (isPending) return <LoadingSpinner />;
 
   const inputClass =
-    "bg-stone-200 text-stone-900 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "my-1 mx-0.5 rounded-md border border-gray-300 bg-white p-2 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all";
 
   return (
     <main className="max-w-4xl mx-auto my-6 pb-12">
@@ -112,7 +112,7 @@ export default function EditProduct() {
           <Form
             noValidate
             action={formAction}
-            className="grid grid-cols-2 gap-6 bg-white p-8 rounded-xl shadow-md"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 md:p-8 rounded-xl shadow-md"
           >
             <input
               id="stripeProductId"
@@ -151,7 +151,7 @@ export default function EditProduct() {
               <label htmlFor="stripePriceId" className="font-bold mb-1">
                 Stripe Price ID
               </label>
-              <p className="p-2 bg-stone-200 text-stone-900 rounded">
+              <p className={inputClass}>
                 {product.stripePriceId
                   ? product.stripePriceId
                   : "Not available"}
@@ -220,7 +220,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="category" className="font-bold mb-1">
                 Category
               </label>
@@ -252,7 +252,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="price" className="font-bold mb-1">
                 Price
               </label>
@@ -285,7 +285,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="discountPercentage" className="font-bold mb-1">
                 Discount Percentage
               </label>
@@ -320,7 +320,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="stock" className="font-bold mb-1">
                 Stock
               </label>
@@ -358,7 +358,7 @@ export default function EditProduct() {
               <label htmlFor="tags" className="font-bold mb-1">
                 Tags
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="gap-2 grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
                 {allTags.map((tag) => (
                   <label key={tag}>
                     <input
@@ -382,7 +382,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="brand" className="font-bold mb-1">
                 Brand
               </label>
@@ -414,7 +414,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="sku" className="font-bold mb-1">
                 SKU
               </label>
@@ -446,7 +446,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="weight" className="font-bold mb-1">
                 Weight
               </label>
@@ -479,11 +479,11 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="dimensions" className="font-bold mb-1">
                 Dimensions
               </label>
-              <div className="flex gap-5 justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <input
                   {...register("dimensions_width", {
                     required: "Width is required",
@@ -502,7 +502,7 @@ export default function EditProduct() {
                   id="width"
                   name="dimensions_width"
                   placeholder="Width"
-                  className="bg-stone-200 text-stone-900  p-2 rounded max-w-30"
+                  className={`${inputClass} w-full`}
                 />
 
                 <input
@@ -523,7 +523,7 @@ export default function EditProduct() {
                   id="height"
                   name="dimensions_height"
                   placeholder="Height"
-                  className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
+                  className={`${inputClass} w-full`}
                 />
 
                 <input
@@ -544,7 +544,7 @@ export default function EditProduct() {
                   id="depth"
                   name="dimensions_depth"
                   placeholder="Depth"
-                  className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
+                  className={`${inputClass} w-full`}
                 />
               </div>
               {state?.errors?.dimensions && (
@@ -567,7 +567,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="warrantyInformation" className="font-bold mb-1">
                 Warranty Information
               </label>
@@ -603,7 +603,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="shippingInformation" className="font-bold mb-1">
                 Shipping Information
               </label>
@@ -685,7 +685,7 @@ export default function EditProduct() {
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="minimumOrderQuantity" className="font-bold mb-1">
                 Minimum Order Quantity
               </label>
@@ -724,7 +724,7 @@ export default function EditProduct() {
               <label htmlFor="returnPolicy" className="font-bold mb-1">
                 Return Policy
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-2">
                 {allReturnPolicies.map((returnPolicy) => {
                   const id = `returnPolicy-${returnPolicy}`;
 
@@ -766,13 +766,13 @@ export default function EditProduct() {
               <label htmlFor="status" className="font-bold mb-1">
                 Product Status
               </label>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center flex-wrap gap-4">
                 <label className="flex items-center gap-1">
                   <input
                     {...register("status")}
                     type="radio"
                     value="Standard"
-                    className="accent-stone-900"
+                    className={inputClass}
                   />
                   Standard
                 </label>
@@ -782,7 +782,7 @@ export default function EditProduct() {
                     {...register("status")}
                     type="radio"
                     value="Explore"
-                    className="accent-stone-900"
+                    className={inputClass}
                   />
                   Explore
                 </label>
@@ -792,7 +792,7 @@ export default function EditProduct() {
                     {...register("status")}
                     type="radio"
                     value="Featured"
-                    className="accent-stone-900"
+                    className={inputClass}
                   />
                   Featured
                 </label>
@@ -864,9 +864,13 @@ export default function EditProduct() {
               )}
             </div>
 
-            <Button label="Update Product" type="submit" />
-            <Link href={"/admin/products"}>
-              <Button className="w-full" label="Cancel" />
+            <Button
+              label="Update Product"
+              type="submit"
+              className="col-span-2 md:col-span-1"
+            />
+            <Link className="col-span-2 md:col-span-1" href={"/admin/products"}>
+              <Button className="w-full " label="Cancel" />
             </Link>
           </Form>
         </div>

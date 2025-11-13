@@ -104,14 +104,18 @@ export default function Admin() {
 
   if (isPending) return <LoadingSpinner />;
 
+  const inputClass =
+    "my-1 mx-0.5 rounded-md border border-gray-300 bg-white p-2 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all";
+
   return (
     <main className="max-w-4xl mx-auto pb-12">
       <h1 className="my-12 font-bold text-2xl text-center">
         Add a New Product
       </h1>
       <Form
+        noValidate
         action={formAction}
-        className="grid grid-cols-2 gap-6 bg-white p-8 rounded-xl shadow-md"
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 md:p-8 rounded-xl shadow-md"
       >
         <div className="flex flex-col col-span-2">
           <label htmlFor="title" className="font-bold mb-1">
@@ -131,7 +135,7 @@ export default function Admin() {
             })}
             type="text"
             id="title"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.title && (
             <p className="text-gray-600 text-sm">{state.errors.title}</p>
@@ -161,7 +165,7 @@ export default function Admin() {
             type="text"
             id="description"
             name="description"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.description && (
             <p className="text-gray-600 text-sm">{state.errors.description}</p>
@@ -173,7 +177,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="category" className="font-bold mb-1">
             Category
           </label>
@@ -186,7 +190,7 @@ export default function Admin() {
             })}
             id="category"
             name="category"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           >
             {allCategories.map((category) => (
               <option key={category} value={category}>
@@ -203,7 +207,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="price" className="font-bold mb-1">
             Price
           </label>
@@ -224,7 +228,7 @@ export default function Admin() {
             step="0.01"
             id="price"
             name="price"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.price && (
             <p className="text-gray-600 text-sm">{state.errors.price}</p>
@@ -235,7 +239,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="discountPercentage" className="font-bold mb-1">
             Discount Percentage
           </label>
@@ -256,7 +260,7 @@ export default function Admin() {
             step="0.01"
             id="discountPercentage"
             name="discountPercentage"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.discountPercentage && (
             <p className="text-gray-600 text-sm">
@@ -269,7 +273,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="stock" className="font-bold mb-1">
             Stock
           </label>
@@ -290,7 +294,7 @@ export default function Admin() {
             step="0.01"
             id="stock"
             name="stock"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.stock && (
             <p className="text-gray-600 text-sm">{state.errors.stock}</p>
@@ -305,7 +309,7 @@ export default function Admin() {
           <label htmlFor="tags" className="font-bold mb-1">
             Tags
           </label>
-          <div className="flex flex-wrap gap-2">
+          <div className="gap-2 grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
             {allTags.map((tag) => (
               <label key={tag} className="flex items-center gap-1">
                 <input
@@ -318,7 +322,7 @@ export default function Admin() {
                   })}
                   type="checkbox"
                   value={tag}
-                  className="accent-stone-900"
+                  className={inputClass}
                 />
                 {tag}
               </label>
@@ -333,7 +337,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="brand" className="font-bold mb-1">
             Brand
           </label>
@@ -352,7 +356,7 @@ export default function Admin() {
             type="text"
             id="brand"
             name="brand"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.brand && (
             <p className="text-gray-600 text-sm">{state.errors.brand}</p>
@@ -363,7 +367,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="sku" className="font-bold mb-1">
             SKU
           </label>
@@ -382,7 +386,7 @@ export default function Admin() {
             type="text"
             id="sku"
             name="sku"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.sku && (
             <p className="text-gray-600 text-sm">{state.errors.sku}</p>
@@ -393,7 +397,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="weight" className="font-bold mb-1">
             Weight
           </label>
@@ -414,7 +418,7 @@ export default function Admin() {
             step="0.01"
             id="weight"
             name="weight"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.weight && (
             <p className="text-gray-600 text-sm">{state.errors.weight}</p>
@@ -425,11 +429,11 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="dimensions" className="font-bold mb-1">
             Dimensions
           </label>
-          <div className="flex gap-5 justify-center">
+          <div className="flex flex-col md:flex-row gap-5 justify-center">
             <input
               {...register("dimensions_width", {
                 required: "Width is required",
@@ -448,7 +452,7 @@ export default function Admin() {
               id="width"
               name="dimensions_width"
               placeholder="Width"
-              className="bg-stone-200 text-stone-900  p-2 rounded max-w-30"
+              className={`${inputClass} w-full`}
             />
 
             <input
@@ -469,7 +473,7 @@ export default function Admin() {
               id="height"
               name="dimensions_height"
               placeholder="Height"
-              className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
+              className={`${inputClass} w-full`}
             />
 
             <input
@@ -490,7 +494,7 @@ export default function Admin() {
               id="depth"
               name="dimensions_depth"
               placeholder="Depth"
-              className="bg-stone-200 text-stone-900 p-2 rounded max-w-30"
+              className={`${inputClass} w-full`}
             />
           </div>
           {state?.errors?.dimensions && (
@@ -512,7 +516,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="warrantyInformation" className="font-bold mb-1">
             Warranty Information
           </label>
@@ -531,7 +535,7 @@ export default function Admin() {
             type="text"
             id="warrantyInformation"
             name="warrantyInformation"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.warrantyInformation && (
             <p className="text-gray-600 text-sm">
@@ -544,7 +548,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="shippingInformation" className="font-bold mb-1">
             Shipping Information
           </label>
@@ -563,7 +567,7 @@ export default function Admin() {
             type="text"
             id="shippingInformation"
             name="shippingInformation"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.shippingInformation && (
             <p className="text-gray-600 text-sm">
@@ -600,7 +604,7 @@ export default function Admin() {
                     type="radio"
                     name="availabilityStatus"
                     value={availabilityStatus}
-                    className="accent-stone-900"
+                    className={inputClass}
                   />
                   {availabilityStatus}
                 </label>
@@ -618,7 +622,7 @@ export default function Admin() {
             </p>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="minimumOrderQuantity" className="font-bold mb-1">
             Minimum Order Quantity
           </label>
@@ -639,7 +643,7 @@ export default function Admin() {
             step="0.01"
             id="minimumOrderQuantity"
             name="minimumOrderQuantity"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.minimumOrderQuantity && (
             <p className="text-gray-600 text-sm">
@@ -656,7 +660,7 @@ export default function Admin() {
           <label htmlFor="returnPolicy" className="font-bold mb-1">
             Return Policy
           </label>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-2">
             {allReturnPolicies.map((returnPolicy) => {
               const id = `returnPolicy-${returnPolicy}`;
 
@@ -677,7 +681,7 @@ export default function Admin() {
                     type="radio"
                     name="returnPolicy"
                     value={returnPolicy}
-                    className="accent-stone-900"
+                    className={inputClass}
                   />
                   {returnPolicy}
                 </label>
@@ -704,7 +708,7 @@ export default function Admin() {
                 type="radio"
                 value="Standard"
                 name="status"
-                className="accent-stone-900"
+                className={inputClass}
               />
               Standard
             </label>
@@ -715,7 +719,7 @@ export default function Admin() {
                 type="radio"
                 name="status"
                 value="Explore"
-                className="accent-stone-900"
+                className={inputClass}
               />
               Explore
             </label>
@@ -726,7 +730,7 @@ export default function Admin() {
                 type="radio"
                 name="status"
                 value="Featured"
-                className="accent-stone-900"
+                className={inputClass}
               />
               Featured
             </label>
@@ -752,7 +756,7 @@ export default function Admin() {
             onChange={handleImagesChange}
             id="images"
             name="images"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.images && (
             <p className="text-gray-600 text-sm">{state.errors.images}</p>
@@ -785,7 +789,7 @@ export default function Admin() {
             onChange={handleThumbnailChange}
             accept=".jpeg , .jpg , .webp"
             name="thumbnail"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
 
           {errors.thumbnail?.message && (
@@ -803,8 +807,12 @@ export default function Admin() {
             </div>
           )}
         </div>
-        <Button type="submit" label="Create Product" />
-        <Link href={"/admin/products"}>
+        <Button
+          className="col-span-2 md:col-span-1"
+          type="submit"
+          label="Create Product"
+        />
+        <Link href={"/admin/products"} className="col-span-2 md:col-span-1">
           <Button className="w-full" label="Cancel" />
         </Link>
       </Form>
