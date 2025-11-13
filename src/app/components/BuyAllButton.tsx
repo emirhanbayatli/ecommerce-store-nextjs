@@ -6,7 +6,7 @@ import { useAuthContext } from "../AuthContextProvider";
 
 export const BuyAllButton = () => {
   const cart = useCartContext();
-  const user = useAuthContext();
+  const { user } = useAuthContext();
 
   return (
     <form action={checkout}>
