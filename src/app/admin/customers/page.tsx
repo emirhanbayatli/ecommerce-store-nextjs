@@ -1,13 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { db } from "@/utils/firebase";
-import {
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-  Timestamp,
-} from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 
 import {
   AlertDialog,
