@@ -63,7 +63,7 @@ export default function AdminProducts() {
       <div className="flex gap-44 justify-center">
         <h1 className="text-3xl">Products</h1>
         <Link href={"/admin/products/new"}>
-          <Button>Add New Product</Button>
+          <Button data-testid="addNewBtn">Add New Product</Button>
         </Link>
       </div>
 
