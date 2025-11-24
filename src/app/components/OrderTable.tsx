@@ -1,0 +1,75 @@
+import { OrderProps } from "@/types/types";
+import { CURRENCY_SYMBOL } from "@/utils/uiUtils";
+
+interface OrderTableProps {
+  orders: OrderProps[];
+}
+
+export default function OrderTable({ orders }: OrderTableProps) {
+  return (
+    <div className="px-10 py-5 flex justify-center">
+      <div className="flex flex-col max-w-[960px] w-full">
+        <h1 className="text-2xl font-bold mb-4">My Orders</h1>
+        <div className="overflow-x-auto px-4 py-3">
+          <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+            <thead className="bg-white">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Order Number
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Customer
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Order Date
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Total Amount
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.length > 0 ? (
+                orders.map((order) => (
+                  <tr key={order.id} className="border-t border-gray-200">
+                    <td className="px-4 py-2 text-sm">{order.id}</td>
+                    <td className="px-4 py-2 text-sm">{order.userName}</td>
+                    <td className="px-4 py-2 text-sm text-gray-500">
+                      {order.createdAt.toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-2 text-sm">
+                      {order.totalAmount + CURRENCY_SYMBOL}
+                    </td>
+                    <td className="px-4 py-2">
+                      <button className="w-full h-8 rounded-lg bg-gray-200 text-gray-900 text-sm font-medium">
+                        {order.status}
+                      </button>
+                    </td>
+                    <td className="px-4 py-2 text-sm text-blue-600 cursor-pointer">
+                      View Details
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-4 py-4 text-center text-gray-500"
+                  >
+                    No orders found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

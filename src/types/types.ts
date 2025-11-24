@@ -120,3 +120,11 @@ export interface Meta {
   barcode: string;
   qrCode: string;
 }
+export interface OrderProps {
+  id: string;
+  userName: string;
+  userId: string;
+  totalAmount: number;
+  status: string;
+  createdAt: Date;
+}
