@@ -1,7 +1,7 @@
 "use server";
 import { OrderProps } from "@/types/types";
 import { db } from "@/utils/firebase";
-import { collection, getDocs, Timestamp } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 export default async function getOrders() {
   try {
