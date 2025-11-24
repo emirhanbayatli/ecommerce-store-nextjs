@@ -8,7 +8,7 @@ jest.mock("react", () => {
   const originalReact = jest.requireActual("react");
   return {
     ...originalReact,
-    useActionState: (initialState: any) => [initialState, jest.fn(), false],
+    useActionState: (initialState: unknown) => [initialState, jest.fn(), false],
   };
 });
 

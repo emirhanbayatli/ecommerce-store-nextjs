@@ -2,23 +2,26 @@ import { render, screen } from "@testing-library/react";
 
 import "@testing-library/jest-dom";
 import OrderTable from "@/app/components/OrderTable";
+import { OrderProps } from "@/types/types";
 
 const mockOrders = [
   {
     id: "ORD-001",
     userName: "John Doe",
+    userId: "test2",
     createdAt: new Date("2024-01-15"),
     totalAmount: 150,
-    status: "Delivered",
+    status: "Pending",
   },
   {
     id: "ORD-002",
     userName: "Test User",
+    userId: "test",
     createdAt: new Date("2024-02-20"),
     totalAmount: 200.5,
-    status: "Processing",
+    status: "Pending",
   },
-];
+] as OrderProps[];
 
 describe("OrderTable Component Tests", () => {
   test("renders table headers correctly", () => {
@@ -41,7 +44,7 @@ describe("OrderTable Component Tests", () => {
   });
 
   test("renders order rows correctly when data is provided", () => {
-    render(<OrderTable orders={mockOrders as any} />);
+    render(<OrderTable orders={mockOrders} />);
 
     expect(screen.getByText("ORD-001")).toBeInTheDocument();
     expect(screen.getByText("ORD-002")).toBeInTheDocument();
