@@ -2,7 +2,7 @@ export function LoadingSpinner() {
   return (
     <div
       data-testid="loading-spinner"
-      className="flex items-center justify-center bg-white z-50"
+      className="flex items-center justify-center z-50"
     >
       <svg
         className="w-16 h-16 text-gray-300 animate-spin"

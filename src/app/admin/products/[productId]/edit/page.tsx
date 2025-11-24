@@ -171,6 +171,7 @@ export default function EditProduct() {
                     message: "Title must not exceed 100 characters",
                   },
                 })}
+                data-testid="title"
                 name="title"
                 defaultValue={product.title}
                 type="text"
@@ -865,6 +866,7 @@ export default function EditProduct() {
             </div>
 
             <Button
+              data-testid="update-btn"
               label="Update Product"
               type="submit"
               className="col-span-2 md:col-span-1"
