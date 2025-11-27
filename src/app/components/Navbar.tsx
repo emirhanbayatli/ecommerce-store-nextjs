@@ -66,6 +66,7 @@ export default function Navbar() {
           {auth.user === null ? (
             <li>
               <Link
+                data-testid="signIn-btn-navbar"
                 href="/user/signIn"
                 className="hover:text-gray-500 cursor-pointer"
               >
