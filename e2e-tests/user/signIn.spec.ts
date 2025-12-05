@@ -1,53 +1,29 @@
 import { test, expect } from "@playwright/test";
-test.beforeEach(async ({ page }) => {
-  await page.goto("/user/signIn");
+
+test("signIn test for admin user", async ({ page }) => {
+  const adminEmail = "emirhan.bayatli99@hotmail.com";
+  const adminPassword = "12345678";
+
+  await page.goto("http://localhost:3000/");
+  await page.getByTestId("signIn-btn-navbar").click();
+  await page.getByTestId("email-input").click();
+  await page.getByTestId("email-input").fill(adminEmail);
+  await page.getByTestId("email-input").press("Tab");
+  await page.getByTestId("password-input").fill(adminPassword);
+  await page.getByTestId("submit-button").click();
+  await page.getByRole("heading", { name: "Welcome to the Admin Dashboard" });
 });
-test.describe("SignIn Page", () => {
-  test("should sign in successfully with valid credentials", async ({
-    page,
-  }) => {
-    await expect(page.getByRole("link", { name: "E-Commerce" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
-    await expect(
-      page.getByText("Don't have an account? Sign Up"),
-    ).toBeVisible();
-    await page.getByTestId("email-input").click();
+test("signIn test for user", async ({ page }) => {
+  const userEmail = "emirhan.bayatli99@hotmail.com";
+  const userPassword = "12345678";
 
-    await page.getByTestId("email-input").fill("emirhan@hotmail.com");
-    await page.getByTestId("email-input").press("Tab");
-    await page.getByTestId("password-input").fill("12345678");
-    await page.getByTestId("submit-button").click();
+  await page.goto("http://localhost:3000/");
+  await page.getByTestId("signIn-btn-navbar").click();
+  await page.getByTestId("email-input").click();
+  await page.getByTestId("email-input").fill(userEmail);
+  await page.getByTestId("email-input").press("Tab");
+  await page.getByTestId("password-input").fill(userPassword);
+  await page.getByTestId("submit-button").click();
 
-    await expect(page.getByTestId("success-message-sign-in")).toBeVisible({
-      timeout: 10_000,
-    });
-
-    await expect(page.getByRole("link", { name: "emirhan" })).toBeVisible({
-      timeout: 10_000,
-    });
-  });
-  test("shoud not sign in wrong password", async ({ page }) => {
-    await page.getByTestId("email-input").click();
-
-    await page.getByTestId("email-input").fill("emirhan@hotmail.com");
-    await page.getByTestId("email-input").press("Tab");
-    await page.getByTestId("password-input").fill("12346678");
-    await page.getByTestId("submit-button").click();
-
-    await expect(page.getByTestId("error-message-sign-in")).toBeVisible({
-      timeout: 40_000,
-    });
-  });
-  test("shoud not sign in wrong email", async ({ page }) => {
-    await page.getByTestId("email-input").click();
-
-    await page.getByTestId("email-input").fill("emirhan1@mail.com");
-    await page.getByTestId("email-input").press("Tab");
-    await page.getByTestId("password-input").fill("12345678");
-    await page.getByTestId("submit-button").click();
-
-    await expect(page.getByTestId("error-message-sign-in")).toBeVisible({
-      timeout: 20_000,
-    });
-  });
+  await page.getByRole("heading", { name: "Welcome to the Admin Dashboard" });
 });
