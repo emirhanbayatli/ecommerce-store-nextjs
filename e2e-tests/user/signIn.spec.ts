@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("signIn test for admin user", async ({ page }) => {
-  const adminEmail = "emirhan.bayatli99@hotmail.com";
+  const adminEmail = "emirhan.bayatli99@icloud.com";
   const adminPassword = "12345678";
 
   await page.goto("http://localhost:3000/");
@@ -13,8 +13,8 @@ test("signIn test for admin user", async ({ page }) => {
   await page.getByTestId("submit-button").click();
   await page.getByRole("heading", { name: "Welcome to the Admin Dashboard" });
 });
-test("signIn test for user", async ({ page }) => {
-  const userEmail = "emirhan.bayatli99@hotmail.com";
+test("signIn test for user and signout", async ({ page }) => {
+  const userEmail = "emirhan@hotmail.com";
   const userPassword = "12345678";
 
   await page.goto("http://localhost:3000/");
@@ -24,6 +24,7 @@ test("signIn test for user", async ({ page }) => {
   await page.getByTestId("email-input").press("Tab");
   await page.getByTestId("password-input").fill(userPassword);
   await page.getByTestId("submit-button").click();
-
-  await page.getByRole("heading", { name: "Welcome to the Admin Dashboard" });
+  await expect(page.getByRole("link", { name: "emirhan" })).toBeVisible();
+  await page.getByRole("button", { name: "Sign Out" }).click();
+  await expect(page.getByText("Logout successfully")).toBeVisible();
 });
