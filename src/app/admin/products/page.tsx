@@ -87,7 +87,11 @@ export default function AdminProducts() {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <span className="text-center">{product.title}</span>
+                      <span className="text-center">
+                        <Link href={`/products/${product.id}`}>
+                          {product.title}
+                        </Link>
+                      </span>
                       <span>{product.price} $</span>
 
                       <Link href={`/admin/products/${product.id}/edit`}>

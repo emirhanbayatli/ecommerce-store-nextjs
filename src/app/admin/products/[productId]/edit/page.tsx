@@ -798,6 +798,14 @@ export default function EditProduct() {
                   Featured
                 </label>
               </div>
+              {state?.errors?.status && (
+                <p className="text600 text-sm">{state.errors.status}</p>
+              )}
+              {errors.status?.message && (
+                <p className="text600 text-sm">
+                  {errors.status.message as string}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col col-span-2">
