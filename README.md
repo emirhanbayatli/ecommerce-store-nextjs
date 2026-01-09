@@ -1,6 +1,6 @@
 ## 🛒 Modern Full-Stack E-Commerce Platform
 
-A robust, production-ready e-commerce solution built with the latest Next.js 15 features, focusing on performance, scalability, and type safety.
+A robust, production-ready e-commerce solution developed as part of my learning journey with modern Next.js 15, focusing on performance, scalability, and type safety.
 
 ---
 
