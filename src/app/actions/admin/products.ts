@@ -1,0 +1,408 @@
+import { NewProductFormState } from "@/app/admin/products/new/page";
+import { EditProductFormState } from "../../admin/products/[productId]/edit/page";
+import {
+  Category,
+  Tags,
+  Product,
+  AvailabilityStatus,
+  ReturnPolicy,
+  Status,
+} from "../../../types/types";
+import { z } from "zod";
+import { db, collections } from "../../../utils/firebase";
+import { vercelBlobPutAction } from "../../../utils/vercelBlob";
+
+import {
+  getDocs,
+  getDoc,
+  collection,
+  setDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { addProductStripe, updateProductStripe } from "./utilsStripe";
+import { vercelBlobDeleteAction } from "@/utils/vercelDeleteAction";
+
+const productSchema = z.object({
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters long")
+    .max(100, "Title must not exceed 100 characters"),
+  description: z
+    .string()
+    .min(50, "Description must be at least 50 characters long")
+    .max(500, "Description must not exceed 500 characters"),
+  category: z.nativeEnum(Category, {
+    errorMap: () => ({ message: "Please select a valid category" }),
+  }),
+  price: z
+    .number()
+    .min(0, "Price must be zero or a positive number")
+    .max(9999999999, "Price cannot exceed 9,999,999,999"),
+  discountPercentage: z
+    .number()
+    .min(0, "Discount must be at least 0%")
+    .max(100, "Discount cannot exceed 100%"),
+  stock: z
+    .number()
+    .min(0, "Stock must be zero or a positive number")
+    .max(9999999999, "Stock cannot exceed 9,999,999,999"),
+  tags: z.array(z.nativeEnum(Tags), {
+    errorMap: () => ({ message: "Please select valid tags" }),
+  }),
+  brand: z
+    .string()
+    .min(2, "Brand must be at least 2 characters")
+    .max(50, "Brand must not exceed 50 characters"),
+  sku: z
+    .string()
+    .min(1, "SKU is required")
+    .max(100, "SKU must not exceed 100 characters"),
+  weight: z
+    .number()
+    .min(0, "Weight must be zero or a positive number")
+    .max(9999999999, "Weight cannot exceed 9,999,999,999 grams"),
+  dimensions: z.object({
+    width: z
+      .number()
+      .min(0, "Width must be zero or positive")
+      .max(999999, "Width cannot exceed 999999 cm"),
+    height: z
+      .number()
+      .min(0, "Height must be zero or positive")
+      .max(999999, "Height cannot exceed 999999 cm"),
+    depth: z
+      .number()
+      .min(0, "Depth must be zero or positive")
+      .max(999999, "Depth cannot exceed 999999 cm"),
+  }),
+  warrantyInformation: z
+    .string()
+    .min(1, "Warranty information is required")
+    .max(500, "Warranty information must not exceed 500 characters"),
+  shippingInformation: z
+    .string()
+    .min(1, "Shipping information is required")
+    .max(500, "Shipping information must not exceed 500 characters"),
+  availabilityStatus: z.nativeEnum(AvailabilityStatus, {
+    errorMap: () => ({ message: "Please choose an availability status" }),
+  }),
+  minimumOrderQuantity: z
+    .number()
+    .min(1, "Minimum order must be at least 1")
+    .max(9999999999, "Minimum order cannot exceed 9,999,999,999"),
+  returnPolicy: z.nativeEnum(ReturnPolicy, {
+    errorMap: () => ({ message: "Please select a return policy" }),
+  }),
+  status: z.nativeEnum(Status, {
+    errorMap: () => ({ message: "Please select a product status" }),
+  }),
+});
+
+export async function addNewProductAction(
+  currentState: NewProductFormState,
+  formData: FormData,
+): Promise<NewProductFormState> {
+  const rawData = {
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
+    category: formData.get("category") as Category,
+    price: Number(formData.get("price")),
+    discountPercentage: Number(formData.get("discountPercentage")),
+    stock: Number(formData.get("stock")),
+    tags: (formData.getAll("tags") as string[]).map((tag) => tag as Tags),
+    brand: formData.get("brand") as string,
+    sku: formData.get("sku") as string,
+    weight: Number(formData.get("weight")),
+    dimensions: {
+      width: Number(formData.get("dimensions_width")),
+      height: Number(formData.get("dimensions_height")),
+      depth: Number(formData.get("dimensions_depth")),
+    },
+    warrantyInformation: formData.get("warrantyInformation") as string,
+    shippingInformation: formData.get("shippingInformation") as string,
+    availabilityStatus: formData.get(
+      "availabilityStatus",
+    ) as AvailabilityStatus,
+    minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
+    returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
+    status: formData.get("status") as Status,
+  };
+
+  const result = productSchema.safeParse(rawData);
+
+  if (!result.success) {
+    console.error("Failed parsing form data when adding a new product", result);
+    return {
+      success: false,
+      message: "Please correct the form input",
+      inputs: { ...rawData },
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
+  const id = Date.now().toString();
+  const dateNow = Date.now().toString();
+  const blobResult = await vercelBlobPutAction({
+    formData,
+    rawData,
+    id: id,
+  });
+
+  if (!blobResult.success) {
+    return {
+      success: false,
+      message: "Failed adding images",
+      inputs: { ...rawData },
+      errors: blobResult.errors,
+    };
+  }
+
+  const imageUrls = blobResult.data?.images;
+  const thumbnailUrl = blobResult.data?.thumbnail;
+
+  try {
+    const title = formData.get("title") as string;
+    const products = await getProductsAction();
+    const found = products.find((product) => product.title === title);
+
+    if (found) {
+      throw new Error("Two products cannot have the same title!");
+    }
+
+    const stripe = await addProductStripe(result);
+
+    await setDoc(doc(db, collections.products, id), {
+      title: result.data.title,
+      description: result.data.description,
+      category: result.data.category,
+      price: result.data.price,
+      discountPercentage: result.data.discountPercentage,
+      stock: result.data.stock,
+      tags: result.data.tags,
+      brand: result.data.brand,
+      sku: result.data.sku,
+      weight: result.data.weight,
+      dimensions: result.data.dimensions,
+      warrantyInformation: result.data.warrantyInformation,
+      shippingInformation: result.data.shippingInformation,
+      availabilityStatus: result.data.availabilityStatus,
+      minimumOrderQuantity: result.data.minimumOrderQuantity,
+      returnPolicy: result.data.returnPolicy,
+      images: imageUrls,
+      thumbnail: thumbnailUrl,
+      meta: {
+        createdAt: dateNow,
+        updatedAt: dateNow,
+      },
+      stripeProductId: stripe.stripeProductId,
+      stripePriceId: stripe.stripePriceId,
+      status: result.data.status,
+    });
+
+    return {
+      success: true,
+      message: "The product is created successfully",
+      data: {
+        id: id,
+        ...result.data,
+        rating: 0,
+        images: imageUrls || [],
+        thumbnail: thumbnailUrl ? thumbnailUrl : "",
+        meta: {
+          createdAt: String(dateNow),
+          updatedAt: String(dateNow),
+          barcode: "",
+          qrCode: "",
+        },
+      },
+    };
+  } catch (err) {
+    console.error("Error adding a new product to Firebase", err);
+    return {
+      success: false,
+      message: "Failed creating a new product in the database",
+      inputs: { ...rawData },
+    };
+  }
+}
+
+export async function getProductsAction(): Promise<Product[]> {
+  try {
+    const querySnapshot = await getDocs(collection(db, "products"));
+    const products = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+
+      return {
+        id: doc.id,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        price: data.price,
+        discountPercentage: data.discountPercentage,
+        stock: data.stock,
+        tags: data.tags,
+        brand: data.brand,
+        sku: data.sku,
+        weight: data.weight,
+        dimensions: data.dimensions,
+        warrantyInformation: data.warrantyInformation,
+        shippingInformation: data.shippingInformation,
+        availabilityStatus: data.availabilityStatus,
+        minimumOrderQuantity: data.minimumOrderQuantity,
+        returnPolicy: data.returnPolicy,
+        images: data.images,
+        thumbnail: data.thumbnail,
+        rating: data.rating,
+        meta: {
+          createdAt: data.meta?.createdAt ?? 0,
+          updatedAt: data.meta?.updatedAt ?? 0,
+        },
+        stripeProductId: data.stripeProductId,
+        stripePriceId: data.stripePriceId,
+        status: data.status,
+      };
+    });
+    return products as Product[];
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+
+export async function editProductAction(
+  currentState: EditProductFormState | null,
+  formData: FormData,
+) {
+  const rawData = {
+    stripeProductId: formData.get("stripeProductId") as string,
+    stripePriceId: formData.get("stripePriceId") as string,
+    productId: formData.get("productId") as string,
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
+    category: formData.get("category") as Category,
+    price: Number(formData.get("price")),
+    discountPercentage: Number(formData.get("discountPercentage")),
+    stock: Number(formData.get("stock")),
+    tags: (formData.getAll("tags") as string[]).map((tag) => tag as Tags),
+    brand: formData.get("brand") as string,
+    sku: formData.get("sku") as string,
+    weight: Number(formData.get("weight")),
+    dimensions: {
+      width: Number(formData.get("dimensions_width")),
+      height: Number(formData.get("dimensions_height")),
+      depth: Number(formData.get("dimensions_depth")),
+    },
+    warrantyInformation: formData.get("warrantyInformation") as string,
+    shippingInformation: formData.get("shippingInformation") as string,
+    availabilityStatus: formData.get(
+      "availabilityStatus",
+    ) as AvailabilityStatus,
+    minimumOrderQuantity: Number(formData.get("minimumOrderQuantity")),
+    returnPolicy: formData.get("returnPolicy") as ReturnPolicy,
+    images: formData.getAll("images") as string[],
+    thumbnail: formData.get("thumbnail") as string,
+    status: formData.get("status") as Status,
+  };
+  const result = productSchema.safeParse(rawData);
+  if (!result.success) {
+    return {
+      success: false,
+      message: "Error updating a product to Firebase",
+      inputs: { ...rawData },
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
+
+  const productId = formData.get("productId") as string;
+  const productRef = doc(db, "products", productId);
+  const productSnap = await getDoc(productRef);
+  const id = Date.now().toString();
+
+  const existingImages = productSnap.data()?.images || [];
+  const existingThumbnail = productSnap.data()?.thumbnail || "";
+
+  const images = formData.getAll("images") as File[];
+  const thumbnail = formData.get("thumbnail") as File;
+
+  const imagesSelected = images.some((image) => image && image.size > 0);
+  const thumbnailSelected = thumbnail.size > 0;
+
+  let imageUrls = existingImages;
+  let thumbnailUrl = existingThumbnail;
+
+  if (imagesSelected === true || thumbnailSelected === true) {
+    if (existingImages) {
+      for (const image of existingImages) {
+        await vercelBlobDeleteAction(image);
+      }
+    }
+
+    await vercelBlobDeleteAction(existingThumbnail);
+    const blobResult = await vercelBlobPutAction({
+      formData,
+      rawData,
+      id: id,
+    });
+
+    if (!blobResult.success) {
+      return {
+        success: false,
+        message: "Failed updating images",
+        inputs: { ...rawData },
+        errors: blobResult.errors,
+      };
+    }
+    if (blobResult.success) {
+      imageUrls = blobResult.data?.images;
+      thumbnailUrl = blobResult.data?.thumbnail;
+    }
+  }
+
+  const stripe = await updateProductStripe(
+    rawData.stripeProductId,
+    rawData.stripePriceId,
+    result,
+  );
+
+  try {
+    await updateDoc(productRef, {
+      title: result.data.title,
+      description: result.data.description,
+      category: result.data.category,
+      price: result.data.price,
+      discountPercentage: result.data.discountPercentage,
+      stock: result.data.stock,
+      tags: result.data.tags,
+      brand: result.data.brand,
+      sku: result.data.sku,
+      weight: result.data.weight,
+      dimensions: result.data.dimensions,
+      warrantyInformation: result.data.warrantyInformation,
+      shippingInformation: result.data.shippingInformation,
+      availabilityStatus: result.data.availabilityStatus,
+      minimumOrderQuantity: result.data.minimumOrderQuantity,
+      returnPolicy: result.data.returnPolicy,
+      images: imageUrls,
+      thumbnail: thumbnailUrl,
+      meta: {
+        updatedAt: Date.now().toString(),
+      },
+      stripeProductId: stripe.updatedProductId || "",
+      stripePriceId: stripe.newPriceId || "",
+      status: result.data.status,
+    });
+
+    return {
+      success: true,
+      message: "The product is updating successfully",
+    };
+  } catch (error) {
+    console.error("Error updating a product to Firebase", error);
+  }
+
+  return {
+    success: false,
+    message: "Failed updating a product in the database",
+    inputs: { ...rawData },
+  };
+}

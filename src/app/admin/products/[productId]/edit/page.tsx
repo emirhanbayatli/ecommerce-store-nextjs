@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../../utils/firebase";
 import { useEffect, useState, useActionState } from "react";
@@ -10,10 +10,14 @@ import {
   allAvailabilityStatus,
   allReturnPolicies,
   Product,
+  Tags,
 } from "../../../../../types/types";
-import { editProduct } from "../../../../actions/admin/products";
+import { editProductAction } from "../../../../actions/admin/products";
 import Form from "next/form";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import { LoadingSpinner } from "@/app/components/LoadingSpinner";
+import { toast } from "sonner";
 
 const initialState: EditProductFormState = {
   success: false,
@@ -39,10 +43,23 @@ export default function EditProduct() {
   const [state, formAction, isPending] = useActionState<
     EditProductFormState,
     FormData
-  >(editProduct, initialState);
+  >(editProductAction, initialState);
 
   const params = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.message) {
+      if (state.success) {
+        toast.success(state.message);
+        router.push("/admin/products");
+      } else {
+        toast.error(state.message);
+      }
+    }
+  }, [state, router]);
 
   useEffect(() => {
     async function fetchData() {
@@ -57,27 +74,88 @@ export default function EditProduct() {
     fetchData();
   }, []);
 
-  if (isPending) return <p>Loading...</p>;
+  const [imagePreviews, setImagePreviews] = useState<string[]>();
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>();
+
+  useEffect(() => {
+    if (product) {
+      setImagePreviews(product.images ?? []);
+      setThumbnailPreview(product.thumbnail ?? "");
+    }
+  }, [product]);
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const urls = Array.from(files).map((file) => URL.createObjectURL(file));
+      setImagePreviews(urls);
+    }
+  };
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setThumbnailPreview(url);
+    }
+  };
+
+  if (isPending) return <LoadingSpinner />;
+
+  const inputClass =
+    "my-1 mx-0.5 rounded-md border border-gray-300 bg-white p-2 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all";
+
   return (
-    <main className="max-w-4xl mx-auto my-6">
+    <main className="max-w-4xl mx-auto my-6 pb-12">
       {product ? (
         <div>
           <Form
+            noValidate
             action={formAction}
-            className="grid grid-cols-2 gap-6 bg-white p-8 rounded-xl shadow-md"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 md:p-8 rounded-xl shadow-md"
           >
+            <input
+              id="stripeProductId"
+              type="hidden"
+              name="stripeProductId"
+              value={product.stripeProductId || ""}
+            />
+            <input
+              id="stripePriceId"
+              type="hidden"
+              name="stripePriceId"
+              value={product.stripePriceId || ""}
+            />
+            <input
+              id="productId"
+              type="hidden"
+              name="productId"
+              value={params.productId}
+            />
+
             <div className="flex flex-col col-span-2">
               <label htmlFor="productId" className="font-bold mb-1">
                 ID
               </label>
-              <input
-                name="productId"
-                type="text"
-                id="productId"
-                defaultValue={params.productId}
-                className="bg-stone-200 text-stone-900 p-2 rounded"
-                readOnly
-              />
+              <p id="productId" className={inputClass}>
+                {params.productId}
+              </p>
+              <label htmlFor="stripeProductId" className="font-bold mb-1">
+                Stripe Product ID
+              </label>
+              <p className={inputClass}>
+                {product.stripeProductId
+                  ? product.stripeProductId
+                  : "Not available"}
+              </p>
+              <label htmlFor="stripePriceId" className="font-bold mb-1">
+                Stripe Price ID
+              </label>
+              <p className={inputClass}>
+                {product.stripePriceId
+                  ? product.stripePriceId
+                  : "Not available"}
+              </p>
               <label htmlFor="title" className="font-bold mb-1">
                 Title
               </label>
@@ -93,17 +171,18 @@ export default function EditProduct() {
                     message: "Title must not exceed 100 characters",
                   },
                 })}
+                data-testid="title"
                 name="title"
                 defaultValue={product.title}
                 type="text"
                 id="title"
-                className="bg-stone-200 text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.title && (
-                <p className="text-red-600 text-sm">{state.errors.title}</p>
+                <p className="text600 text-sm">{state.errors.title}</p>
               )}
               {errors.title?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.title.message as string}
                 </p>
               )}
@@ -129,22 +208,20 @@ export default function EditProduct() {
                 type="text"
                 id="description"
                 name="description"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.description && (
-                <p className="text-red-600 text-sm">
-                  {state.errors.description}
-                </p>
+                <p className="text600 text-sm">{state.errors.description}</p>
               )}
 
               {errors.description?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.description.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="category" className="font-bold mb-1">
                 Category
               </label>
@@ -158,7 +235,7 @@ export default function EditProduct() {
                 defaultValue={product.category}
                 id="category"
                 name="category"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               >
                 {allCategories.map((category) => (
                   <option key={category} value={category}>
@@ -167,16 +244,16 @@ export default function EditProduct() {
                 ))}
               </select>
               {state?.errors?.category && (
-                <p className="text-red-600 text-sm">{state.errors.category}</p>
+                <p className="text600 text-sm">{state.errors.category}</p>
               )}
               {errors.category?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.category.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="price" className="font-bold mb-1">
                 Price
               </label>
@@ -197,19 +274,19 @@ export default function EditProduct() {
                 type="number"
                 id="price"
                 name="price"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.price && (
-                <p className="text-red-600 text-sm">{state.errors.price}</p>
+                <p className="text600 text-sm">{state.errors.price}</p>
               )}
               {errors.price?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.price.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="discountPercentage" className="font-bold mb-1">
                 Discount Percentage
               </label>
@@ -230,21 +307,21 @@ export default function EditProduct() {
                 type="number"
                 id="discountPercentage"
                 name="discountPercentage"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.discountPercentage && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.discountPercentage}
                 </p>
               )}
               {errors.discountPercentage?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.discountPercentage.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="stock" className="font-bold mb-1">
                 Stock
               </label>
@@ -265,13 +342,14 @@ export default function EditProduct() {
                 type="number"
                 id="stock"
                 name="stock"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                step="1"
+                className={inputClass}
               />
               {state?.errors?.stock && (
-                <p className="text-red-600 text-sm">{state.errors.stock}</p>
+                <p className="text600 text-sm">{state.errors.stock}</p>
               )}
               {errors.stock?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.stock.message as string}
                 </p>
               )}
@@ -281,39 +359,31 @@ export default function EditProduct() {
               <label htmlFor="tags" className="font-bold mb-1">
                 Tags
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="gap-2 grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
                 {allTags.map((tag) => (
-                  <label key={tag} className="flex items-center gap-1">
+                  <label key={tag}>
                     <input
-                      {...register("tags", {
-                        required: "Tags is required",
-                        validate: (value) =>
-                          (Array.isArray(value) &&
-                            value.every((v) => allTags.includes(v))) ||
-                          "Please choose valid tags",
-                      })}
-                      defaultChecked={product.tags?.includes(tag)}
-                      id={`tag-${tag}`}
-                      name="tags"
                       type="checkbox"
+                      name="tags"
                       value={tag}
-                      className="accent-stone-900"
+                      defaultChecked={product?.tags?.includes(tag as Tags)}
+                      className={inputClass}
                     />
-                    {tag}
+                    {tag.replace("_", " ")}
                   </label>
                 ))}
               </div>
               {state?.errors?.tags && (
-                <p className="text-red-600 text-sm">{state.errors.tags}</p>
+                <p className="text600 text-sm">{state.errors.tags}</p>
               )}
               {errors.tags?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.tags.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="brand" className="font-bold mb-1">
                 Brand
               </label>
@@ -333,19 +403,19 @@ export default function EditProduct() {
                 type="text"
                 id="brand"
                 name="brand"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.brand && (
-                <p className="text-red-600 text-sm">{state.errors.brand}</p>
+                <p className="text600 text-sm">{state.errors.brand}</p>
               )}
               {errors.brand?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.brand.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="sku" className="font-bold mb-1">
                 SKU
               </label>
@@ -365,19 +435,19 @@ export default function EditProduct() {
                 type="text"
                 id="sku"
                 name="sku"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.sku && (
-                <p className="text-red-600 text-sm">{state.errors.sku}</p>
+                <p className="text600 text-sm">{state.errors.sku}</p>
               )}
               {errors.sku?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.sku.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="weight" className="font-bold mb-1">
                 Weight
               </label>
@@ -398,23 +468,23 @@ export default function EditProduct() {
                 type="number"
                 id="weight"
                 name="weight"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.weight && (
-                <p className="text-red-600 text-sm">{state.errors.weight}</p>
+                <p className="text600 text-sm">{state.errors.weight}</p>
               )}
               {errors.weight?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.weight.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="dimensions" className="font-bold mb-1">
                 Dimensions
               </label>
-              <div className="flex gap-5 justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <input
                   {...register("dimensions_width", {
                     required: "Width is required",
@@ -433,7 +503,7 @@ export default function EditProduct() {
                   id="width"
                   name="dimensions_width"
                   placeholder="Width"
-                  className="dark:bg-stone-200 dark:text-stone-900  p-2 rounded max-w-30"
+                  className={`${inputClass} w-full`}
                 />
 
                 <input
@@ -454,7 +524,7 @@ export default function EditProduct() {
                   id="height"
                   name="dimensions_height"
                   placeholder="Height"
-                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+                  className={`${inputClass} w-full`}
                 />
 
                 <input
@@ -475,32 +545,30 @@ export default function EditProduct() {
                   id="depth"
                   name="dimensions_depth"
                   placeholder="Depth"
-                  className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+                  className={`${inputClass} w-full`}
                 />
               </div>
               {state?.errors?.dimensions && (
-                <p className="text-red-600 text-sm">
-                  {state.errors.dimensions}
-                </p>
+                <p className="text600 text-sm">{state.errors.dimensions}</p>
               )}
               {errors.dimensions_width?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.dimensions_width.message as string}
                 </p>
               )}
               {errors.dimensions_height?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.dimensions_height.message as string}
                 </p>
               )}
               {errors.dimensions_depth?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.dimensions_depth.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="warrantyInformation" className="font-bold mb-1">
                 Warranty Information
               </label>
@@ -522,21 +590,21 @@ export default function EditProduct() {
                 type="text"
                 id="warrantyInformation"
                 name="warrantyInformation"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.warrantyInformation && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.warrantyInformation}
                 </p>
               )}
               {errors.warrantyInformation?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.warrantyInformation.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="shippingInformation" className="font-bold mb-1">
                 Shipping Information
               </label>
@@ -558,15 +626,15 @@ export default function EditProduct() {
                 type="text"
                 id="shippingInformation"
                 name="shippingInformation"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.shippingInformation && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.shippingInformation}
                 </p>
               )}
               {errors.shippingInformation?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.shippingInformation.message as string}
                 </p>
               )}
@@ -599,7 +667,7 @@ export default function EditProduct() {
                         type="radio"
                         name="availabilityStatus"
                         value={availabilityStatus}
-                        className="accent-stone-900"
+                        className={inputClass}
                       />
                       {availabilityStatus}
                     </label>
@@ -607,18 +675,18 @@ export default function EditProduct() {
                 })}
               </div>
               {state?.errors?.availabilityStatus && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.availabilityStatus.join(", ")}
                 </p>
               )}
               {errors.availabilityStatus?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.availabilityStatus.message as string}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col col-span-2 md:col-span-1">
               <label htmlFor="minimumOrderQuantity" className="font-bold mb-1">
                 Minimum Order Quantity
               </label>
@@ -639,15 +707,15 @@ export default function EditProduct() {
                 type="number"
                 id="minimumOrderQuantity"
                 name="minimumOrderQuantity"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
               />
               {state?.errors?.minimumOrderQuantity && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {state.errors.minimumOrderQuantity}
                 </p>
               )}
               {errors.minimumOrderQuantity?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.minimumOrderQuantity.message as string}
                 </p>
               )}
@@ -657,7 +725,7 @@ export default function EditProduct() {
               <label htmlFor="returnPolicy" className="font-bold mb-1">
                 Return Policy
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-2">
                 {allReturnPolicies.map((returnPolicy) => {
                   const id = `returnPolicy-${returnPolicy}`;
 
@@ -679,7 +747,7 @@ export default function EditProduct() {
                         type="radio"
                         name="returnPolicy"
                         value={returnPolicy}
-                        className="accent-stone-900"
+                        className={inputClass}
                       />
                       {returnPolicy}
                     </label>
@@ -687,13 +755,55 @@ export default function EditProduct() {
                 })}
               </div>
               {state?.errors?.returnPolicy && (
-                <p className="text-red-600 text-sm">
-                  {state.errors.returnPolicy}
-                </p>
+                <p className="text600 text-sm">{state.errors.returnPolicy}</p>
               )}
               {errors.returnPolicy?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.returnPolicy.message as string}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="status" className="font-bold mb-1">
+                Product Status
+              </label>
+              <div className="flex items-center flex-wrap gap-4">
+                <label className="flex items-center gap-1">
+                  <input
+                    {...register("status")}
+                    type="radio"
+                    value="Standard"
+                    className={inputClass}
+                  />
+                  Standard
+                </label>
+
+                <label className="flex items-center gap-1">
+                  <input
+                    {...register("status")}
+                    type="radio"
+                    value="Explore"
+                    className={inputClass}
+                  />
+                  Explore
+                </label>
+
+                <label className="flex items-center gap-1">
+                  <input
+                    {...register("status")}
+                    type="radio"
+                    value="Featured"
+                    className={inputClass}
+                  />
+                  Featured
+                </label>
+              </div>
+              {state?.errors?.status && (
+                <p className="text600 text-sm">{state.errors.status}</p>
+              )}
+              {errors.status?.message && (
+                <p className="text600 text-sm">
+                  {errors.status.message as string}
                 </p>
               )}
             </div>
@@ -703,32 +813,30 @@ export default function EditProduct() {
                 Images
               </label>
               <input
-                {...register("images", {
-                  required: "At least one image URL is required",
-                  minLength: {
-                    value: 1,
-                    message: "Image URL must be at least 1 character",
-                  },
-                  maxLength: {
-                    value: 500,
-                    message: "Image URL must not exceed 500 characters",
-                  },
-                })}
-                defaultValue={product.images}
-                type="text"
+                accept=".jpeg, .jpg, .webp"
+                type="file"
+                multiple
                 id="images"
                 name="images"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
                 placeholder="Simply separate each link with a comma to add more than one."
+                onChange={handleImagesChange}
               />
-              {state?.errors?.images && (
-                <p className="text-red-600 text-sm">{state.errors.images}</p>
-              )}
               {errors.images?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.images.message as string}
                 </p>
               )}
+              <div className="flex gap-5 flex-wrap">
+                {imagePreviews?.map((src, index) => (
+                  <img
+                    key={index}
+                    src={src}
+                    alt={`Image Preview ${index}`}
+                    className="rounded shadow max-w-32 mt-4"
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-col col-span-2">
@@ -736,43 +844,48 @@ export default function EditProduct() {
                 Thumbnail
               </label>
               <input
-                {...register("thumbnail", {
-                  required: "Thumbnail URL is required",
-                  minLength: {
-                    value: 1,
-                    message: "Thumbnail URL must be at least 1 character",
-                  },
-                  maxLength: {
-                    value: 500,
-                    message: "Thumbnail URL must not exceed 500 characters",
-                  },
-                })}
-                defaultValue={product.thumbnail}
-                type="text"
+                accept=".jpeg, .jpg, .webp"
+                type="file"
                 id="thumbnail"
                 name="thumbnail"
-                className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+                className={inputClass}
                 placeholder="Simply separate each link with a comma to add more than one."
+                onChange={handleThumbnailChange}
               />
-              {state?.errors?.thumbnail && (
-                <p className="text-red-600 text-sm">{state.errors.thumbnail}</p>
-              )}
+
               {errors.thumbnail?.message && (
-                <p className="text-red-600 text-sm">
+                <p className="text600 text-sm">
                   {errors.thumbnail.message as string}
                 </p>
+              )}
+              {state?.errors?.thumbnail && (
+                <p className="text600 text-sm">{state.errors.thumbnail}</p>
+              )}
+
+              {thumbnailPreview && (
+                <div className="mt-4">
+                  <img
+                    src={thumbnailPreview}
+                    alt="Thumbnail Preview"
+                    className="rounded shadow max-w-32"
+                  />
+                </div>
               )}
             </div>
 
             <Button
-              className="my-8 col-span-2"
+              data-testid="update-btn"
               label="Update Product"
               type="submit"
+              className="col-span-2 md:col-span-1"
             />
+            <Link className="col-span-2 md:col-span-1" href={"/admin/products"}>
+              <Button className="w-full " label="Cancel" />
+            </Link>
           </Form>
         </div>
       ) : (
-        <p>Loading...</p>
+        <LoadingSpinner />
       )}
     </main>
   );

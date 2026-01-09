@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -13,7 +14,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 export const collections = {
   products: "products",
+  users: "users",
 };
+
+export enum UserRoles {
+  USER = "user",
+  ADMIN = "admin",
+  SUPER_ADMIN = "superAdmin",
+}

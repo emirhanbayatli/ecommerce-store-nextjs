@@ -6,11 +6,17 @@ import {
   allAvailabilityStatus,
   allReturnPolicies,
 } from "../../../../types/types";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { addNewProductAction } from "../../../actions/admin/products";
 import Form from "next/form";
 import { Button } from "@/app/components/Button";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import Link from "next/link";
+import { LoadingSpinner } from "@/app/components/LoadingSpinner";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 const initialState: NewProductFormState = {
   success: false,
   inputs: {},
@@ -28,26 +34,88 @@ export interface NewProductFormState {
 }
 
 export default function Admin() {
-  const {
-    register,
-    formState: { errors },
-  } = useForm({ mode: "all" });
-
   const [state, formAction, isPending] = useActionState<
     NewProductFormState,
     FormData
   >(addNewProductAction, initialState);
 
-  if (isPending) return <p>Loading...</p>;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.message) {
+      if (state.success) {
+        toast.success(state.message);
+        router.push("/admin/products");
+      } else {
+        toast.error(state.message);
+      }
+    }
+  }, [state, router]);
+
+  const {
+    register,
+    formState: { errors },
+  } = useForm({
+    mode: "all",
+    defaultValues: {
+      title: state.inputs?.title || "",
+      description: state.inputs?.description || "",
+      category: state.inputs?.category || allCategories[0],
+      price: state.inputs?.price,
+      discountPercentage: state.inputs?.discountPercentage,
+      stock: state.inputs?.stock,
+      tags: state.inputs?.tags || [],
+      brand: state.inputs?.brand || "",
+      sku: state.inputs?.sku || "",
+      weight: state.inputs?.weight,
+      dimensions_width: state.inputs?.dimensions?.width,
+      dimensions_height: state.inputs?.dimensions?.height,
+      dimensions_depth: state.inputs?.dimensions?.depth,
+      warrantyInformation: state.inputs?.warrantyInformation || "",
+      shippingInformation: state.inputs?.shippingInformation || "",
+      availabilityStatus:
+        state.inputs?.availabilityStatus || allAvailabilityStatus[0],
+      minimumOrderQuantity: state.inputs?.minimumOrderQuantity,
+      returnPolicy: state.inputs?.returnPolicy || allReturnPolicies[0],
+      images: state.inputs?.images || [],
+      thumbnail: state.inputs?.thumbnail || "",
+      status: state.inputs?.status || "standard",
+    },
+  });
+
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const urls = Array.from(files).map((file) => URL.createObjectURL(file));
+      setImagePreviews(urls);
+    }
+  };
+
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setThumbnailPreview(url);
+    }
+  };
+
+  if (isPending) return <LoadingSpinner />;
+
+  const inputClass =
+    "my-1 mx-0.5 rounded-md border border-gray-300 bg-white p-2 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all";
 
   return (
-    <main className="max-w-4xl mx-auto">
+    <main className="max-w-4xl mx-auto pb-12">
       <h1 className="my-12 font-bold text-2xl text-center">
         Add a New Product
       </h1>
       <Form
+        noValidate
         action={formAction}
-        className="grid grid-cols-2 gap-6 bg-white p-8 rounded-xl shadow-md"
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 md:p-8 rounded-xl shadow-md"
       >
         <div className="flex flex-col col-span-2">
           <label htmlFor="title" className="font-bold mb-1">
@@ -67,18 +135,17 @@ export default function Admin() {
             })}
             type="text"
             id="title"
-            className="bg-stone-200 text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.title && (
-            <p className="text-red-600 text-sm">{state.errors.title}</p>
+            <p className="text-gray-600 text-sm">{state.errors.title}</p>
           )}
           {errors.title?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.title.message as string}
             </p>
           )}
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="description" className="font-bold mb-1">
             Description
@@ -98,20 +165,19 @@ export default function Admin() {
             type="text"
             id="description"
             name="description"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.description && (
-            <p className="text-red-600 text-sm">{state.errors.description}</p>
+            <p className="text-gray-600 text-sm">{state.errors.description}</p>
           )}
 
           {errors.description?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.description.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="category" className="font-bold mb-1">
             Category
           </label>
@@ -124,11 +190,8 @@ export default function Admin() {
             })}
             id="category"
             name="category"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           >
-            {/* <option defaultValue="" disabled>
-              Select Category
-            </option> */}
             {allCategories.map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -136,16 +199,15 @@ export default function Admin() {
             ))}
           </select>
           {state?.errors?.category && (
-            <p className="text-red-600 text-sm">{state.errors.category}</p>
+            <p className="text-gray-600 text-sm">{state.errors.category}</p>
           )}
           {errors.category?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.category.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="price" className="font-bold mb-1">
             Price
           </label>
@@ -163,21 +225,21 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="price"
             name="price"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.price && (
-            <p className="text-red-600 text-sm">{state.errors.price}</p>
+            <p className="text-gray-600 text-sm">{state.errors.price}</p>
           )}
           {errors.price?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.price.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="discountPercentage" className="font-bold mb-1">
             Discount Percentage
           </label>
@@ -195,23 +257,23 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="discountPercentage"
             name="discountPercentage"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.discountPercentage && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.discountPercentage}
             </p>
           )}
           {errors.discountPercentage?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.discountPercentage.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="stock" className="font-bold mb-1">
             Stock
           </label>
@@ -229,25 +291,25 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="stock"
             name="stock"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.stock && (
-            <p className="text-red-600 text-sm">{state.errors.stock}</p>
+            <p className="text-gray-600 text-sm">{state.errors.stock}</p>
           )}
           {errors.stock?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.stock.message as string}
             </p>
           )}
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="tags" className="font-bold mb-1">
             Tags
           </label>
-          <div className="flex flex-wrap gap-2">
+          <div className="gap-2 grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2">
             {allTags.map((tag) => (
               <label key={tag} className="flex items-center gap-1">
                 <input
@@ -260,23 +322,22 @@ export default function Admin() {
                   })}
                   type="checkbox"
                   value={tag}
-                  className="accent-stone-900"
+                  className={inputClass}
                 />
                 {tag}
               </label>
             ))}
           </div>
           {state?.errors?.tags && (
-            <p className="text-red-600 text-sm">{state.errors.tags}</p>
+            <p className="text-gray-600 text-sm">{state.errors.tags}</p>
           )}
           {errors.tags?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.tags.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="brand" className="font-bold mb-1">
             Brand
           </label>
@@ -295,19 +356,18 @@ export default function Admin() {
             type="text"
             id="brand"
             name="brand"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.brand && (
-            <p className="text-red-600 text-sm">{state.errors.brand}</p>
+            <p className="text-gray-600 text-sm">{state.errors.brand}</p>
           )}
           {errors.brand?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.brand.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="sku" className="font-bold mb-1">
             SKU
           </label>
@@ -326,19 +386,18 @@ export default function Admin() {
             type="text"
             id="sku"
             name="sku"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.sku && (
-            <p className="text-red-600 text-sm">{state.errors.sku}</p>
+            <p className="text-gray-600 text-sm">{state.errors.sku}</p>
           )}
           {errors.sku?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.sku.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="weight" className="font-bold mb-1">
             Weight
           </label>
@@ -356,25 +415,25 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="weight"
             name="weight"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.weight && (
-            <p className="text-red-600 text-sm">{state.errors.weight}</p>
+            <p className="text-gray-600 text-sm">{state.errors.weight}</p>
           )}
           {errors.weight?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.weight.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="dimensions" className="font-bold mb-1">
             Dimensions
           </label>
-          <div className="flex gap-5 justify-center">
+          <div className="flex flex-col md:flex-row gap-5 justify-center">
             <input
               {...register("dimensions_width", {
                 required: "Width is required",
@@ -389,10 +448,11 @@ export default function Admin() {
                 valueAsNumber: true,
               })}
               type="number"
+              step="0.01"
               id="width"
               name="dimensions_width"
               placeholder="Width"
-              className="dark:bg-stone-200 dark:text-stone-900  p-2 rounded max-w-30"
+              className={`${inputClass} w-full`}
             />
 
             <input
@@ -409,10 +469,11 @@ export default function Admin() {
                 valueAsNumber: true,
               })}
               type="number"
+              step="0.01"
               id="height"
               name="dimensions_height"
               placeholder="Height"
-              className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+              className={`${inputClass} w-full`}
             />
 
             <input
@@ -429,33 +490,33 @@ export default function Admin() {
                 valueAsNumber: true,
               })}
               type="number"
+              step="0.01"
               id="depth"
               name="dimensions_depth"
               placeholder="Depth"
-              className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded max-w-30"
+              className={`${inputClass} w-full`}
             />
           </div>
           {state?.errors?.dimensions && (
-            <p className="text-red-600 text-sm">{state.errors.dimensions}</p>
+            <p className="text-gray-600 text-sm">{state.errors.dimensions}</p>
           )}
           {errors.dimensions_width?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.dimensions_width.message as string}
             </p>
           )}
           {errors.dimensions_height?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.dimensions_height.message as string}
             </p>
           )}
           {errors.dimensions_depth?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.dimensions_depth.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="warrantyInformation" className="font-bold mb-1">
             Warranty Information
           </label>
@@ -474,21 +535,20 @@ export default function Admin() {
             type="text"
             id="warrantyInformation"
             name="warrantyInformation"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.warrantyInformation && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.warrantyInformation}
             </p>
           )}
           {errors.warrantyInformation?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.warrantyInformation.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="shippingInformation" className="font-bold mb-1">
             Shipping Information
           </label>
@@ -507,20 +567,19 @@ export default function Admin() {
             type="text"
             id="shippingInformation"
             name="shippingInformation"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.shippingInformation && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.shippingInformation}
             </p>
           )}
           {errors.shippingInformation?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.shippingInformation.message as string}
             </p>
           )}
         </div>
-
         <div className="flex flex-col">
           <label htmlFor="availabilityStatus" className="font-bold mb-1">
             Availability Status
@@ -545,7 +604,7 @@ export default function Admin() {
                     type="radio"
                     name="availabilityStatus"
                     value={availabilityStatus}
-                    className="accent-stone-900"
+                    className={inputClass}
                   />
                   {availabilityStatus}
                 </label>
@@ -553,18 +612,17 @@ export default function Admin() {
             })}
           </div>
           {state?.errors?.availabilityStatus && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.availabilityStatus.join(", ")}
             </p>
           )}
           {errors.availabilityStatus?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.availabilityStatus.message as string}
             </p>
           )}
         </div>
-
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2 md:col-span-1">
           <label htmlFor="minimumOrderQuantity" className="font-bold mb-1">
             Minimum Order Quantity
           </label>
@@ -582,27 +640,27 @@ export default function Admin() {
               valueAsNumber: true,
             })}
             type="number"
+            step="0.01"
             id="minimumOrderQuantity"
             name="minimumOrderQuantity"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+            className={inputClass}
           />
           {state?.errors?.minimumOrderQuantity && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {state.errors.minimumOrderQuantity}
             </p>
           )}
           {errors.minimumOrderQuantity?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.minimumOrderQuantity.message as string}
             </p>
           )}
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="returnPolicy" className="font-bold mb-1">
             Return Policy
           </label>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-2">
             {allReturnPolicies.map((returnPolicy) => {
               const id = `returnPolicy-${returnPolicy}`;
 
@@ -623,7 +681,7 @@ export default function Admin() {
                     type="radio"
                     name="returnPolicy"
                     value={returnPolicy}
-                    className="accent-stone-900"
+                    className={inputClass}
                   />
                   {returnPolicy}
                 </label>
@@ -631,11 +689,58 @@ export default function Admin() {
             })}
           </div>
           {state?.errors?.returnPolicy && (
-            <p className="text-red-600 text-sm">{state.errors.returnPolicy}</p>
+            <p className="text-gray-600 text-sm">{state.errors.returnPolicy}</p>
           )}
           {errors.returnPolicy?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.returnPolicy.message as string}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor="status" className="font-bold mb-1">
+            Product Status
+          </label>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-1">
+              <input
+                {...register("status")}
+                type="radio"
+                value="Standard"
+                name="status"
+                className={inputClass}
+              />
+              Standard
+            </label>
+
+            <label className="flex items-center gap-1">
+              <input
+                {...register("status")}
+                type="radio"
+                name="status"
+                value="Explore"
+                className={inputClass}
+              />
+              Explore
+            </label>
+
+            <label className="flex items-center gap-1">
+              <input
+                {...register("status")}
+                type="radio"
+                name="status"
+                value="Featured"
+                className={inputClass}
+              />
+              Featured
+            </label>
+          </div>
+          {state?.errors?.status && (
+            <p className="text-gray-600 text-sm">{state.errors.status}</p>
+          )}
+          {errors.status?.message && (
+            <p className="text-gray-600 text-sm">
+              {errors.status.message as string}
             </p>
           )}
         </div>
@@ -645,73 +750,71 @@ export default function Admin() {
             Images
           </label>
           <input
-            {...register("images", {
-              required: "At least one image URL is required",
-              minLength: {
-                value: 1,
-                message: "Image URL must be at least 1 character",
-              },
-              maxLength: {
-                value: 500,
-                message: "Image URL must not exceed 500 characters",
-              },
-            })}
             type="file"
             multiple
             accept=".jpeg , .jpg , .webp"
+            onChange={handleImagesChange}
             id="images"
             name="images"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            placeholder="Simply separate each link with a comma to add more than one."
+            className={inputClass}
           />
           {state?.errors?.images && (
-            <p className="text-red-600 text-sm">{state.errors.images}</p>
+            <p className="text-gray-600 text-sm">{state.errors.images}</p>
           )}
           {errors.images?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.images.message as string}
             </p>
           )}
+          <div className="flex gap-5 flex-wrap">
+            {imagePreviews?.map((src, index) => (
+              <img
+                key={index}
+                src={src}
+                alt={`Image Preview ${index}`}
+                className="rounded shadow max-w-32  mt-4"
+              />
+            ))}
+          </div>
         </div>
-
         <div className="flex flex-col col-span-2">
           <label htmlFor="thumbnail" className="font-bold mb-1">
             Thumbnail
           </label>
           <input
             {...register("thumbnail", {
-              required: "Thumbnail URL is required",
-              minLength: {
-                value: 1,
-                message: "Thumbnail URL must be at least 1 character",
-              },
-              maxLength: {
-                value: 500,
-                message: "Thumbnail URL must not exceed 500 characters",
-              },
+              required: "Thumbnail is required",
             })}
             type="file"
-            multiple
+            onChange={handleThumbnailChange}
             accept=".jpeg , .jpg , .webp"
             name="thumbnail"
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
-            placeholder="Simply separate each link with a comma to add more than one."
+            className={inputClass}
           />
-          {state?.errors?.thumbnail && (
-            <p className="text-red-600 text-sm">{state.errors.thumbnail}</p>
-          )}
+
           {errors.thumbnail?.message && (
-            <p className="text-red-600 text-sm">
+            <p className="text-gray-600 text-sm">
               {errors.thumbnail.message as string}
             </p>
           )}
+          {thumbnailPreview && (
+            <div className="mt-4">
+              <img
+                src={thumbnailPreview}
+                alt="Thumbnail Preview"
+                className="rounded shadow max-w-32"
+              />
+            </div>
+          )}
         </div>
-
         <Button
+          className="col-span-2 md:col-span-1"
           type="submit"
-          className="my-8 col-span-2"
           label="Create Product"
         />
+        <Link href={"/admin/products"} className="col-span-2 md:col-span-1">
+          <Button className="w-full" label="Cancel" />
+        </Link>
       </Form>
     </main>
   );
