@@ -68,7 +68,7 @@ export default function EditProduct() {
       if (docSnap.exists()) {
         setProduct(docSnap.data() as Product);
       } else {
-        console.log("No such document!");
+        toast.error("No such document!");
       }
     }
     fetchData();

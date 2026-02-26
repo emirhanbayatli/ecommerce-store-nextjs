@@ -1,3 +1,4 @@
+"use server";
 import { NewProductFormState } from "@/app/admin/products/new/page";
 import { EditProductFormState } from "../../admin/products/[productId]/edit/page";
 import {
