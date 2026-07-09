@@ -44,25 +44,28 @@ export default async function Home() {
               <Link href={"/categories/laptops"}>
                 <CategoryCard
                   title="High-Performance Computing"
-                  imageUrl="https://lh3.googleusercontent.com/aida-public/AB6AXuAtqYx4NHzv4Hiwn1CImLZdA8ZAXXJbhVbBCjZ24DpBcmMnAacPVYxlrDSq3nIEl0cjsNhfvGXBJeQI-cxYgc2RYcPI7ju4BM3BR6gqjQ1AWS2e3LKV7NpqU4Iq1YLgi1W-HQMkg0ckp9Jgt0OOUcteq8zwbXbS6sLIN_NdJ__y6iG_VIWL9afRJlDncQQtQO5mdsO5hpRQkvQDnE-myaNCbBvXsBeEmH0xXZURl6YXBV15-k1qzhfvBKbsxXuZym9yTgyg_5ySeHdN"
+                  imageUrl="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1200&q=80"
                 />
               </Link>
+
               <Link href={"/categories/smartphones"}>
                 <CategoryCard
                   title="Next-Gen Mobile Devices"
-                  imageUrl="https://lh3.googleusercontent.com/aida-public/AB6AXuABEemc1xAsB_INOq-qyIfpPMYL0CPzbQj5Cokz9jvgNDCJKlFbq3lbxaF0VRl2HM9FhP6Qx62sccfuJp7n49NBC76NAgwkEcTZomRTd0Ji3OPV7PQZci4i10Y8xjHSMldYcXx5U3v1KJHhNoaTHQLHai1ZjQL5yr3ckfNmc7IxfTG_R6jfsodHTV7Pug8uSkwbcYNexZi4JSNx_9PGPlhpJX9kFlr43IhquYJMt_Y-C0rcV3Wd8MedwbgIDveDC_46FJM-T2H0lKfa"
+                  imageUrl="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80"
                 />
               </Link>
+
               <Link href={"/categories/computer-accessories"}>
                 <CategoryCard
                   title="Advanced Peripherals"
-                  imageUrl="https://lh3.googleusercontent.com/aida-public/AB6AXuBHfDHwuSL-MOtLv4DpuYlxqOMqxjElpk4ntER4O7YZsG6lDPvEQkjDxxk_LBgqP83lpMPOVxryLWxJuknW4mdksHHTJn_XcDVZOOfkbQDAoAsgh2ynOxq2rTkjhzjI8qWac1k2Tb4I3WsBmOLjc4Uunumjt1GpoVjsGVixdZzCmL_m77L-FXv7AVAGEL6h55aI-ahrtlvFp88ZZYMR3sL6nVcw2CPRRgeEg5jvFWk5H8-RQrjERjzsNBKR0-dEv23_wc62WmpASanX"
+                  imageUrl="https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=1200&q=80"
                 />
               </Link>
+
               <Link href={"/categories/smartwatches"}>
                 <CategoryCard
                   title="Connectivity & Smart Features"
-                  imageUrl="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1172"
+                  imageUrl="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=1200&q=80"
                 />
               </Link>
             </div>

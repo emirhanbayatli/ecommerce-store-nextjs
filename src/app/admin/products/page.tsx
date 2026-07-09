@@ -7,7 +7,6 @@ import { Product } from "../../../types/types";
 import Image from "next/image";
 import { LoadingSpinner } from "@/app/components/LoadingSpinner";
 import { toast } from "sonner";
-
 import {
   AlertDialogTrigger,
   AlertDialog,
